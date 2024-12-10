@@ -22,7 +22,7 @@ public class Question {
     @Column (columnDefinition =  "TEXT")
     private String content;
 
-    private LocalDateTime createDate;
+    private LocalDateTime createdTime;
 
      @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
