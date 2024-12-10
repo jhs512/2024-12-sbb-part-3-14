@@ -1,6 +1,12 @@
-<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
-<div class="container my-3">
-    <table class="table">
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Question List</title>
+</head>
+<body>
+<div layout:fragment="content" class="container my-3">
+    <h1>Question List</h1>
+    <table class="table table-striped">
         <thead class="table-dark">
         <tr>
             <th>번호</th>
@@ -12,10 +18,12 @@
         <tr th:each="question, loop : ${questionList}">
             <td th:text="${loop.count}"></td>
             <td>
-                <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+                <a th:href="@{/question/detail/{id}(id=${question.id})}" th:text="${question.subject}"></a>
             </td>
             <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
         </tbody>
     </table>
 </div>
+</body>
+</html>
