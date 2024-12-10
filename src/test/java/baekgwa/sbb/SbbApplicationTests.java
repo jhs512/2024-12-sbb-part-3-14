@@ -3,6 +3,8 @@ package baekgwa.sbb;
 import baekgwa.sbb.model.question.Question;
 import baekgwa.sbb.model.question.QuestionRepository;
 import java.time.LocalDateTime;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,10 @@ class SbbApplicationTests {
                 .createDate(LocalDateTime.now())
                 .build();
         this.questionRepository.save(q2);  // 두번째 질문 저장
+
+        List<Question> all = questionRepository.findAll();
+
+        Assertions.assertEquals(2, all.size());
     }
 
 }
