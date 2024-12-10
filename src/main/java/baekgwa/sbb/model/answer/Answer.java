@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,12 @@ public class Answer {
 
     @ManyToOne
     private Question question;
+
+    @Builder
+    private Answer(Integer id, String content, LocalDateTime createDate, Question question) {
+        this.id = id;
+        this.content = content;
+        this.createDate = createDate;
+        this.question = question;
+    }
 }
