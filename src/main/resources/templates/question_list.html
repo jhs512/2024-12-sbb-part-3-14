@@ -1,40 +1,21 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Question List</title>
-</head>
-<body>
-<h1>Question List</h1>
-
-<h2>분기문 사용 예제</h2>
-<div>
-    <p th:if="${questionList != null && !#lists.isEmpty(questionList)}">
-        질문 객체가 존재합니다.
-    </p>
-    <p th:if="${questionList == null || #lists.isEmpty(questionList)}">
-        질문 객체가 없습니다.
-    </p>
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+<div class="container my-3">
+    <table class="table">
+        <thead class="table-dark">
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="question, loop : ${questionList}">
+            <td th:text="${loop.count}"></td>
+            <td>
+                <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+            </td>
+            <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-
-<table border="1">
-    <thead>
-    <tr>
-        <th>번호</th>
-        <th>제목</th>
-        <th>작성일시</th>
-        <th>상세 보기</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="question, loop : ${questionList}">
-        <td th:text="${loop.index + 1}"></td>
-        <td th:text="${question.subject}"></td>
-        <td th:text="${question.createdTime}"></td>
-        <td>
-            <a th:href="@{/question/detail/{id}(id=${question.id})}" th:text="'상세 보기'"></a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-</body>
-</html>
