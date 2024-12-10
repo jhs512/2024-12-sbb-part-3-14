@@ -34,7 +34,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     // Devtools
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    // 이거 개인적으로 혐오함
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -47,6 +48,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     testImplementation 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
