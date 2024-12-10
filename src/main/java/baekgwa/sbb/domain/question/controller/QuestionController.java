@@ -1,6 +1,10 @@
-package baekgwa.sbb.domain.question;
+package baekgwa.sbb.domain.question.controller;
 
-import baekgwa.sbb.domain.answer.AnswerForm;
+import baekgwa.sbb.domain.answer.form.AnswerForm;
+import baekgwa.sbb.domain.question.dto.QuestionDto.DetailInfo;
+import baekgwa.sbb.domain.question.dto.QuestionDto.MainInfo;
+import baekgwa.sbb.domain.question.form.QuestionForm;
+import baekgwa.sbb.domain.question.service.QuestionService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +25,7 @@ public class QuestionController {
 
     @GetMapping("/list")
     public String list(Model model) {
-        List<QuestionDto.MainInfo> questionList = questionService.getList();
+        List<MainInfo> questionList = questionService.getList();
         model.addAttribute("questionList", questionList);
         return "question_list";
     }
@@ -31,7 +35,7 @@ public class QuestionController {
             Model model,
             @PathVariable("id") Integer id,
             AnswerForm answerForm) {
-        QuestionDto.DetailInfo question = questionService.getQuestion(id);
+        DetailInfo question = questionService.getQuestion(id);
         model.addAttribute("question", question);
         return "question_detail";
     }

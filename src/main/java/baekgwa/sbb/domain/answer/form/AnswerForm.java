@@ -1,4 +1,4 @@
-package baekgwa.sbb.domain.answer;
+package baekgwa.sbb.domain.answer.form;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;

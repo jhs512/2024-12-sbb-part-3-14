@@ -1,6 +1,6 @@
-package baekgwa.sbb.model.question;
+package baekgwa.sbb.model.question.entity;
 
-import baekgwa.sbb.model.answer.Answer;
+import baekgwa.sbb.model.answer.entity.Answer;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

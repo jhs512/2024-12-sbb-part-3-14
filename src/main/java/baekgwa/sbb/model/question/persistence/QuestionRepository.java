@@ -1,5 +1,6 @@
-package baekgwa.sbb.model.question;
+package baekgwa.sbb.model.question.persistence;
 
+import baekgwa.sbb.model.question.entity.Question;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

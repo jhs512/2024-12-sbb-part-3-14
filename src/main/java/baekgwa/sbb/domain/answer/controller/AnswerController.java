@@ -1,6 +1,8 @@
-package baekgwa.sbb.domain.answer;
+package baekgwa.sbb.domain.answer.controller;
 
-import baekgwa.sbb.model.question.Question;
+import baekgwa.sbb.domain.answer.form.AnswerForm;
+import baekgwa.sbb.domain.answer.service.AnswerService;
+import baekgwa.sbb.model.question.entity.Question;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

@@ -1,7 +1,7 @@
 package baekgwa.sbb;
 
-import baekgwa.sbb.model.question.Question;
-import baekgwa.sbb.model.question.QuestionRepository;
+import baekgwa.sbb.model.question.entity.Question;
+import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;

@@ -1,10 +1,10 @@
-package baekgwa.sbb.domain.answer;
+package baekgwa.sbb.domain.answer.service;
 
 import baekgwa.sbb.global.exception.DataNotFoundException;
-import baekgwa.sbb.model.answer.Answer;
-import baekgwa.sbb.model.answer.AnswerRepository;
-import baekgwa.sbb.model.question.Question;
-import baekgwa.sbb.model.question.QuestionRepository;
+import baekgwa.sbb.model.answer.entity.Answer;
+import baekgwa.sbb.model.answer.persistence.AnswerRepository;
+import baekgwa.sbb.model.question.entity.Question;
+import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

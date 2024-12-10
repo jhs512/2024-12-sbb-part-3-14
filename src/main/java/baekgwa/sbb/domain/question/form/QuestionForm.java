@@ -1,4 +1,4 @@
-package baekgwa.sbb.domain.question;
+package baekgwa.sbb.domain.question.form;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

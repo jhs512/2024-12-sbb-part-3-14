@@ -1,6 +1,6 @@
-package baekgwa.sbb.domain.question;
+package baekgwa.sbb.domain.question.service;
 
-import baekgwa.sbb.model.question.Question;
+import baekgwa.sbb.domain.question.dto.QuestionDto;
 import java.util.List;
 
 public interface QuestionService {

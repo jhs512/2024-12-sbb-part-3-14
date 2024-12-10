@@ -1,8 +1,9 @@
-package baekgwa.sbb.domain.question;
+package baekgwa.sbb.domain.question.service;
 
+import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.global.exception.DataNotFoundException;
-import baekgwa.sbb.model.question.Question;
-import baekgwa.sbb.model.question.QuestionRepository;
+import baekgwa.sbb.model.question.entity.Question;
+import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
