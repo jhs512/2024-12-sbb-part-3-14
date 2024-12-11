@@ -5,9 +5,12 @@ import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,13 +26,18 @@ public class Question {
     @Column (columnDefinition =  "TEXT")
     private String content;
 
+    @CreatedDate
     private LocalDateTime createDate;
 
-     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 
     @ManyToOne
     private SiteUser author;
 
+    @LastModifiedDate
     private LocalDateTime modifyDate;
+
+    @ManyToMany
+    Set<SiteUser> voter;
 }
