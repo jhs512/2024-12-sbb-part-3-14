@@ -31,12 +31,19 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	//h2 데이터베이스
 	runtimeOnly 'com.h2database:h2'
 
+	// 스프링 데이터 jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+	// junit
 	testImplementation 'org.junit.jupiter:junit-jupiter'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// 타임리프
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 }
 
 tasks.named('test') {
