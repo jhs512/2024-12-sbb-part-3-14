@@ -10,13 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question {
 
     @Id
@@ -35,9 +36,8 @@ public class Question {
     private List<Answer> answerList;
 
     @Builder
-    private Question(Integer id, String subject, String content, LocalDateTime createDate,
+    private Question(String subject, String content, LocalDateTime createDate,
             List<Answer> answerList) {
-        this.id = id;
         this.subject = subject;
         this.content = content;
         this.createDate = createDate;

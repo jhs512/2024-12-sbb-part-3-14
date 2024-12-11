@@ -8,13 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +30,7 @@ public class Answer {
     private Question question;
 
     @Builder
-    private Answer(Integer id, String content, LocalDateTime createDate, Question question) {
-        this.id = id;
+    private Answer(String content, LocalDateTime createDate, Question question) {
         this.content = content;
         this.createDate = createDate;
         this.question = question;
