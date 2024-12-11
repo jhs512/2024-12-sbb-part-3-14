@@ -1,7 +1,6 @@
 package baekgwa.sbb.domain.question.service;
 
 import baekgwa.sbb.domain.question.dto.QuestionDto;
-import baekgwa.sbb.domain.question.dto.QuestionDto.MainInfo;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
@@ -22,6 +21,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
 
+    @Deprecated
     @Transactional(readOnly = true)
     @Override
     public List<QuestionDto.MainInfo> getList() {
@@ -64,6 +64,7 @@ public class QuestionServiceImpl implements QuestionService {
                         .build());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<QuestionDto.MainInfo> getList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
@@ -74,6 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
                                 .id(question.getId())
                                 .subject(question.getSubject())
                                 .createDate(question.getCreateDate())
+                                .answerList(question.getAnswerList())
                                 .build()
                 );
     }

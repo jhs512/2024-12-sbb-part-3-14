@@ -32,12 +32,15 @@ public class QuestionDto {
         private final Integer id;
         private final String subject;
         private final LocalDateTime createDate;
+        private final List<Answer> answerList;
 
         @Builder
-        private MainInfo(Integer id, String subject, LocalDateTime createDate) {
+        private MainInfo(Integer id, String subject, LocalDateTime createDate,
+                List<Answer> answerList) {
             this.id = id;
             this.subject = subject;
             this.createDate = createDate;
+            this.answerList = answerList;
         }
     }
 }
