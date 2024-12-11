@@ -12,11 +12,13 @@
 </head>
 <body>
 
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
+
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
 <div layout:fragment="content">
-    <!-- 여기에 하위 템플릿에서 내용이 삽입됩니다 -->
 </div>
 <!-- 기본 템플릿 안에 삽입될 내용 End -->
 
+<script th:src="@{/bootstrap.min.js}"></script>
 </body>
 </html>
