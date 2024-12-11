@@ -1,6 +1,14 @@
-<div th:text="${b}">
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-3">
+    <div class="border-bottom py-2" th:each="answer :${answerList}">
+        <div>
+            <a th:href="@{|/question/detail/${answer.question.id}|}" th:text="${answer.question.subject}"></a>
+        </div>
+        <span th:text="${answer.content}"></span>
 
-</div>>
-<div>
-    뭐어떻게 돌아가는거여
-</div>>
+        <span class="badge bg-light text-dark p-2 text-start">
+                <span th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+            </span>
+    </div>
+</div>
+</html>

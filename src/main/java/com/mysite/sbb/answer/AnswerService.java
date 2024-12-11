@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -16,5 +17,13 @@ public class AnswerService {
 
     public List<Answer> getList(){
         return this.answerRepository.findAll();
+    }
+
+    public void create(Question question, String content) {
+        Answer answer = new Answer();
+        answer.setContent(content);
+        answer.setCreateDate(LocalDateTime.now());
+        answer.setQuestion(question);
+        this.answerRepository.save(answer);
     }
 }
