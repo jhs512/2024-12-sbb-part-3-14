@@ -14,5 +14,7 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     @EntityGraph(attributePaths = "answerList")
     @Query("SELECT q FROM Question q WHERE q.id = :id")
     Optional<Question> findByIdWithAnswers(@Param("id") Integer id);
+
+    @EntityGraph(attributePaths = "answerList")
     Page<Question> findAll(Pageable pageable);
 }
