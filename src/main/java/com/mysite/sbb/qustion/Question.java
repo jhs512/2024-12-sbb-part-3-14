@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
+import org.springframework.data.annotation.CreatedDate;
+
 import java.util.List;
 import java.time.LocalDateTime;
 
@@ -25,6 +27,7 @@ public class Question {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @CreatedDate
     private LocalDateTime createDate;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
