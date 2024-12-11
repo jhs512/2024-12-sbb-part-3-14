@@ -1,6 +1,7 @@
 package baekgwa.sbb.domain.question.service;
 
 import baekgwa.sbb.domain.question.dto.QuestionDto;
+import baekgwa.sbb.domain.question.dto.QuestionDto.MainInfo;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
@@ -8,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,5 +61,19 @@ public class QuestionServiceImpl implements QuestionService {
                         .content(content)
                         .createDate(LocalDateTime.now())
                         .build());
+    }
+
+    @Override
+    public Page<QuestionDto.MainInfo> getList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return questionRepository.findAll(pageable)
+                .map(
+                        question -> QuestionDto.MainInfo
+                                .builder()
+                                .id(question.getId())
+                                .subject(question.getSubject())
+                                .createDate(question.getCreateDate())
+                                .build()
+                );
     }
 }
