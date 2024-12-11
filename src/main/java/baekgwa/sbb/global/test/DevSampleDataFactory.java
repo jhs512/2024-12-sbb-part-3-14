@@ -5,6 +5,7 @@ import baekgwa.sbb.model.answer.persistence.AnswerRepository;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -42,7 +43,7 @@ public class DevSampleDataFactory {
                 .builder()
                 .subject(subject)
                 .content(content)
-                .createDate(LocalDateTime.now())
+                .createDate(getRandomDate())
                 .build();
     }
 
@@ -50,8 +51,22 @@ public class DevSampleDataFactory {
         return Answer
                 .builder()
                 .content(content)
-                .createDate(LocalDateTime.now())
+                .createDate(getRandomDate())
                 .question(question)
                 .build();
     }
+
+    /**
+     * 랜덤 날짜 생성기
+     * 범위 : 오늘-10년 ~ 오늘 까지
+     * @return
+     */
+    private static LocalDateTime getRandomDate() {
+        LocalDateTime start = LocalDateTime.now().minusYears(10);
+        LocalDateTime end = LocalDateTime.now();
+        long daysBetween = ChronoUnit.DAYS.between(start, end);
+        long randomDays = new Random().nextLong(daysBetween);
+        return start.plusDays(randomDays);
+    }
+
 }
