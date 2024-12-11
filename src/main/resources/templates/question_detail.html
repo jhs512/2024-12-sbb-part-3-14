@@ -12,13 +12,27 @@
         <div class="card-body">
             <div class="card-text" style="white-space: pre-line;" th:text="${question != null ? question.content : '내용 없음'}"></div> <!-- 질문 내용 표시 -->
             <div class="d-flex justify-content-end"> <!-- 질문 작성자 정보 및 작성일 -->
+                <div th:if="${question.modifyDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
+                    <div class="mb-2">modified at</div>
+                    <div th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
                         <span th:if="${question != null and question.author != null}" th:text="${question.author.username}"></span> <!-- 작성자 이름 표시 -->
                     </div>
-                    <div th:text="${question != null and question.createDate != null ? #temporals.format(question.createDate, 'yyyy-MM-dd HH:mm') : '작성일 없음'}"></div> <!-- 질문 작성일 표시 -->
+                    <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div> <!-- 질문 작성일 표시 -->
                 </div>
             </div>
+        </div>
+        <div class="my-3">
+            <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary ms-2"
+               sec:authorize="isAuthenticated()"
+               th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+               th:text="수정"></a>
+            <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}"
+               class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+               th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+               th:text="삭제"></a>
         </div>
     </div>
 
@@ -31,11 +45,25 @@
         <div class="card-body">
             <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
             <div class="d-flex justify-content-end">
+                <div th:if="${question.modifyDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
+                    <div class="mb-2">modified at</div>
+                    <div th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
                         <span th:if="${answer != null and answer.author != null}" th:text="${answer.author.username}"></span> <!-- 답변 작성자 표시 -->
                     </div>
                     <div th:text="${answer != null and answer.createDate != null ? #temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm') : '작성일 없음'}"></div> <!-- 답변 작성일 표시 -->
+                    <div class="my-3">
+                        <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
+                           sec:authorize="isAuthenticated()"
+                           th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                           th:text="수정"></a>
+                        <a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.id}|}"
+                           class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+                           th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                           th:text="삭제"></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -48,5 +76,15 @@
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
 </div>
+<script layout:fragment="script" type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if(confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            };
+        });
+    });
+</script>
 </body>
 </html>
