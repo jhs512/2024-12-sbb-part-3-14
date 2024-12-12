@@ -1,8 +1,10 @@
 package baekgwa.sbb.model.answer.entity;
 
 import baekgwa.sbb.model.question.entity.Question;
+import baekgwa.sbb.model.user.entity.SiteUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,13 +28,17 @@ public class Answer {
 
     private LocalDateTime createDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SiteUser siteUser;
+
     @Builder
-    private Answer(String content, LocalDateTime createDate, Question question) {
+    private Answer(String content, LocalDateTime createDate, Question question, SiteUser siteUser) {
         this.content = content;
         this.createDate = createDate;
         this.question = question;
+        this.siteUser = siteUser;
     }
 }

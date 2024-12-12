@@ -7,6 +7,7 @@ import baekgwa.sbb.domain.question.dto.QuestionDto.MainInfo;
 import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.domain.question.service.QuestionService;
 import jakarta.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,12 +52,13 @@ public class QuestionController {
     @PostMapping("/create")
     public String questionCreate(
             @Valid QuestionForm questionForm,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            Principal principal
     ) {
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
-        questionService.create(questionForm.getSubject(), questionForm.getContent());
+        questionService.create(questionForm.getSubject(), questionForm.getContent(), principal.getName());
         return "redirect:/question/list";
     }
 

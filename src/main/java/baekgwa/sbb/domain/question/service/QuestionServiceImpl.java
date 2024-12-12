@@ -4,6 +4,8 @@ import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
+import baekgwa.sbb.model.user.entity.SiteUser;
+import baekgwa.sbb.model.user.persistence.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
 
     @Deprecated
     @Transactional(readOnly = true)
@@ -55,12 +58,16 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional
     @Override
-    public void create(String subject, String content) {
+    public void create(String subject, String content, String username) {
+        SiteUser siteUser = userRepository.findByUsername(username).orElseThrow(
+                () -> new DataNotFoundException("site user not found"));
+
         questionRepository.save(
                 Question.builder()
                         .subject(subject)
                         .content(content)
                         .createDate(LocalDateTime.now())
+                        .siteUser(siteUser)
                         .build());
     }
 

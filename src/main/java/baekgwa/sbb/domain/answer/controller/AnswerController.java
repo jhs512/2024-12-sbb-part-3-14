@@ -4,6 +4,7 @@ import baekgwa.sbb.domain.answer.form.AnswerForm;
 import baekgwa.sbb.domain.answer.service.AnswerService;
 import baekgwa.sbb.model.question.entity.Question;
 import jakarta.validation.Valid;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,13 +25,14 @@ public class AnswerController {
             Model model,
             @PathVariable("id") Integer id,
             @Valid AnswerForm answerForm,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Principal principal) {
         if (bindingResult.hasErrors()) {
             Question question = answerService.getQuestionByIdAndAnswers(id);
             model.addAttribute("question", question);
             return "question_detail";
         }
-        answerService.create(id, answerForm.getContent());
+        answerService.create(id, answerForm.getContent(), principal.getName());
         return String.format("redirect:/question/detail/%s", id);
     }
 }

@@ -10,7 +10,7 @@ public interface QuestionService {
 
     QuestionDto.DetailInfo getQuestion(Integer id);
 
-    void create(String subject, String content);
+    void create(String subject, String content, String username);
 
     Page<QuestionDto.MainInfo> getList(int page, int size);
 }

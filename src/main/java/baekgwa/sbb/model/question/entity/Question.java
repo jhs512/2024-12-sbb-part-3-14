@@ -1,12 +1,15 @@
 package baekgwa.sbb.model.question.entity;
 
 import baekgwa.sbb.model.answer.entity.Answer;
+import baekgwa.sbb.model.user.entity.SiteUser;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,12 +38,17 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SiteUser siteUser;
+
     @Builder
     private Question(String subject, String content, LocalDateTime createDate,
-            List<Answer> answerList) {
+            List<Answer> answerList,
+            SiteUser siteUser) {
         this.subject = subject;
         this.content = content;
         this.createDate = createDate;
         this.answerList = answerList;
+        this.siteUser = siteUser;
     }
 }
