@@ -3,6 +3,10 @@ package com.mysite.sbb.question;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerForm;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.category.Category;
+import com.mysite.sbb.category.CategoryService;
+import com.mysite.sbb.comment.Comment;
+import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
@@ -19,37 +23,50 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.List;
 
-@RequestMapping("/question")
 @RequiredArgsConstructor
 @Controller
+@RequestMapping("/question")
 public class QuestionController {
 
     private final QuestionService questionService;
     private final UserService userService;
     private final AnswerService answerService;
+    private final CategoryService categoryService;
+    private final CommentService commentService;
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
-                       @RequestParam(value = "kw", defaultValue = "") String kw ) {
-        Page<Question> paging = this.questionService.getList(page, kw);
+                       @RequestParam(value = "kw", defaultValue = "") String kw) {
+        Page<Question> paging = this.questionService.getList(page, kw, "질문 게시판");
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
+        model.addAttribute("category", "질문");
         return "question_list";
     }
 
-    @GetMapping("/detail/{id}")
+    @GetMapping("/free/list")
+    public String freelist(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "kw", defaultValue = "") String kw) {
+        Page<Question> paging = this.questionService.getList(page, kw, "자유 게시판");
+        model.addAttribute("paging", paging);
+        model.addAttribute("kw", kw);
+        model.addAttribute("category", "자유");
+        return "question_list";
+    }
+
+    @GetMapping(value = "/detail/{id}")
     public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm,
-                         @RequestParam(value="answer_page", defaultValue = "0") int answerPage,
-                         @RequestParam(value = "answer_ordering", defaultValue = "date") String order) {
+                         @RequestParam(value = "ans_page", defaultValue = "0") int answerPage, @RequestParam(value="ans_ordering", defaultValue = "date") String order) {
         Question question = this.questionService.getQuestion(id);
         Page<Answer> answerPaging = this.answerService.getList(question, answerPage, order);
-        model.addAttribute("question", question);
         model.addAttribute("answerPaging", answerPaging);
+        model.addAttribute("question", question);
         return "question_detail";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String questionCreate(QuestionForm questionForm) {
+    public String questionCreate(Model model, QuestionForm questionForm) {
+        model.addAttribute("categoryList", categoryService.getList());
         return "question_form";
     }
 
@@ -60,30 +77,38 @@ public class QuestionController {
             return "question_form";
         }
         SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
+        Category category = this.categoryService.getByName(questionForm.getCategory());
+        this.questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser, category);
+        // 게시판 종류에 따라 리다이렉트
+        System.out.println("카테고리명" + questionForm.getCategory());
+        if ("자유 게시판".equals(questionForm.getCategory())) {
+            return "redirect:/question/free/list";
+        }
         return "redirect:/question/list";
     }
 
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal) {
+    public String questionModify(Model model, QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal) {
         Question question = this.questionService.getQuestion(id);
         if (!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
+        model.addAttribute("categoryList", categoryService.getList());
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
         return "question_form";
     }
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    public String questionModify(@Valid QuestionForm questionForm, BindingResult bindingResult, @PathVariable("id") Integer id, Principal principal) {
+    public String questionModify(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal,
+                                 @PathVariable("id") Integer id) {
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
         Question question = this.questionService.getQuestion(id);
-        if(!question.getAuthor().getUsername().equals(principal.getName())) {
+        if (!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         this.questionService.modify(question, questionForm.getSubject(), questionForm.getContent());
@@ -98,7 +123,10 @@ public class QuestionController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
         this.questionService.delete(question);
-        return "redirect:/";
+        if ("자유 게시판".equals(question.getCategory().getName())) {
+            return "redirect:/question/free/list";
+        }
+        return "redirect:/question/list";
     }
 
     @PreAuthorize("isAuthenticated()")

@@ -49,6 +49,9 @@ public class CommentService {
     public List<Comment> getList(Question question) {
         return this.commentRepository.findByQuestion(question);
     }
+    public List<Comment> getList() {
+        return this.commentRepository.findAll();
+    }
 
     public void modify(Comment comment, String  content) {
         comment.setContent(content);

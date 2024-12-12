@@ -2,6 +2,7 @@ package com.mysite.sbb.question;
 
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.category.Category;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    private Specification<Question> search(String kw) {
+    private Specification<Question> search(String kw, String categoryName) {
         return new Specification<Question>() {
             private static final long serialVersionUID = 1L;
             @Override
@@ -31,12 +32,14 @@ public class QuestionService {
                 query.distinct(true); // 중복 제거
                 Join<Question, SiteUser> u1 = root.join("author", JoinType.LEFT);
                 Join<Question, Answer> a = root.join("answerList", JoinType.LEFT);
+                Join<Question, Category> c = root.join("category", JoinType.LEFT);
                 Join<Answer, SiteUser> u2 = root.join("author", JoinType.LEFT);
-                return criteriaBuilder.or(criteriaBuilder.like(root.get("subject"), "%" + kw + "%"),
+                return criteriaBuilder.and(criteriaBuilder.or(criteriaBuilder.like(root.get("subject"), "%" + kw + "%"),
                         criteriaBuilder.like(root.get("content"), "%" + kw + "%"),
                         criteriaBuilder.like(u1.get("username"), "%" + kw + "%"),
                         criteriaBuilder.like(a.get("content"), "%" + kw + "%"),
-                        criteriaBuilder.like(u2.get("username"), "%" + kw + "%"));
+                        criteriaBuilder.like(u2.get("username"), "%" + kw + "%")),
+                        criteriaBuilder.equal(c.get("name"),  categoryName ));
             }
         };
     }
@@ -54,20 +57,22 @@ public class QuestionService {
         }
     }
 
-    public void create(String subject, String content, SiteUser user) {
+    public void create(String subject, String content, SiteUser user,Category category) {
         Question q = new Question();
         q.setSubject(subject);
         q.setContent(content);
         q.setCreateDate(LocalDateTime.now());
         q.setAuthor(user);
+        q.setCategory(category);
         this.questionRepository.save(q);
     }
 
-    public Page<Question> getList(int page, String kw) {
+    public Page<Question> getList(int page, String kw, String categoryName) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        return this.questionRepository.findAllByKeyword(kw, pageable);
+        Specification<Question> spec = search(kw, categoryName);
+        return this.questionRepository.findAll(spec, pageable);
     }
 
     public void modify(Question question, String subject, String content) {

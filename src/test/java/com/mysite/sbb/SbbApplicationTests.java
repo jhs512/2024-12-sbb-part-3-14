@@ -2,6 +2,7 @@ package com.mysite.sbb;
 
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.category.CategoryService;
 import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.answer.AnswerRepository;
@@ -39,6 +40,9 @@ class SbbApplicationTests {
 
 	@Autowired
 	private CommentService commentService;
+
+	@Autowired
+	private CategoryService categoryService;
 
 //	@Test
 //	void testJpa() {
@@ -167,13 +171,18 @@ class SbbApplicationTests {
 //		}
 //	}
 
+//	@Test
+//	void testJpa() {
+//		List<Question> list = this.questionService.getList();
+//		Question question = list.get(list.size() - 1); // 마지막 질문에 댓글 저장
+//		SiteUser siteUser = userService.getUser("dev");
+//		this.commentService.createAtComment("테스트 댓글1", question,  siteUser);
+//		Answer answer = this.answerService.create(question, "테스트 답변", siteUser);
+//		this.commentService.createAtAnswer("테스트 댓글2", answer, siteUser);
+//	}
 	@Test
 	void testJpa() {
-		List<Question> list = this.questionService.getList();
-		Question question = list.get(list.size() - 1); // 마지막 질문에 댓글 저장
-		SiteUser siteUser = userService.getUser("dev");
-		this.commentService.createAtComment("테스트 댓글1", question,  siteUser);
-		Answer answer = this.answerService.create(question, "테스트 답변", siteUser);
-		this.commentService.createAtAnswer("테스트 댓글2", answer, siteUser);
+		categoryService.create("질문 게시판");
+		categoryService.create("자유 게시판");
 	}
 }

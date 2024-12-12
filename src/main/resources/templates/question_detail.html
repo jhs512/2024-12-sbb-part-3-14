@@ -21,7 +21,7 @@
             </div>
             <div class="my-3">
                 <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
-                   th:data-uri="@{|/quesiton/vote/${question.id}|}">
+                   th:data-uri="@{|/question/vote/${question.id}|}">
                     추천
                     <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voter)}"></span>
                 </a>
@@ -63,6 +63,11 @@
 
     <!-- 답변의 갯수 표시 -->
     <h5 class="border-bottom my-3 py-2" th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
+    <span>
+        답변 정렬:
+    </span>
+    <a href="javascript:void(0);" class="ordering btn btn-sm btn-outline-secondary" th:data-uri="@{|/question/detail/${question.id}?ans_ordering=recommend|}" th:text="추천순"></a>
+    <a href="javascript:void(0);" class="ordering btn btn-sm btn-outline-secondary" th:data-uri="@{|/question/detail/${question.id}?ans_ordering=date|}" th:text="시간순"></a>
 
     <!-- 답변 반복 시작 -->
     <div class="card my-3" th:each="answer : ${answerPaging}">
@@ -129,6 +134,7 @@
     <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="mt-3">
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>
         <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control" rows="10"></textarea>
+        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" rows="10"></textarea>
         <input type="submit" value="답변 등록" class="btn btn-primary btn-sm mt-2">
     </form>
 </div>
