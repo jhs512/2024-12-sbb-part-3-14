@@ -30,7 +30,11 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/question/create/**").authenticated()
+                        .requestMatchers("/answer/create/**").authenticated()
+                        .anyRequest().authenticated()
+                )
                 //h2-console not-use
                 //only mysql & testing by in-memory-h2
 //                .csrf((csrf) -> csrf
