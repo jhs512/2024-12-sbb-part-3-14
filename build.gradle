@@ -40,6 +40,9 @@ dependencies {
 	implementation 'com.h2database:h2:2.2.220'
 	runtimeOnly 'com.h2database:h2'
 
+	// Markdown
+	implementation 'org.commonmark:commonmark:0.21.0'
+
 	// Development Tools
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
