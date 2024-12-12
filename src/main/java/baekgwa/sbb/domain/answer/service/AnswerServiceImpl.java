@@ -1,5 +1,6 @@
 package baekgwa.sbb.domain.answer.service;
 
+import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.answer.persistence.AnswerRepository;
@@ -29,20 +30,28 @@ public class AnswerServiceImpl implements AnswerService {
         SiteUser siteUser = userRepository.findByUsername(username).orElseThrow(
                 () -> new DataNotFoundException("site user not found"));
 
-        Answer answer = Answer
+        answerRepository.save(Answer
                 .builder()
                 .content(content)
                 .createDate(LocalDateTime.now())
                 .question(question)
                 .siteUser(siteUser)
-                .build();
-
-        answerRepository.save(answer);
+                .build());
     }
 
     @Override
-    public Question getQuestionByIdAndAnswers(Integer id) {
-        return questionRepository.findByIdWithAnswers(id).orElseThrow(
+    public QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id) {
+        Question question = questionRepository.findByIdWithAnswers(id).orElseThrow(
                 () -> new DataNotFoundException("question not found"));
+
+        return QuestionDto.DetailInfo
+                .builder()
+                .id(question.getId())
+                .subject(question.getSubject())
+                .content(question.getContent())
+                .answerList(question.getAnswerList())
+                .createDate(question.getCreateDate())
+                .author(question.getSiteUser())
+                .build();
     }
 }

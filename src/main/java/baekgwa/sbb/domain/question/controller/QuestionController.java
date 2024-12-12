@@ -27,19 +27,12 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-//    @GetMapping("/list")
-//    public String list(Model model) {
-//        List<MainInfo> questionList = questionService.getList();
-//        model.addAttribute("questionList", questionList);
-//        return "question_list";
-//    }
-
     @GetMapping("/detail/{id}")
     public String detail(
             Model model,
             @PathVariable("id") Integer id,
             AnswerForm answerForm) {
-        DetailInfo question = questionService.getQuestion(id);
+        QuestionDto.DetailInfo question = questionService.getQuestion(id);
         model.addAttribute("question", question);
         return "question_detail";
     }
