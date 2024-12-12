@@ -1,8 +1,11 @@
 package com.mysite.sbb.user;
 
+import com.mysite.sbb.comment.Comment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +23,7 @@ public class SiteUser {
 
     @Column(unique = true) // 중복 불가
     private String email;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    List<Comment> commentList;
 }

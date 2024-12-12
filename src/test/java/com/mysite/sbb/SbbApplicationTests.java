@@ -2,6 +2,7 @@ package com.mysite.sbb;
 
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.answer.AnswerRepository;
 import com.mysite.sbb.question.QuestionRepository;
@@ -35,6 +36,9 @@ class SbbApplicationTests {
 
 	@Autowired
 	private AnswerService answerService;
+
+	@Autowired
+	private CommentService commentService;
 
 //	@Test
 //	void testJpa() {
@@ -152,14 +156,24 @@ class SbbApplicationTests {
 //		}
 //	}
 
+//	@Test
+//	void testJpa() {
+//		List<Question> list = this.questionService.getList();
+//		Question question = list.get(list.size() - 1); // 마지막 질문에 대답 저장
+//		SiteUser siteUser = userService.create("dev", "dev@course.com", "1234");
+//		for (int i = 1; i <= 300; i++) {
+//			String content = String.format("테스트 대답입니다:[%03d]", i);
+//			this.answerService.create(question, content , siteUser);
+//		}
+//	}
+
 	@Test
 	void testJpa() {
 		List<Question> list = this.questionService.getList();
-		Question question = list.get(list.size() - 1); // 마지막 질문에 대답 저장
-		SiteUser siteUser = userService.create("dev", "dev@course.com", "1234");
-		for (int i = 1; i <= 300; i++) {
-			String content = String.format("테스트 대답입니다:[%03d]", i);
-			this.answerService.create(question, content , siteUser);
-		}
+		Question question = list.get(list.size() - 1); // 마지막 질문에 댓글 저장
+		SiteUser siteUser = userService.getUser("dev");
+		this.commentService.createAtComment("테스트 댓글1", question,  siteUser);
+		Answer answer = this.answerService.create(question, "테스트 답변", siteUser);
+		this.commentService.createAtAnswer("테스트 댓글2", answer, siteUser);
 	}
 }
