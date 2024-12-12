@@ -1,9 +1,11 @@
-package baekgwa.sbb.global.test;
+package baekgwa.sbb.global.devtest;
 
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.answer.persistence.AnswerRepository;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
+import baekgwa.sbb.model.user.entity.SiteUser;
+import baekgwa.sbb.model.user.persistence.UserRepository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,8 @@ public class DevSampleDataFactory {
 
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
@@ -36,6 +41,17 @@ public class DevSampleDataFactory {
                 answerRepository.save(answer);
             }
         }
+    }
+
+    @Transactional
+    @EventListener(ApplicationReadyEvent.class)
+    public void addTestUser() {
+        userRepository.save(SiteUser
+                .builder()
+                .username("test")
+                .password(passwordEncoder.encode("1234"))
+                .email("test@test.com")
+                .build());
     }
 
     private static Question createQuestion(String subject, String content) {
