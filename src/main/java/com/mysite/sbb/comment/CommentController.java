@@ -64,7 +64,7 @@ public class CommentController {
         if (!comment.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         }
-        commentForm.setContent(commentForm.getContent());
+        commentForm.setContent(comment.getContent());
         return "comment_form";
     }
 
@@ -81,6 +81,16 @@ public class CommentController {
         this.commentService.modify(comment, commentForm.getContent());
         return String.format("redirect:/question/detail/%s#comment_%s", comment.getQuestion().getId(), comment.getId());
     }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/answer/modify/{id}")
+    public String commentModifyAtAnswer(CommentForm commentForm, @PathVariable("id") Integer id, Principal principal) {
+        Comment comment = this.commentService.getComment(id);
+        if (!comment.getAuthor().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        }
+        commentForm.setContent(comment.getContent());
+        return "comment_form";
+    }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/answer/modify/{id}")
@@ -93,7 +103,7 @@ public class CommentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         }
         this.commentService.modify(comment, commentForm.getContent());
-        return String.format("redirect:/question/detail/%s#answer%s#comment_%s", comment.getQuestion().getId(), comment.getAnswer().getId(),comment.getId());
+        return String.format("redirect:/question/detail/%s#answer%s#comment_%s", comment.getAnswer().getQuestion().getId(), comment.getAnswer().getId(),comment.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
