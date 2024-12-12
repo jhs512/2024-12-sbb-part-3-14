@@ -8,8 +8,12 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
     <title>This is layout</title>
+    <!-- Bootstrap JS -->
+    <script th:src="@{/bootstrap.min.js}"></script>
 </head>
 <body>
+<!-- 네비게이션바 -->
+<nav th:replace="~{navbar :: navbarFragment}"></nav>
 <!-- 기본 템플릿 안에 삽입될 내용 -->
 <th:block layout:fragment="content">
     <!-- 기본 템플릿 안에 삽입될 내용 Start -->
