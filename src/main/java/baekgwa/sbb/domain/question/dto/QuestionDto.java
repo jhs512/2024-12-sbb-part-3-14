@@ -1,6 +1,7 @@
 package baekgwa.sbb.domain.question.dto;
 
 import baekgwa.sbb.model.answer.entity.Answer;
+import baekgwa.sbb.model.user.entity.SiteUser;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
@@ -15,15 +16,17 @@ public class QuestionDto {
         private final String content;
         private final List<Answer> answerList;
         private final LocalDateTime createDate;
+        private final SiteUser author;
 
         @Builder
         private DetailInfo(Integer id, String subject, String content, List<Answer> answerList,
-                LocalDateTime createDate) {
+                LocalDateTime createDate, SiteUser author) {
             this.id = id;
             this.subject = subject;
             this.content = content;
             this.answerList = answerList;
             this.createDate = createDate;
+            this.author = author;
         }
     }
 
@@ -33,14 +36,17 @@ public class QuestionDto {
         private final String subject;
         private final LocalDateTime createDate;
         private final List<Answer> answerList;
+        private final SiteUser author;
 
         @Builder
         private MainInfo(Integer id, String subject, LocalDateTime createDate,
-                List<Answer> answerList) {
+                List<Answer> answerList,
+                SiteUser author) {
             this.id = id;
             this.subject = subject;
             this.createDate = createDate;
             this.answerList = answerList;
+            this.author = author;
         }
     }
 }

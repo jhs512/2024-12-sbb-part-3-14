@@ -11,10 +11,10 @@ import org.springframework.data.repository.query.Param;
 
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
-    @EntityGraph(attributePaths = "answerList")
+    @EntityGraph(attributePaths = {"answerList", "siteUser"})
     @Query("SELECT q FROM Question q WHERE q.id = :id")
     Optional<Question> findByIdWithAnswers(@Param("id") Integer id);
 
-    @EntityGraph(attributePaths = "answerList")
+    @EntityGraph(attributePaths = {"answerList", "siteUser"})
     Page<Question> findAll(Pageable pageable);
 }

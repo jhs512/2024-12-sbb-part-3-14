@@ -53,6 +53,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .answerList(question.getAnswerList())
                 .content(question.getContent())
                 .createDate(question.getCreateDate())
+                .author(question.getSiteUser())
                 .build();
     }
 
@@ -83,6 +84,7 @@ public class QuestionServiceImpl implements QuestionService {
                                 .subject(question.getSubject())
                                 .createDate(question.getCreateDate())
                                 .answerList(question.getAnswerList())
+                                .author(question.getSiteUser())
                                 .build()
                 );
     }
