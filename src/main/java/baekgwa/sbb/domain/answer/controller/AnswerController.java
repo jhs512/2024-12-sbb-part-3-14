@@ -2,7 +2,7 @@ package baekgwa.sbb.domain.answer.controller;
 
 import baekgwa.sbb.domain.answer.form.AnswerForm;
 import baekgwa.sbb.domain.answer.service.AnswerService;
-import baekgwa.sbb.model.question.entity.Question;
+import baekgwa.sbb.domain.question.dto.QuestionDto;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class AnswerController {
             BindingResult bindingResult,
             Principal principal) {
         if (bindingResult.hasErrors()) {
-            Question question = answerService.getQuestionByIdAndAnswers(id);
+            QuestionDto.DetailInfo question = answerService.getQuestionByIdAndAnswers(id);
             model.addAttribute("question", question);
             return "question_detail";
         }
