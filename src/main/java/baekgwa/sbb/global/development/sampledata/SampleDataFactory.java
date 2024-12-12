@@ -1,5 +1,6 @@
-package baekgwa.sbb.global.devtest;
+package baekgwa.sbb.global.development.sampledata;
 
+import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.answer.persistence.AnswerRepository;
 import baekgwa.sbb.model.question.entity.Question;
@@ -17,10 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 샘플 데이터 생성용 Component
+ */
 @Component
 @RequiredArgsConstructor
 @Profile("dev")
-public class DevSampleDataFactory {
+public class SampleDataFactory {
 
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
@@ -29,22 +33,27 @@ public class DevSampleDataFactory {
 
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
+    protected void registerSampleData() {
+        addTestUser();
+        addQuestionAndAnswer();
+    }
+
     public void addQuestionAndAnswer() {
+        SiteUser siteUser = userRepository.findByUsername("test").orElseThrow(
+                () -> new DataNotFoundException("테스트용 계정을 찾을 수 없습니다."));
         for(int i=1; i<=300; i++) {
             Question question = createQuestion(String.format("%d번 질문입니다!", i),
-                    String.format("%d번의 상세 질문 내용 입니다!!", i));
+                    String.format("%d번의 상세 질문 내용 입니다!!", i), siteUser);
             questionRepository.save(question);
 
             int randomCount = new Random().nextInt(2, 5);
             for(int j=1; j<=randomCount; j++) {
-                Answer answer = createAnswer(question, String.format("%d번 질문의 %d번째 답변 입니다!", i, j));
+                Answer answer = createAnswer(question, String.format("%d번 질문의 %d번째 답변 입니다!", i, j), siteUser);
                 answerRepository.save(answer);
             }
         }
     }
 
-    @Transactional
-    @EventListener(ApplicationReadyEvent.class)
     public void addTestUser() {
         userRepository.save(SiteUser
                 .builder()
@@ -54,21 +63,23 @@ public class DevSampleDataFactory {
                 .build());
     }
 
-    private static Question createQuestion(String subject, String content) {
+    private static Question createQuestion(String subject, String content, SiteUser siteUser) {
         return Question
                 .builder()
                 .subject(subject)
                 .content(content)
+                .siteUser(siteUser)
                 .createDate(getRandomDate())
                 .build();
     }
 
-    private static Answer createAnswer(Question question, String content) {
+    private static Answer createAnswer(Question question, String content, SiteUser siteUser) {
         return Answer
                 .builder()
                 .content(content)
                 .createDate(getRandomDate())
                 .question(question)
+                .siteUser(siteUser)
                 .build();
     }
 
@@ -84,5 +95,4 @@ public class DevSampleDataFactory {
         long randomDays = new Random().nextLong(daysBetween);
         return start.plusDays(randomDays);
     }
-
 }
