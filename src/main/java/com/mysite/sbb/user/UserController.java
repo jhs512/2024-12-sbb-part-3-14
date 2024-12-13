@@ -1,14 +1,27 @@
 package com.mysite.sbb.user;
 
 
+import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.comment.Comment;
+import com.mysite.sbb.comment.CommentService;
+import com.mysite.sbb.question.Question;
+import com.mysite.sbb.question.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.thymeleaf.model.IModel;
+
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @Controller
@@ -16,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController {
 
     private final UserService userService;
+    private final QuestionService questionService;
+    private final AnswerService answerService;
+    private final CommentService commentService;
     @GetMapping("/signup")
     public String signup(UserCreateForm userCreateForm) {
         return "signup_form";
@@ -50,5 +66,45 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "login_form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/profile")
+    public String profile(Model model, Principal principal) {
+        String username = principal.getName();
+        model.addAttribute("email", userService.getUser(username).getEmail());
+        model.addAttribute("username", username);
+        model.addAttribute("questionList", questionService.getListByAuthor(5, username));
+        model.addAttribute("answerList", answerService.getListByAuthor(5, username));
+        model.addAttribute("commentList", commentService.getListByAuthor(5, username));
+
+        return "profile";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify")
+    public String modifyPassword(PasswordModifyForm passwordModifyForm) {
+        return "modify_password_form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify")
+    public String modifyPassword(@Valid PasswordModifyForm passwordModifyForm, BindingResult bindingResult, Principal principal, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "modify_password_form";
+        }
+        SiteUser siteUser = this.userService.getUser(principal.getName());
+
+        if (!this.userService.isSamePassword(siteUser, passwordModifyForm.getPassword1())) {
+            bindingResult.rejectValue("password1", "이전 비밀번호와 일치하지 않습니다.");
+            return "modify_password_form";
+        }
+
+        if (!passwordModifyForm.getNewPassword1().equals(passwordModifyForm.getNewPassword2())) {
+            bindingResult.rejectValue("NewPassword2", "2개의 비밀번호가 일치하지 않습니다.");
+        }
+
+        userService.modifyPassword(siteUser, passwordModifyForm.getNewPassword1());
+        return "redirect:/user/profile";
     }
 }

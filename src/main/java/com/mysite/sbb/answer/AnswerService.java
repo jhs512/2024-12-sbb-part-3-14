@@ -4,11 +4,16 @@ package com.mysite.sbb.answer;
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -66,4 +71,10 @@ public class AnswerService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         return this.answerRepository.findByQuestion(question, pageable);
     }
+
+    public List<Answer> getListByAuthor(int page, String username) {
+        Pageable pageable = PageRequest.of(0, page);
+        return this.answerRepository.findQuestionByAuthor(username, pageable);
+    }
+
 }

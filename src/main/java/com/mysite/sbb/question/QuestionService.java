@@ -44,6 +44,7 @@ public class QuestionService {
         };
     }
 
+
     public List<Question> getList() {
         return this.questionRepository.findAll();
     }
@@ -90,4 +91,11 @@ public class QuestionService {
         question.getVoter().add(siteUser);
         this.questionRepository.save(question);
     }
+
+    public List<Question> getListByAuthor(int page, String username) {
+        Pageable pageable = PageRequest.of(0, page);
+        return this.questionRepository.findQuestionByAuthor(username, pageable);
+    }
+
+
 }

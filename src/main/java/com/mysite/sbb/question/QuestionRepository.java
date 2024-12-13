@@ -1,6 +1,7 @@
 package com.mysite.sbb.question;
 
 import com.mysite.sbb.question.Question;
+import com.mysite.sbb.user.SiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,4 +38,10 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
             +"    or u2.username like %:kw% "
             +"     )")
     Page<Question> findAllByKeyword(@Param("kw") String kw, Pageable pageable);
+    @Query("select q "
+            + " from Question q "
+            + " left outer join SiteUser u on q.author=u "
+            + " where u.username = :username "
+            + "order by q.createDate desc")
+    List<Question> findQuestionByAuthor(@Param("username") String username, Pageable pageable);
 }

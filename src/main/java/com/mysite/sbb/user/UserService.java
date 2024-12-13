@@ -32,4 +32,15 @@ public class UserService {
             throw new DataNotFoundException("siteuser not found");
         }
     }
+
+    public void modifyPassword(SiteUser siteUser, String password) {
+        siteUser.setPassword(passwordEncoder.encode(password));
+        this.userRepository.save(siteUser);
+    }
+
+    public boolean isSamePassword(SiteUser siteUser, String password) {
+        return passwordEncoder.matches(password, siteUser.getPassword());
+    }
+
+
 }
