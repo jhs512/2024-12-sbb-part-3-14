@@ -1,5 +1,6 @@
 package baekgwa.sbb.domain.answer.service;
 
+import baekgwa.sbb.domain.answer.dto.AnswerDto;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
@@ -51,5 +52,33 @@ public class AnswerServiceImpl implements AnswerService {
                 .createDate(question.getCreateDate())
                 .author(question.getSiteUser())
                 .build();
+    }
+
+    @Override
+    public AnswerDto.AnswerInfo getAnswer(Integer answerId) {
+        Answer findData = answerRepository.findByIdWithSiteUser(answerId).orElseThrow(
+                () -> new DataNotFoundException("Answer not found"));
+
+        return AnswerDto.AnswerInfo
+                .builder()
+                .content(findData.getContent())
+                .username(findData.getSiteUser().getUsername())
+                .build();
+    }
+
+    /**
+     *
+     * @param answerId
+     * @param loginUsername
+     * @param newContent
+     * @return 수정한 QuestionID 반환
+     */
+    @Override
+    public Integer modifyAnswer(Integer answerId, String loginUsername, String newContent) {
+        Answer findData = answerRepository.findByIdWithQuestion(answerId).orElseThrow(
+                () -> new DataNotFoundException("Answer not found"));
+
+        answerRepository.save(Answer.modifyAnswer(findData, newContent));
+        return findData.getQuestion().getId();
     }
 }

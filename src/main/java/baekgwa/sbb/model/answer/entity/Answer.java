@@ -33,9 +33,20 @@ public class Answer extends BaseEntity {
     private SiteUser siteUser;
 
     @Builder
-    private Answer(String content, Question question, SiteUser siteUser) {
+    private Answer(Integer id, String content, Question question, SiteUser siteUser) {
+        this.id = id;
         this.content = content;
         this.question = question;
         this.siteUser = siteUser;
+    }
+
+    public static Answer modifyAnswer(Answer oldAnswer, String newContent) {
+        return Answer
+                .builder()
+                .id(oldAnswer.getId())
+                .content(newContent)
+                .question(oldAnswer.getQuestion())
+                .siteUser(oldAnswer.getSiteUser())
+                .build();
     }
 }

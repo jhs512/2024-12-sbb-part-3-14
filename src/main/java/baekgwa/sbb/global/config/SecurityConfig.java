@@ -32,8 +32,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers("/**").permitAll()
                         .requestMatchers("/question/create/**").authenticated()
-                        .requestMatchers("/answer/create/**").authenticated()
                         .requestMatchers("/question/modify/**").authenticated()
+                        .requestMatchers("/question/delete/").authenticated()
+                        .requestMatchers("/answer/create/**").authenticated()
+                        .requestMatchers("/answer/modify/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 //h2-console not-use
