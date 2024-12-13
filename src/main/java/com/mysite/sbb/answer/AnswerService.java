@@ -1,9 +1,12 @@
 package com.mysite.sbb.answer;
 
+import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +26,21 @@ public class AnswerService {
         return answer;
     }
 
+    public Answer getAnswer(Integer id) {
+        Optional<Answer> answer = answerRepository.findById(id);
+        if(answer.isPresent()) {
+            return answer.get();
+        } else {
+            throw new DataNotFoundException("answer not found");
+        }
+    }
 
+    public void modify(Answer answer, String content) {
+        answer.setContent(content);
+        this.answerRepository.save(answer);
+    }
+
+    public void delete(Answer answer) {
+        this.answerRepository.delete(answer);
+    }
 }
