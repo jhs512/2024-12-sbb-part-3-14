@@ -55,8 +55,12 @@ public class QuestionController {
 
     @GetMapping(value = "/detail/{id}")
     public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm,
-                         @RequestParam(value = "ans_page", defaultValue = "0") int answerPage, @RequestParam(value="ans_ordering", defaultValue = "date") String order) {
+                         @RequestParam(value = "ans_page", defaultValue = "0") int answerPage, @RequestParam(value="ans_ordering", defaultValue = "date") String order,
+                         Principal principal) {
         Question question = this.questionService.getQuestion(id);
+        if (principal != null && !question.getAuthor().getUsername().equals(principal.getName())) { // 회원이 아니거나 작성자인 경우 조회수 증가 X
+            this.questionService.plusView(question);
+        }
         Page<Answer> answerPaging = this.answerService.getList(question, answerPage, order);
         model.addAttribute("answerPaging", answerPaging);
         model.addAttribute("question", question);

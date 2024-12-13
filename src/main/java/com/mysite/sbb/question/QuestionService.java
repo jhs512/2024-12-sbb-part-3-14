@@ -97,5 +97,9 @@ public class QuestionService {
         return this.questionRepository.findQuestionByAuthor(username, pageable);
     }
 
+    public void plusView(Question question) {
+        question.setView(question.getView() + 1);
+        this.questionRepository.save(question);
+    }
 
 }
