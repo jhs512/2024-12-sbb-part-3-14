@@ -113,6 +113,6 @@ public class QuestionServiceImpl implements QuestionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
 
-        questionRepository.delete(findData);
+        questionRepository.deleteById(questionId);
     }
 }

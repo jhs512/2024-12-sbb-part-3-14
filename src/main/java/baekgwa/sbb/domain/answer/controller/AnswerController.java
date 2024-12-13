@@ -59,4 +59,10 @@ public class AnswerController {
         Integer modifiedQuestionId = answerService.modifyAnswer(id, principal.getName(), answerForm.getContent());
         return String.format("redirect:/question/detail/%s", modifiedQuestionId);
     }
+
+    @GetMapping("/delete/{id}")
+    public String answerDelete(Principal principal, @PathVariable("id") Integer id) {
+        Integer questionId = answerService.deleteAnswer(id, principal.getName());
+        return String.format("redirect:/question/detail/%s", questionId);
+    }
 }

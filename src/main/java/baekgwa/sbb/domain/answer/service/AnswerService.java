@@ -11,4 +11,6 @@ public interface AnswerService {
     AnswerDto.AnswerInfo getAnswer(Integer answerId);
 
     Integer modifyAnswer(Integer answerId, String loginUsername, String newContent);
+
+    Integer deleteAnswer(Integer answerId, String loginUsername);
 }
