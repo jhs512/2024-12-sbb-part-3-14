@@ -53,4 +53,8 @@ public class QuestionService {
         question.setContent(content);
         this.questionRepository.save(question);
     }
+
+    public void delete(Question question) {
+        this.questionRepository.delete(question);
+    }
 }
