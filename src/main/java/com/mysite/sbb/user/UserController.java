@@ -1,6 +1,7 @@
 package com.mysite.sbb.user;
 
 
+import com.mysite.sbb.PasswordGenerator;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.comment.Comment;
@@ -11,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +35,8 @@ public class UserController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final CommentService commentService;
+    private final JavaMailSender mailSender;
+
     @GetMapping("/signup")
     public String signup(UserCreateForm userCreateForm) {
         return "signup_form";
@@ -96,15 +101,49 @@ public class UserController {
         SiteUser siteUser = this.userService.getUser(principal.getName());
 
         if (!this.userService.isSamePassword(siteUser, passwordModifyForm.getPassword1())) {
-            bindingResult.rejectValue("password1", "이전 비밀번호와 일치하지 않습니다.");
+            bindingResult.rejectValue("password1", "passwordIncorrect", "이전 비밀번호와 일치하지 않습니다.");
             return "modify_password_form";
         }
 
         if (!passwordModifyForm.getNewPassword1().equals(passwordModifyForm.getNewPassword2())) {
-            bindingResult.rejectValue("NewPassword2", "2개의 비밀번호가 일치하지 않습니다.");
+            bindingResult.rejectValue("NewPassword2", "newPasswordIncorrect", "2개의 비밀번호가 일치하지 않습니다.");
         }
 
-        userService.modifyPassword(siteUser, passwordModifyForm.getNewPassword1());
+        try {
+            userService.modifyPassword(siteUser, passwordModifyForm.getNewPassword1());
+        } catch (Exception e) {
+            e.printStackTrace();
+            bindingResult.reject("passwordUpdateFail", e.getMessage());
+        }
         return "redirect:/user/profile";
+    }
+
+    @GetMapping("/find")
+    public String findPassword(FindPasswordForm findPasswordForm, Model model) {
+        return "find_password";
+    }
+
+    @PostMapping("/find")
+    public String findPassword(@Valid FindPasswordForm findPasswordForm, BindingResult bindingResult, Model model) {
+        SiteUser siteUser = this.userService.getUserByEmail(findPasswordForm.getEmail());
+        if (bindingResult.hasErrors()) {
+            bindingResult.rejectValue("email", "email doesnt exist", "이메일이 존재하지 않습니다.");
+            model.addAttribute("emailNotExist", true);
+            return "find_password";
+        }
+        model.addAttribute("email", findPasswordForm.getEmail());
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(findPasswordForm.getEmail());
+        simpleMailMessage.setSubject("비밀번호 찾기 메일");
+        StringBuffer stringBuffer = new StringBuffer();
+        String newPassword = PasswordGenerator.generateTemporaryPassword(); // 임시 비밀번호 생성
+        stringBuffer.append(findPasswordForm.getEmail()).append("의 비밀번호를 새롭게 발급하였습니다.")
+                .append("새 비밀번호는 ").append(newPassword).append("입니다\n")
+                .append("새 비밀번호를 통해 로그인 해주세요.");
+        simpleMailMessage.setText(stringBuffer.toString());
+        this.userService.modifyPassword(siteUser, newPassword);
+        mailSender.send(simpleMailMessage);
+        model.addAttribute("success", true);
+        return "find_password";
     }
 }

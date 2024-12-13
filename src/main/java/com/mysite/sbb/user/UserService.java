@@ -42,5 +42,13 @@ public class UserService {
         return passwordEncoder.matches(password, siteUser.getPassword());
     }
 
+    public SiteUser getUserByEmail(String email) {
+        Optional<SiteUser> os = this.userRepository.findByEmail(email);
+        if (os.isPresent()) {
+            return os.get();
+        } else {
+            throw new DataNotFoundException("siteuser not found.");
+        }
+    }
 
 }
