@@ -55,6 +55,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .answerList(question.getAnswerList())
                 .content(question.getContent())
                 .createDate(question.getCreateDate())
+                .modifyDate(question.getModifyDate())
                 .author(question.getSiteUser())
                 .build();
     }

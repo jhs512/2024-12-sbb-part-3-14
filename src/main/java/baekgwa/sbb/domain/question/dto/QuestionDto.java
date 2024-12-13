@@ -16,16 +16,18 @@ public class QuestionDto {
         private final String content;
         private final List<Answer> answerList;
         private final LocalDateTime createDate;
+        private final LocalDateTime modifyDate;
         private final SiteUser author;
 
         @Builder
         private DetailInfo(Integer id, String subject, String content, List<Answer> answerList,
-                LocalDateTime createDate, SiteUser author) {
+                LocalDateTime createDate, LocalDateTime modifyDate, SiteUser author) {
             this.id = id;
             this.subject = subject;
             this.content = content;
             this.answerList = answerList;
             this.createDate = createDate;
+            this.modifyDate = modifyDate;
             this.author = author;
         }
     }

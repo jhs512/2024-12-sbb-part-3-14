@@ -7,9 +7,13 @@
             <div class="card-text" style="white-space: pre-line;"
                  th:text="${question.content}"></div>
             <div class="d-flex justify-content-end">
+                <div th:if="${question.modifyDate != question.createDate}" class="badge bg-light text-dark p-2 text-start mx-3">
+                    <div class="mb-2">수정일</div>
+                    <div th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
-                        <span th:if="${question.author != null}" th:text="${question.author.username}"></span>
+                        <span th:if="${question.author != null}" th:text="'작성자 : ' + ${question.author.username}"></span>
                     </div>
                     <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
@@ -33,9 +37,13 @@
         <div class="card-body">
             <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
             <div class="d-flex justify-content-end">
+                <div th:if="${answer.modifyDate != answer.createDate}" class="badge bg-light text-dark p-2 text-start mx-3">
+                    <div class="mb-2">수정일</div>
+                    <div th:text="${#temporals.format(answer.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
-                        <span th:if="${answer.siteUser.username != null}" th:text="${answer.siteUser.username}"></span>
+                        <span th:if="${answer.siteUser.username != null}" th:text="'작성자 : ' + ${answer.siteUser.username}"></span>
                     </div>
                     <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
