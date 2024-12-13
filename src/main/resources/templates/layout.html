@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+        <!-- sbb CSS -->
+        <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+        <title>Hello, sbb!</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/simplemde/1.11.2/simplemde.min.js"></script>
+
+    </head>
+    <body>
+        <nav th:replace="~{navbar :: navbarFragment}"></nav>
+        <!-- 기 본 템 플 릿 안 에 삽 입 될 내 용 Start -->
+        <th:block layout:fragment="content"></th:block>
+        <!-- 기 본 템 플 릿 안 에 삽 입 될 내 용 End -->
+        <!-- Bootstrap JS -->
+        <script th:src="@{/bootstrap.min.js}"></script>
+        <th:block layout:fragment="script"></th:block>
+    </body>
+</html>
