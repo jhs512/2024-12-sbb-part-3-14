@@ -1,5 +1,6 @@
 package baekgwa.sbb.model.question.entity;
 
+import baekgwa.sbb.model.BaseEntity;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import jakarta.persistence.CascadeType;
@@ -11,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Question {
+public class Question extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +33,6 @@ public class Question {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime createDate;
-
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 
@@ -42,13 +40,23 @@ public class Question {
     private SiteUser siteUser;
 
     @Builder
-    private Question(String subject, String content, LocalDateTime createDate,
-            List<Answer> answerList,
+    private Question(Integer id, String subject, String content, List<Answer> answerList,
             SiteUser siteUser) {
+        this.id = id;
         this.subject = subject;
         this.content = content;
-        this.createDate = createDate;
         this.answerList = answerList;
         this.siteUser = siteUser;
+    }
+
+    public static Question modifyQuestion(Question oldQuestion, String subject, String content) {
+        return Question
+                .builder()
+                .id(oldQuestion.getId())
+                .subject(subject)
+                .content(content)
+                .answerList(oldQuestion.getAnswerList())
+                .siteUser(oldQuestion.getSiteUser())
+                .build();
     }
 }
