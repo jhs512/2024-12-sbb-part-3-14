@@ -25,4 +25,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
             + " where u.username = :username "
             + "order by c.createDate desc")
     List<Comment> findQuestionByAuthor(@Param("username") String username, Pageable pageable);
+    @Query("select c "
+            + " from Comment c "
+            + "order by c.createDate desc")
+    Page<Comment> findAllByDesc(Pageable pageable);
 }

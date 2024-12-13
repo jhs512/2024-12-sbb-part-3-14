@@ -119,7 +119,7 @@ public class UserController {
     }
 
     @GetMapping("/find")
-    public String findPassword(FindPasswordForm findPasswordForm, Model model) {
+    public String findPassword(FindPasswordForm findPasswordForm) {
         return "find_password";
     }
 
@@ -131,16 +131,15 @@ public class UserController {
             model.addAttribute("emailNotExist", true);
             return "find_password";
         }
-        model.addAttribute("email", findPasswordForm.getEmail());
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(findPasswordForm.getEmail());
-        simpleMailMessage.setSubject("비밀번호 찾기 메일");
+        simpleMailMessage.setSubject("비밀번호 찾기 메일"); // 제목 설정
         StringBuffer stringBuffer = new StringBuffer();
         String newPassword = PasswordGenerator.generateTemporaryPassword(); // 임시 비밀번호 생성
         stringBuffer.append(findPasswordForm.getEmail()).append("의 비밀번호를 새롭게 발급하였습니다.")
                 .append("새 비밀번호는 ").append(newPassword).append("입니다\n")
                 .append("새 비밀번호를 통해 로그인 해주세요.");
-        simpleMailMessage.setText(stringBuffer.toString());
+        simpleMailMessage.setText(stringBuffer.toString()); // 내용 설정
         this.userService.modifyPassword(siteUser, newPassword);
         mailSender.send(simpleMailMessage);
         model.addAttribute("success", true);

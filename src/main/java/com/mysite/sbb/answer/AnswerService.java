@@ -77,4 +77,9 @@ public class AnswerService {
         return this.answerRepository.findQuestionByAuthor(username, pageable);
     }
 
+    public Page<Answer> getListByDesc(int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return this.answerRepository.findAllByDesc(pageable);
+    }
+
 }

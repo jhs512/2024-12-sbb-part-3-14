@@ -35,8 +35,13 @@
         <h2>My Comments</h2>
         <ul>
             <li th:each="comment : ${commentList}">
-                <a th:href="@{/question/detail/{id}(id=${comment.question.id})}" th:utext="${@commonUtil.markdown(comment.content)}"></a>
-                <span th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+                <a th:if="${comment.answer != null and comment.answer.id != null}"
+                   th:href="@{|/question/detail/${comment.answer.question.id}|}"
+                   th:text="${comment.content}"></a>
+
+                <a th:if="${comment.answer == null or comment.answer.id == null}"
+                   th:href="@{|/question/detail/${comment.question.id}|}"
+                   th:text="${comment.content}"></a>
             </li>
         </ul>
     </div>

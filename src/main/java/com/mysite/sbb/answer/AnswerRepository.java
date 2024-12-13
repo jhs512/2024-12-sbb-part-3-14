@@ -23,4 +23,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
             + " where u.username = :username "
             + "order by a.createDate desc")
     List<Answer> findQuestionByAuthor(@Param("username") String username, Pageable pageable);
+
+    @Query("select a "
+            + " from Answer a "
+            + "order by a.createDate desc")
+    Page<Answer> findAllByDesc(Pageable pageable);
 }

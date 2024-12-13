@@ -88,5 +88,8 @@ public class CommentService {
         return this.commentRepository.findQuestionByAuthor(username, pageable);
     }
 
-
+    public Page<Comment> getListByDesc(int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return this.commentRepository.findAllByDesc(pageable);
+    }
 }
