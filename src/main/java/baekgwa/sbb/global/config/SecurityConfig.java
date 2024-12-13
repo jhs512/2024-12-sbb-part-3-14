@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/**").permitAll()
                         .requestMatchers("/question/create/**").authenticated()
                         .requestMatchers("/answer/create/**").authenticated()
+                        .requestMatchers("/question/modify/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 //h2-console not-use

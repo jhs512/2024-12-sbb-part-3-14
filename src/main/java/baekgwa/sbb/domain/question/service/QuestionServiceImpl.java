@@ -1,12 +1,12 @@
 package baekgwa.sbb.domain.question.service;
 
 import baekgwa.sbb.domain.question.dto.QuestionDto;
+import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +67,6 @@ public class QuestionServiceImpl implements QuestionService {
                 Question.builder()
                         .subject(subject)
                         .content(content)
-                        .createDate(LocalDateTime.now())
                         .siteUser(siteUser)
                         .build());
     }
@@ -87,5 +86,18 @@ public class QuestionServiceImpl implements QuestionService {
                                 .author(question.getSiteUser())
                                 .build()
                 );
+    }
+
+    @Transactional
+    @Override
+    public void modifyQuestion(Integer questionId, String loginUsername,
+            QuestionForm questionForm) {
+        Question findData = questionRepository.findByIdWithAnswers(questionId).orElseThrow(
+                () -> new DataNotFoundException("question not found"));
+
+        questionRepository.save(
+                Question.modifyQuestion(
+                        findData, questionForm.getSubject(), questionForm.getContent()
+                ));
     }
 }

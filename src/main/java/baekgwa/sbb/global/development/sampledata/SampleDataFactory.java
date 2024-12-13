@@ -69,7 +69,6 @@ public class SampleDataFactory {
                 .subject(subject)
                 .content(content)
                 .siteUser(siteUser)
-                .createDate(getRandomDate())
                 .build();
     }
 
@@ -77,7 +76,6 @@ public class SampleDataFactory {
         return Answer
                 .builder()
                 .content(content)
-                .createDate(getRandomDate())
                 .question(question)
                 .siteUser(siteUser)
                 .build();
