@@ -8,7 +8,6 @@ import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,6 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.save(Answer
                 .builder()
                 .content(content)
-                .createDate(LocalDateTime.now())
                 .question(question)
                 .siteUser(siteUser)
                 .build());
