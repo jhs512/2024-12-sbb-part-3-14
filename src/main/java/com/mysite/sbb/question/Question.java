@@ -5,6 +5,7 @@ import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,9 @@ public class Question {
 
     @CreatedDate
     private LocalDateTime createDate;
+
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
