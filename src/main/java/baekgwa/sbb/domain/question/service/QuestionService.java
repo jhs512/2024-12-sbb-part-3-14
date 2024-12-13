@@ -16,4 +16,6 @@ public interface QuestionService {
     Page<QuestionDto.MainInfo> getList(int page, int size);
 
     void modifyQuestion(Integer questionId, String loginUsername, QuestionForm questionForm);
+
+    void deleteQuestion(Integer questionId, String loginUsername);
 }

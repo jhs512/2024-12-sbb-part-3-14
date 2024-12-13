@@ -14,8 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -99,5 +101,18 @@ public class QuestionServiceImpl implements QuestionService {
                 Question.modifyQuestion(
                         findData, questionForm.getSubject(), questionForm.getContent()
                 ));
+    }
+
+    @Transactional
+    @Override
+    public void deleteQuestion(Integer questionId, String loginUsername) {
+        Question findData = questionRepository.findByIdWithAnswers(questionId).orElseThrow(
+                () -> new DataNotFoundException("question not found"));
+
+        if (!findData.getSiteUser().getUsername().equals(loginUsername)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
+        }
+
+        questionRepository.delete(findData);
     }
 }

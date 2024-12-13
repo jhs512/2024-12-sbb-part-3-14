@@ -84,4 +84,10 @@ public class QuestionController {
         questionService.modifyQuestion(id, principal.getName(), questionForm);
         return String.format("redirect:/question/detail/%s", id);
     }
+
+    @GetMapping("/delete/{id}")
+    public String questionDelete(Principal principal, @PathVariable("id") Integer id) {
+        questionService.deleteQuestion(id, principal.getName());
+        return "redirect:/";
+    }
 }
