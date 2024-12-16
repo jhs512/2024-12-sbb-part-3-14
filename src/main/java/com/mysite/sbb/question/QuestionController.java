@@ -35,11 +35,18 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm, @RequestParam(value = "page", defaultValue = "0") int page) {
+    public String detail(
+            Model model,
+            @PathVariable("id") Integer id,
+            AnswerForm answerForm,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "order", defaultValue = "createDate") String order
+    ) {
         Question question = questionService.getQuestion(id);
-        Page<Answer> paging = answerService.getAnswers(question, page);
+        Page<Answer> paging = answerService.getAnswers(question, page, order);
         model.addAttribute("question", question);
         model.addAttribute("answerList", paging);
+        model.addAttribute("order", order);
         return "question_detail";
     }
 

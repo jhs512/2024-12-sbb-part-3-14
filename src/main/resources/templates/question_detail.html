@@ -35,6 +35,13 @@
 
     <h5 class="border-bottom my-3 py-2" th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
 
+    <form th:action="@{|/question/detail/${question.id}|}" method="get" id="orderForm">
+        <select id="select_order" name="order" onchange="selectOrder()" th:value="${order}">
+            <option th:value="createDate" th:selected="${order.equals('createDate')}" th:data-order="createDate">최신순</option>
+            <option th:value="voter" th:selected="${order.equals('voter')}" th:data-order="voter">추천순</option>
+        </select>
+    </form>
+
     <div class="card my-3" th:each="answer : ${answerList}">
         <a th:id="|answer_${answer.id}|"></a>
         <div class="card-body">
@@ -90,6 +97,7 @@
 
     <form th:action="@{|/question/detail/${question.id}|}" method="get" id="detailForm">
         <input type="hidden" id="page" name="page" th:value="${answerList.number}">
+        <input type="hidden" id="order" name="order" th:value="${order}">
     </form>
 
     <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="my-3">
@@ -119,9 +127,13 @@
     const page_elements = document.getElementsByClassName("page-link");
     Array.from(page_elements).forEach(function(element) {
         element.addEventListener('click', function() {
+            document.getElementById('select_order').value = this.dataset.order;
             document.getElementById('page').value = this.dataset.page;
             document.getElementById('detailForm').submit();
         });
     });
+    function selectOrder() {
+        document.getElementById("orderForm").submit();
+    }
 </script>
 </html>
