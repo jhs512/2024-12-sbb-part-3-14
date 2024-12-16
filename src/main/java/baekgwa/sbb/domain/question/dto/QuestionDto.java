@@ -1,5 +1,7 @@
 package baekgwa.sbb.domain.question.dto;
 
+import baekgwa.sbb.domain.answer.dto.AnswerDto;
+import baekgwa.sbb.domain.answer.dto.AnswerDto.AnswerDetailInfo;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import java.time.LocalDateTime;
@@ -15,24 +17,24 @@ public class QuestionDto {
         private final Integer id;
         private final String subject;
         private final String content;
-        private final Set<Answer> answerList;
         private final LocalDateTime createDate;
         private final LocalDateTime modifyDate;
-        private final SiteUser author;
-        private final Set<SiteUser> voter;
+        private final String author;
+        private final Long voterCount;
+        private final List<AnswerDto.AnswerDetailInfo> answerList;
 
         @Builder
-        private DetailInfo(Integer id, String subject, String content, Set<Answer> answerList,
-                LocalDateTime createDate, LocalDateTime modifyDate, SiteUser author,
-                Set<SiteUser> voter) {
+        private DetailInfo(Integer id, String subject, String content, LocalDateTime createDate,
+                LocalDateTime modifyDate, String author, Long voterCount,
+                List<AnswerDetailInfo> answerList) {
             this.id = id;
             this.subject = subject;
             this.content = content;
-            this.answerList = answerList;
             this.createDate = createDate;
             this.modifyDate = modifyDate;
             this.author = author;
-            this.voter = voter;
+            this.voterCount = voterCount;
+            this.answerList = answerList;
         }
     }
 
@@ -41,17 +43,16 @@ public class QuestionDto {
         private final Integer id;
         private final String subject;
         private final LocalDateTime createDate;
-        private final Set<Answer> answerList;
-        private final SiteUser author;
+        private final Long answerCount;
+        private final String author;
 
         @Builder
-        private MainInfo(Integer id, String subject, LocalDateTime createDate,
-                Set<Answer> answerList,
-                SiteUser author) {
+        private MainInfo(Integer id, String subject, LocalDateTime createDate, Long answerCount,
+                String author) {
             this.id = id;
             this.subject = subject;
             this.createDate = createDate;
-            this.answerList = answerList;
+            this.answerCount = answerCount;
             this.author = author;
         }
     }

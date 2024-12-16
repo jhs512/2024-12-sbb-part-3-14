@@ -50,11 +50,24 @@ public class AnswerServiceImpl implements AnswerService {
                 .builder()
                 .id(question.getId())
                 .subject(question.getSubject())
-                .content(question.getContent())
-                .answerList(question.getAnswerList())
+                .content(question.getSubject())
                 .createDate(question.getCreateDate())
                 .modifyDate(question.getModifyDate())
-                .author(question.getSiteUser())
+                .author(question.getSiteUser().getUsername())
+                .voterCount(question.getVoter().stream().count())
+                .answerList(
+                        question.getAnswerList().stream().map(
+                                answer -> AnswerDto.AnswerDetailInfo
+                                        .builder()
+                                        .id(answer.getId())
+                                        .content(answer.getContent())
+                                        .modifyDate(answer.getModifyDate())
+                                        .createDate(answer.getCreateDate())
+                                        .author(answer.getSiteUser().getUsername())
+                                        .voteCount(answer.getVoter().stream().count())
+                                        .build()
+                        ).toList()
+                )
                 .build();
     }
 

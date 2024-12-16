@@ -1,5 +1,6 @@
 package baekgwa.sbb.domain.question.service;
 
+import baekgwa.sbb.domain.answer.dto.AnswerDto;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.global.exception.DataNotFoundException;
@@ -7,8 +8,6 @@ import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,22 +25,6 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
 
-    @Deprecated
-    @Transactional(readOnly = true)
-    @Override
-    public List<QuestionDto.MainInfo> getList() {
-        return questionRepository.findAll()
-                .stream().map(
-                        data -> QuestionDto.MainInfo
-                                .builder()
-                                .id(data.getId())
-                                .subject(data.getSubject())
-                                .createDate(data.getCreateDate())
-                                .build()
-                )
-                .collect(Collectors.toList());
-    }
-
     @Transactional(readOnly = true)
     @Override
     public QuestionDto.DetailInfo getQuestion(Integer id) {
@@ -52,12 +35,24 @@ public class QuestionServiceImpl implements QuestionService {
                 .builder()
                 .id(question.getId())
                 .subject(question.getSubject())
-                .answerList(question.getAnswerList())
-                .content(question.getContent())
+                .content(question.getSubject())
                 .createDate(question.getCreateDate())
                 .modifyDate(question.getModifyDate())
-                .author(question.getSiteUser())
-                .voter(question.getVoter())
+                .author(question.getSiteUser().getUsername())
+                .voterCount(question.getVoter().stream().count())
+                .answerList(
+                        question.getAnswerList().stream().map(
+                                answer -> AnswerDto.AnswerDetailInfo
+                                        .builder()
+                                        .id(answer.getId())
+                                        .content(answer.getContent())
+                                        .modifyDate(answer.getModifyDate())
+                                        .createDate(answer.getCreateDate())
+                                        .author(answer.getSiteUser().getUsername())
+                                        .voteCount(answer.getVoter().stream().count())
+                                        .build()
+                        ).toList()
+                )
                 .build();
     }
 
@@ -86,8 +81,8 @@ public class QuestionServiceImpl implements QuestionService {
                                 .id(question.getId())
                                 .subject(question.getSubject())
                                 .createDate(question.getCreateDate())
-                                .answerList(question.getAnswerList())
-                                .author(question.getSiteUser())
+                                .answerCount(question.getAnswerList().stream().count())
+                                .author(question.getSiteUser().getUsername())
                                 .build()
                 );
     }

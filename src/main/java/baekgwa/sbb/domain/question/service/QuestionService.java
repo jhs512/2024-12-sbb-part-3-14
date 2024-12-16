@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 
 public interface QuestionService {
 
-    List<QuestionDto.MainInfo> getList();
-
     QuestionDto.DetailInfo getQuestion(Integer id);
 
     void create(String subject, String content, String username);

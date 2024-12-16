@@ -1,4 +1,7 @@
-<html layout:decorate="~{layout}">
+<html layout:decorate="~{layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div layout:fragment="content" class="container my-3">
     <form th:action="@{/user/login}" method="post">
         <div th:if="${param.error}">
