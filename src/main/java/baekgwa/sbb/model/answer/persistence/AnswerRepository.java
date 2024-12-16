@@ -20,4 +20,8 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     @EntityGraph(attributePaths = {"question", "siteUser"})
     @Query("SELECT a FROM Answer a WHERE a.id = :id")
     Optional<Answer> findByIdWithQuestionAndSiteUser(@Param("id") Integer id);
+
+    @EntityGraph(attributePaths = {"voter", "question"})
+    @Query("SELECT a FROM Answer a WHERE a.id = :id")
+    Optional<Answer> findByIdWithVoterAndQuestion(@Param("id") Integer id);
 }

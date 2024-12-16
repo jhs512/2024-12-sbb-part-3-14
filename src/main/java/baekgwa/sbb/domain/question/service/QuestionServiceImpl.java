@@ -53,6 +53,9 @@ public class QuestionServiceImpl implements QuestionService {
                                         .createDate(answer.getCreateDate())
                                         .author(answer.getSiteUser().getUsername())
                                         .voteCount(answer.getVoter().stream().count())
+                                        .userVote(answer.getVoter().stream()
+                                                .anyMatch(voter -> voter.getUsername()
+                                                        .equals(loginUsername)))
                                         .build()
                         ).toList()
                 )
@@ -134,7 +137,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     @Override
     public void voteCancel(Integer questionId, String loginUsername) {
-
         Question question = questionRepository.findByIdWithVoter(questionId).orElseThrow(
                 () -> new DataNotFoundException("question not found"));
 

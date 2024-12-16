@@ -6,7 +6,7 @@ import baekgwa.sbb.domain.question.dto.QuestionDto;
 public interface AnswerService {
     void create(Integer id, String content, String username);
 
-    QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id);
+    QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id, String loginUsername);
 
     AnswerDto.AnswerInfo getAnswer(Integer answerId);
 
@@ -15,4 +15,6 @@ public interface AnswerService {
     Integer deleteAnswer(Integer answerId, String loginUsername);
 
     Integer vote(Integer answerId, String loginUsername);
+
+    Integer voteCancel(Integer answerId, String loginUsername);
 }

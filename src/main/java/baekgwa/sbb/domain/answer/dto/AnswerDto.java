@@ -26,16 +26,18 @@ public class AnswerDto {
         private final LocalDateTime createDate;
         private final String author;
         private final Long voteCount;
+        private final boolean userVote;
 
         @Builder
         private AnswerDetailInfo(Integer id, String content, LocalDateTime modifyDate,
-                LocalDateTime createDate, String author, Long voteCount) {
+                LocalDateTime createDate, String author, Long voteCount, boolean userVote) {
             this.id = id;
             this.content = content;
             this.modifyDate = modifyDate;
             this.createDate = createDate;
             this.author = author;
             this.voteCount = voteCount;
+            this.userVote = userVote;
         }
     }
 }

@@ -42,7 +42,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Transactional(readOnly = true)
     @Override
-    public QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id) {
+    public QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id, String loginUsername) {
         Question question = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(id).orElseThrow(
                 () -> new DataNotFoundException("question not found"));
 
@@ -55,6 +55,8 @@ public class AnswerServiceImpl implements AnswerService {
                 .modifyDate(question.getModifyDate())
                 .author(question.getSiteUser().getUsername())
                 .voterCount(question.getVoter().stream().count())
+                .userVote(question.getVoter().stream()
+                        .anyMatch(vote -> vote.getUsername().equals(loginUsername)))
                 .answerList(
                         question.getAnswerList().stream().map(
                                 answer -> AnswerDto.AnswerDetailInfo
@@ -65,6 +67,9 @@ public class AnswerServiceImpl implements AnswerService {
                                         .createDate(answer.getCreateDate())
                                         .author(answer.getSiteUser().getUsername())
                                         .voteCount(answer.getVoter().stream().count())
+                                        .userVote(answer.getVoter().stream().anyMatch(
+                                                vote -> vote.getUsername().equals(loginUsername)
+                                        ))
                                         .build()
                         ).toList()
                 )
@@ -132,6 +137,19 @@ public class AnswerServiceImpl implements AnswerService {
         answer.getVoter().add(siteUser);
         answerRepository.save(answer);
 
+        return answer.getQuestion().getId();
+    }
+
+    @Transactional
+    @Override
+    public Integer voteCancel(Integer answerId, String loginUsername) {
+        Answer answer = answerRepository.findByIdWithVoterAndQuestion(answerId).orElseThrow(
+                () -> new DataNotFoundException("Answer not found"));
+
+        SiteUser siteUser = userRepository.findByUsername(loginUsername).orElseThrow(
+                () -> new DataNotFoundException("user not found"));
+
+        answer.getVoter().remove(siteUser);
         return answer.getQuestion().getId();
     }
 }

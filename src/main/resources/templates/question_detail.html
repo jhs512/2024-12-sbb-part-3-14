@@ -28,7 +28,7 @@
                    th:if="${question.userVote == false}"
                    th:data-uri="@{|/question/vote/${question.id}|}">
                     추천
-                    <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voterCount)}"></span>
+                    <span class="badge rounded-pill bg-success" th:text="${question.voterCount}"></span>
                 </a>
 
                 <!-- 게시글 추천 취소 -->
@@ -36,7 +36,7 @@
                    th:if="${question.userVote == true}"
                    th:data-uri="@{|/question/vote/cancel/${question.id}|}">
                     추천 취소
-                    <span class="badge rounded-pill bg-danger" th:text="${#lists.size(question.voterCount)}"></span>
+                    <span class="badge rounded-pill bg-danger" th:text="${question.voterCount}"></span>
                 </a>
 
                 <!-- 게시글 수정 -->
@@ -72,15 +72,30 @@
                 </div>
             </div>
             <div class="my-3">
+                <!-- 답변 추천 -->
+                <!-- 회원이 추천하지 않은 경우에만 -->
                 <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+                   th:if="${answer.userVote == false}"
                    th:data-uri="@{|/answer/vote/${answer.id}|}">
                     추천
                     <span class="badge rounded-pill bg-success" th:text="${answer.voteCount}"></span>
                 </a>
+
+                <!-- 답변 추천 취소 -->
+                <a href="javascript:void(0);" class="recommend_cancel btn btn-sm btn-outline-secondary"
+                   th:if="${answer.userVote == true}"
+                   th:data-uri="@{|/answer/vote/cancel/${answer.id}|}">
+                    추천 취소
+                    <span class="badge rounded-pill bg-danger" th:text="${answer.voteCount}"></span>
+                </a>
+
+                <!-- 답변 수정 -->
                 <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
                    th:if="${#authentication.getPrincipal().getUsername() == answer.author}"
                    th:text="수정"></a>
+
+                <!-- 답변 삭제 -->
                 <a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.id}|}"
                    class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
                    th:if="${#authentication.getPrincipal().getUsername() == answer.author}"

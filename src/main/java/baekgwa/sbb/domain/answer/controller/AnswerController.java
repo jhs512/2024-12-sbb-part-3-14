@@ -32,7 +32,8 @@ public class AnswerController {
             BindingResult bindingResult,
             Principal principal) {
         if (bindingResult.hasErrors()) {
-            QuestionDto.DetailInfo question = answerService.getQuestionByIdAndAnswers(id);
+            String loginUsername = principal == null ? null : principal.getName();
+            QuestionDto.DetailInfo question = answerService.getQuestionByIdAndAnswers(id, loginUsername);
             model.addAttribute("question", question);
             return "question_detail";
         }
@@ -69,6 +70,14 @@ public class AnswerController {
     @GetMapping("/vote/{id}")
     public String answerVote(Principal principal, @PathVariable("id") Integer id) {
         Integer questionId = answerService.vote(id, principal.getName());
+        return String.format("redirect:/question/detail/%s", questionId);
+    }
+
+    @GetMapping("/vote/cancel/{id}")
+    public String questionVoteCancel(
+            Principal principal,
+            @PathVariable("id") Integer id) {
+        Integer questionId = answerService.voteCancel(id, principal.getName());
         return String.format("redirect:/question/detail/%s", questionId);
     }
 }
