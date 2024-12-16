@@ -1,5 +1,9 @@
 package com.kkd.sbb;
 
+import com.kkd.sbb.answer.Answer;
+import com.kkd.sbb.answer.AnswerRepository;
+import com.kkd.sbb.question.Question;
+import com.kkd.sbb.question.QuestionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

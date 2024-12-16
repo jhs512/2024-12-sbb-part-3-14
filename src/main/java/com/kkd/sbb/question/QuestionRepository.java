@@ -1,4 +1,4 @@
-package com.kkd.sbb;
+package com.kkd.sbb.question;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
