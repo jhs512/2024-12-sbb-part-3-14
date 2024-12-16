@@ -1,6 +1,7 @@
 package com.programmers.page.dto;
 
 import jakarta.validation.constraints.Min;
+import java.util.Map;
 
 public record PageRequestDto(
         @Min(1)
@@ -9,8 +10,6 @@ public record PageRequestDto(
         @Min(1)
         Integer size,
 
-        String sort,
-
-        Boolean desc
+        Map<String, Boolean> filters
 ) {
 }
