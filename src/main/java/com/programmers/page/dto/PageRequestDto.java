@@ -7,6 +7,10 @@ public record PageRequestDto(
         Integer page,
 
         @Min(1)
-        Integer size
+        Integer size,
+
+        String sort,
+
+        Boolean desc
 ) {
 }
