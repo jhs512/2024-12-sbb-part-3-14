@@ -1,2 +1,4 @@
-package com.programmers.question;public class QuestionController {
+package com.programmers.question;
+
+public class QuestionController {
 }

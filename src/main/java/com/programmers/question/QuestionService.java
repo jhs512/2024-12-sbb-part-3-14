@@ -1,2 +1,4 @@
-package com.programmers.question;public class QuestionService {
+package com.programmers.question;
+
+public class QuestionService {
 }
