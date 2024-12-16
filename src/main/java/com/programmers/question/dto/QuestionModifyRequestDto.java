@@ -1,2 +1,6 @@
-package com.programmers.question.dto;public class QuestionModifyRequestDto {
+package com.programmers.question.dto;
+
+public record QuestionModifyRequestDto (
+        String newTitle, String newContent
+){
 }
