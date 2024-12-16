@@ -43,7 +43,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional(readOnly = true)
     @Override
     public QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id) {
-        Question question = questionRepository.findByIdWithAnswers(id).orElseThrow(
+        Question question = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(id).orElseThrow(
                 () -> new DataNotFoundException("question not found"));
 
         return QuestionDto.DetailInfo

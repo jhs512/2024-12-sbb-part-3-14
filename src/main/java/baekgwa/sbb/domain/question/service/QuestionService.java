@@ -18,4 +18,6 @@ public interface QuestionService {
     void modifyQuestion(Integer questionId, String loginUsername, QuestionForm questionForm);
 
     void deleteQuestion(Integer questionId, String loginUsername);
+
+    void vote(Integer questionId, String loginUsername);
 }

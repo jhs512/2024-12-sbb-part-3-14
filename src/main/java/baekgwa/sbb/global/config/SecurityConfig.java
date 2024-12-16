@@ -30,13 +30,13 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/question/create/**").authenticated()
                         .requestMatchers("/question/modify/**").authenticated()
-                        .requestMatchers("/question/delete/").authenticated()
+                        .requestMatchers("/question/delete/**").authenticated()
+                        .requestMatchers("/question/vote/**").authenticated()
                         .requestMatchers("/answer/create/**").authenticated()
                         .requestMatchers("/answer/modify/**").authenticated()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 //h2-console not-use
                 //only mysql & testing by in-memory-h2

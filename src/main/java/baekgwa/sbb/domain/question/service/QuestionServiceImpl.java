@@ -45,7 +45,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     @Override
     public QuestionDto.DetailInfo getQuestion(Integer id) {
-        Question question = questionRepository.findByIdWithAnswers(id).orElseThrow(
+        Question question = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(id).orElseThrow(
                 () -> new DataNotFoundException("question not found"));
 
         return QuestionDto.DetailInfo
@@ -57,6 +57,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .createDate(question.getCreateDate())
                 .modifyDate(question.getModifyDate())
                 .author(question.getSiteUser())
+                .voter(question.getVoter())
                 .build();
     }
 
@@ -95,7 +96,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void modifyQuestion(Integer questionId, String loginUsername,
             QuestionForm questionForm) {
-        Question findData = questionRepository.findByIdWithAnswers(questionId).orElseThrow(
+        Question findData = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(questionId).orElseThrow(
                 () -> new DataNotFoundException("question not found"));
 
         questionRepository.save(
@@ -107,7 +108,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     @Override
     public void deleteQuestion(Integer questionId, String loginUsername) {
-        Question findData = questionRepository.findByIdWithAnswers(questionId).orElseThrow(
+        Question findData = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(questionId).orElseThrow(
                 () -> new DataNotFoundException("question not found"));
 
         if (!findData.getSiteUser().getUsername().equals(loginUsername)) {
@@ -115,5 +116,18 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         questionRepository.deleteById(questionId);
+    }
+
+    @Transactional
+    @Override
+    public void vote(Integer questionId, String loginUsername) {
+        Question question = questionRepository.findByIdWithSiteUser(questionId).orElseThrow(
+                () -> new DataNotFoundException("question not found"));
+
+        SiteUser siteUser = userRepository.findByUsername(loginUsername).orElseThrow(
+                () -> new DataNotFoundException("user not found"));
+
+        question.getVoter().add(siteUser);
+        questionRepository.save(question);
     }
 }

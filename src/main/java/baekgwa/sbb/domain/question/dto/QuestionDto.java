@@ -4,6 +4,7 @@ import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,10 +19,12 @@ public class QuestionDto {
         private final LocalDateTime createDate;
         private final LocalDateTime modifyDate;
         private final SiteUser author;
+        private final Set<SiteUser> voter;
 
         @Builder
         private DetailInfo(Integer id, String subject, String content, List<Answer> answerList,
-                LocalDateTime createDate, LocalDateTime modifyDate, SiteUser author) {
+                LocalDateTime createDate, LocalDateTime modifyDate, SiteUser author,
+                Set<SiteUser> voter) {
             this.id = id;
             this.subject = subject;
             this.content = content;
@@ -29,6 +32,7 @@ public class QuestionDto {
             this.createDate = createDate;
             this.modifyDate = modifyDate;
             this.author = author;
+            this.voter = voter;
         }
     }
 

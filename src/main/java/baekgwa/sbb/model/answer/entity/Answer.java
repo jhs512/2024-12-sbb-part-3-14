@@ -9,7 +9,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +33,9 @@ public class Answer extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SiteUser siteUser;
+
+    @ManyToMany
+    private Set<SiteUser> voter;
 
     @Builder
     private Answer(Integer id, String content, Question question, SiteUser siteUser) {
