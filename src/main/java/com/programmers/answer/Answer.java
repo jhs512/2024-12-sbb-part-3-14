@@ -1,6 +1,6 @@
-package com.programmers.entity;
+package com.programmers.answer;
 
-import jakarta.persistence.Column;
+import com.programmers.question.Question;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

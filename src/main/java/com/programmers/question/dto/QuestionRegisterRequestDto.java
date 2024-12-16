@@ -1,6 +1,12 @@
 package com.programmers.question.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record QuestionRegisterRequestDto (
-        String title, String content
+        @NotBlank
+        String subject,
+
+        @NotBlank
+        String content
 ) {
 }
