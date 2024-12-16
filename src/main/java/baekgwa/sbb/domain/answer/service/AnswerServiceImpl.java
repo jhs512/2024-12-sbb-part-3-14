@@ -9,6 +9,7 @@ import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -58,8 +59,9 @@ public class AnswerServiceImpl implements AnswerService {
                 .userVote(question.getVoter().stream()
                         .anyMatch(vote -> vote.getUsername().equals(loginUsername)))
                 .answerList(
-                        question.getAnswerList().stream().map(
-                                answer -> AnswerDto.AnswerDetailInfo
+                        question.getAnswerList().stream()
+                                .sorted(Comparator.comparing(Answer::getCreateDate))
+                                .map(answer -> AnswerDto.AnswerDetailInfo
                                         .builder()
                                         .id(answer.getId())
                                         .content(answer.getContent())

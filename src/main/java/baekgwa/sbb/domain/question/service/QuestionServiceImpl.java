@@ -4,10 +4,12 @@ import baekgwa.sbb.domain.answer.dto.AnswerDto;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.global.exception.DataNotFoundException;
+import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,8 +46,9 @@ public class QuestionServiceImpl implements QuestionService {
                 .userVote(question.getVoter().stream()
                         .anyMatch(voter -> voter.getUsername().equals(loginUsername)))
                 .answerList(
-                        question.getAnswerList().stream().map(
-                                answer -> AnswerDto.AnswerDetailInfo
+                        question.getAnswerList().stream()
+                                .sorted(Comparator.comparing(Answer::getCreateDate))
+                                .map(answer -> AnswerDto.AnswerDetailInfo
                                         .builder()
                                         .id(answer.getId())
                                         .content(answer.getContent())
