@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record QuestionModifyRequestDto (
         @NotBlank
-        String newTitle,
+        String newSubject,
 
         @NotBlank
         String newContent

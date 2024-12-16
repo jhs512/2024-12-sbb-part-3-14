@@ -1,6 +1,5 @@
-package com.programmers.repository;
+package com.programmers.answer;
 
-import com.programmers.entity.Answer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
