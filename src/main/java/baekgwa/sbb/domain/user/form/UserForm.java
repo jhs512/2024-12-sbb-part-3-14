@@ -1,8 +1,8 @@
 package baekgwa.sbb.domain.user.form;
 
-import baekgwa.sbb.global.annotation.Email;
-import baekgwa.sbb.global.annotation.Password;
-import baekgwa.sbb.global.annotation.Username;
+import baekgwa.sbb.global.annotation.user.Email;
+import baekgwa.sbb.global.annotation.user.Password;
+import baekgwa.sbb.global.annotation.user.Username;
 import lombok.Getter;
 import lombok.Setter;
 

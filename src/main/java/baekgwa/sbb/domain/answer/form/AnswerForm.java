@@ -1,12 +1,13 @@
 package baekgwa.sbb.domain.answer.form;
 
-import jakarta.validation.constraints.NotEmpty;
+import baekgwa.sbb.global.annotation.answer.AnswerContent;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class AnswerForm {
-    @NotEmpty(message = "내용은 필수항목입니다.")
+
+    @AnswerContent
     private String content;
 }

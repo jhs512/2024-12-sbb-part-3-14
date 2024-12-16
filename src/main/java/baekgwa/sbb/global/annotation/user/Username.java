@@ -1,4 +1,4 @@
-package baekgwa.sbb.global.annotation;
+package baekgwa.sbb.global.annotation.user;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -13,9 +13,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = { })
 @Retention(RetentionPolicy.RUNTIME)
 @Size(min = 3, max = 25)
-@NotEmpty(message = "이메일은 필수항목입니다.")
-@jakarta.validation.constraints.Email
-public @interface Email {
+@NotEmpty(message = "사용자ID는 필수항목입니다.")
+public @interface Username {
     String message() default "";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

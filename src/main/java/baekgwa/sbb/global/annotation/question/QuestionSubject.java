@@ -1,4 +1,4 @@
-package baekgwa.sbb.global.annotation;
+package baekgwa.sbb.global.annotation.question;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -10,11 +10,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
-@Constraint(validatedBy = { })
+@Constraint(validatedBy = {})
 @Retention(RetentionPolicy.RUNTIME)
-@NotEmpty(message = "비밀번호는 필수항목입니다.")
-public @interface Password {
+@NotEmpty(message = "제목은 필수항목입니다.")
+@Size(max = 200)
+public @interface QuestionSubject {
+
     String message() default "";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

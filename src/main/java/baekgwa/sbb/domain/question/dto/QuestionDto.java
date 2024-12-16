@@ -2,11 +2,8 @@ package baekgwa.sbb.domain.question.dto;
 
 import baekgwa.sbb.domain.answer.dto.AnswerDto;
 import baekgwa.sbb.domain.answer.dto.AnswerDto.AnswerDetailInfo;
-import baekgwa.sbb.model.answer.entity.Answer;
-import baekgwa.sbb.model.user.entity.SiteUser;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 
