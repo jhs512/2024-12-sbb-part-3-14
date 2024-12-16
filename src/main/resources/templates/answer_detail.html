@@ -1,0 +1,40 @@
+<html lang="ko" layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+        <!-- 답변 -->
+        <h2 class="border-bottom py-2">답변</h2>
+        <div class="card my-3">
+            <div class="card-body">
+                <div class="card-text" th:utext="${@commonUtil.markdown(answer.content)}"></div>
+                <div class="d-flex justify-content-end">
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div class="mb-2"><span th:text="${answer.author}"></span></div>
+                        <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 댓글 작성 -->
+        <h5 class="border-bottom my-3 py-2">댓글 작성</h5>
+        <form th:object="${commentForm}" method="post">
+            <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+            <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" rows="3"></textarea>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="submit" value="댓글 등록" class="btn btn-primary my-2">
+        </form>
+
+        <!-- 댓글 목록 -->
+        <h5 class="border-bottom my-3 py-2">댓글 목록</h5>
+        <div class="card my-3" th:each="comment : ${answer.commentList}">
+            <div class="card-body">
+                <div class="card-text" th:text="${comment.content}"></div>
+                <div class="d-flex justify-content-end">
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div class="mb-2"><span th:text="${comment.author}"></span></div>
+                        <div th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>

@@ -1,0 +1,14 @@
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+        <h5 class="my-3 border-bottom pb-2"> 카테고리 추가 </h5>
+        <form th:object="${categoryForm}" th:action="@{/category/create}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+            <div class="mb-3">
+                <label for="name" class="form-label"> 카테고리 </label>
+                <textarea th:field="*{name}" class="form-control" rows="10"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"> 저장하기 </button>
+        </form>
+    </div>
+</html>
