@@ -27,9 +27,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public QuestionDto.DetailInfo getQuestion(Integer id) {
-        Question question = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(id).orElseThrow(
-                () -> new DataNotFoundException("question not found"));
+    public QuestionDto.DetailInfo getQuestion(Integer id, String loginUsername) {
+        Question question = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(id)
+                .orElseThrow(
+                        () -> new DataNotFoundException("question not found"));
 
         return QuestionDto.DetailInfo
                 .builder()
@@ -40,6 +41,8 @@ public class QuestionServiceImpl implements QuestionService {
                 .modifyDate(question.getModifyDate())
                 .author(question.getSiteUser().getUsername())
                 .voterCount(question.getVoter().stream().count())
+                .userVote(question.getVoter().stream()
+                        .anyMatch(voter -> voter.getUsername().equals(loginUsername)))
                 .answerList(
                         question.getAnswerList().stream().map(
                                 answer -> AnswerDto.AnswerDetailInfo
@@ -91,8 +94,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void modifyQuestion(Integer questionId, String loginUsername,
             QuestionForm questionForm) {
-        Question findData = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(questionId).orElseThrow(
-                () -> new DataNotFoundException("question not found"));
+        Question findData = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(questionId)
+                .orElseThrow(
+                        () -> new DataNotFoundException("question not found"));
 
         questionRepository.save(
                 Question.modifyQuestion(
@@ -103,8 +107,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     @Override
     public void deleteQuestion(Integer questionId, String loginUsername) {
-        Question findData = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(questionId).orElseThrow(
-                () -> new DataNotFoundException("question not found"));
+        Question findData = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(questionId)
+                .orElseThrow(
+                        () -> new DataNotFoundException("question not found"));
 
         if (!findData.getSiteUser().getUsername().equals(loginUsername)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
@@ -124,5 +129,18 @@ public class QuestionServiceImpl implements QuestionService {
 
         question.getVoter().add(siteUser);
         questionRepository.save(question);
+    }
+
+    @Transactional
+    @Override
+    public void voteCancel(Integer questionId, String loginUsername) {
+
+        Question question = questionRepository.findByIdWithVoter(questionId).orElseThrow(
+                () -> new DataNotFoundException("question not found"));
+
+        SiteUser siteUser = userRepository.findByUsername(loginUsername).orElseThrow(
+                () -> new DataNotFoundException("user not found"));
+
+        question.getVoter().remove(siteUser);
     }
 }

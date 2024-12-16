@@ -22,14 +22,29 @@
                 </div>
             </div>
             <div class="my-3">
+                <!-- 게시글 추천 -->
+                <!-- 회원이 추천하지 않은 경우에만 -->
                 <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+                   th:if="${question.userVote == false}"
                    th:data-uri="@{|/question/vote/${question.id}|}">
                     추천
                     <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voterCount)}"></span>
                 </a>
+
+                <!-- 게시글 추천 취소 -->
+                <a href="javascript:void(0);" class="recommend_cancel btn btn-sm btn-outline-secondary"
+                   th:if="${question.userVote == true}"
+                   th:data-uri="@{|/question/vote/cancel/${question.id}|}">
+                    추천 취소
+                    <span class="badge rounded-pill bg-danger" th:text="${#lists.size(question.voterCount)}"></span>
+                </a>
+
+                <!-- 게시글 수정 -->
                 <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
                    th:if="${#authentication.getPrincipal().getUsername() == question.author}"
                    th:text="수정"></a>
+
+                <!-- 게시글 삭제 -->
                 <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}"
                    class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
                    th:if="${#authentication.getPrincipal().getUsername() == question.author}"
@@ -97,6 +112,15 @@
   Array.from(recommend_elements).forEach(function(element) {
     element.addEventListener('click', function() {
       if(confirm("정말로 추천하시겠습니까?")) {
+        location.href = this.dataset.uri;
+      }
+    });
+  });
+
+  const recommend_cancel_elements = document.getElementsByClassName("recommend_cancel");
+  Array.from(recommend_cancel_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+      if(confirm("추천을 취소 하시겠습니까?")) {
         location.href = this.dataset.uri;
       }
     });

@@ -19,11 +19,13 @@ public class QuestionDto {
         private final String author;
         private final Long voterCount;
         private final List<AnswerDto.AnswerDetailInfo> answerList;
+        private final boolean userVote;
 
         @Builder
         private DetailInfo(Integer id, String subject, String content, LocalDateTime createDate,
                 LocalDateTime modifyDate, String author, Long voterCount,
-                List<AnswerDetailInfo> answerList) {
+                List<AnswerDetailInfo> answerList,
+                boolean userVote) {
             this.id = id;
             this.subject = subject;
             this.content = content;
@@ -32,6 +34,7 @@ public class QuestionDto {
             this.author = author;
             this.voterCount = voterCount;
             this.answerList = answerList;
+            this.userVote = userVote;
         }
     }
 

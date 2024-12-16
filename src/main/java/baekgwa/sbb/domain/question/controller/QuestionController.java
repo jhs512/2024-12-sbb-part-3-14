@@ -30,8 +30,10 @@ public class QuestionController {
     public String detail(
             Model model,
             @PathVariable("id") Integer id,
-            AnswerForm answerForm) {
-        QuestionDto.DetailInfo question = questionService.getQuestion(id);
+            AnswerForm answerForm,
+            Principal principal) {
+        String username = principal == null ? null : principal.getName();
+        QuestionDto.DetailInfo question = questionService.getQuestion(id, username);
         model.addAttribute("question", question);
         return "question_detail";
     }
@@ -50,24 +52,28 @@ public class QuestionController {
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
-        questionService.create(questionForm.getSubject(), questionForm.getContent(), principal.getName());
+        questionService.create(questionForm.getSubject(), questionForm.getContent(),
+                principal.getName());
         return "redirect:/question/list";
     }
 
     @GetMapping("/list")
     public String list(
             Model model,
-            @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="size", defaultValue = "10") int size) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         Page<QuestionDto.MainInfo> paging = questionService.getList(page, size);
         model.addAttribute("paging", paging);
         return "question_list";
     }
 
     @GetMapping("/modify/{id}")
-    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal) {
-        QuestionDto.DetailInfo question = questionService.getQuestion(id);
-        if(!question.getAuthor().equals(principal.getName())) {
+    public String questionModify(
+            QuestionForm questionForm,
+            @PathVariable("id") Integer id,
+            Principal principal) {
+        QuestionDto.DetailInfo question = questionService.getQuestion(id, principal.getName());
+        if (!question.getAuthor().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         questionForm.setSubject(question.getSubject());
@@ -96,6 +102,14 @@ public class QuestionController {
             Principal principal,
             @PathVariable("id") Integer id) {
         questionService.vote(id, principal.getName());
+        return String.format("redirect:/question/detail/%s", id);
+    }
+
+    @GetMapping("/vote/cancel/{id}")
+    public String questionVoteCancel(
+            Principal principal,
+            @PathVariable("id") Integer id) {
+        questionService.voteCancel(id, principal.getName());
         return String.format("redirect:/question/detail/%s", id);
     }
 }

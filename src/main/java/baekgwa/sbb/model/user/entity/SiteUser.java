@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"password"})
 public class SiteUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

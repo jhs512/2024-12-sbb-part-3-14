@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 public interface QuestionService {
 
-    QuestionDto.DetailInfo getQuestion(Integer id);
+    QuestionDto.DetailInfo getQuestion(Integer id, String loginUsername);
 
     void create(String subject, String content, String username);
 
@@ -18,4 +18,6 @@ public interface QuestionService {
     void deleteQuestion(Integer questionId, String loginUsername);
 
     void vote(Integer questionId, String loginUsername);
+
+    void voteCancel(Integer questionId, String loginUsername);
 }
