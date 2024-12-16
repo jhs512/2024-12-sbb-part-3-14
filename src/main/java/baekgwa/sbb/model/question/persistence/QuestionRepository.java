@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
-    @EntityGraph(attributePaths = {"answerList", "answerList.siteUser", "siteUser", "voter"})
+    @EntityGraph(attributePaths = {"answerList", "answerList.siteUser", "answerList.voter", "siteUser", "voter"})
     @Query("SELECT q FROM Question q WHERE q.id = :id")
     Optional<Question> findByIdWithAnswersAndSiteUserAndVoter(@Param("id") Integer id);
 

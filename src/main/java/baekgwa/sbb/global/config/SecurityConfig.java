@@ -34,8 +34,10 @@ public class SecurityConfig {
                         .requestMatchers("/question/modify/**").authenticated()
                         .requestMatchers("/question/delete/**").authenticated()
                         .requestMatchers("/question/vote/**").authenticated()
+
                         .requestMatchers("/answer/create/**").authenticated()
                         .requestMatchers("/answer/modify/**").authenticated()
+                        .requestMatchers("/answer/vote/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 //h2-console not-use

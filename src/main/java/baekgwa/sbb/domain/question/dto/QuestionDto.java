@@ -15,14 +15,14 @@ public class QuestionDto {
         private final Integer id;
         private final String subject;
         private final String content;
-        private final List<Answer> answerList;
+        private final Set<Answer> answerList;
         private final LocalDateTime createDate;
         private final LocalDateTime modifyDate;
         private final SiteUser author;
         private final Set<SiteUser> voter;
 
         @Builder
-        private DetailInfo(Integer id, String subject, String content, List<Answer> answerList,
+        private DetailInfo(Integer id, String subject, String content, Set<Answer> answerList,
                 LocalDateTime createDate, LocalDateTime modifyDate, SiteUser author,
                 Set<SiteUser> voter) {
             this.id = id;
@@ -41,12 +41,12 @@ public class QuestionDto {
         private final Integer id;
         private final String subject;
         private final LocalDateTime createDate;
-        private final List<Answer> answerList;
+        private final Set<Answer> answerList;
         private final SiteUser author;
 
         @Builder
         private MainInfo(Integer id, String subject, LocalDateTime createDate,
-                List<Answer> answerList,
+                Set<Answer> answerList,
                 SiteUser author) {
             this.id = id;
             this.subject = subject;

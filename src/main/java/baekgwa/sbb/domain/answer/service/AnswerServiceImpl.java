@@ -107,4 +107,18 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.deleteById(answerId);
         return questionId;
     }
+
+    @Transactional
+    @Override
+    public Integer vote(Integer answerId, String loginUsername) {
+        Answer answer = answerRepository.findByIdWithQuestionAndSiteUser(answerId).orElseThrow(
+                () -> new DataNotFoundException("answer not found"));
+        SiteUser siteUser = userRepository.findByUsername(loginUsername).orElseThrow(
+                () -> new DataNotFoundException("answer not found"));
+
+        answer.getVoter().add(siteUser);
+        answerRepository.save(answer);
+
+        return answer.getQuestion().getId();
+    }
 }

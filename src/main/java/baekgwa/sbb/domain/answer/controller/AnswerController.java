@@ -65,4 +65,10 @@ public class AnswerController {
         Integer questionId = answerService.deleteAnswer(id, principal.getName());
         return String.format("redirect:/question/detail/%s", questionId);
     }
+
+    @GetMapping("/vote/{id}")
+    public String answerVote(Principal principal, @PathVariable("id") Integer id) {
+        Integer questionId = answerService.vote(id, principal.getName());
+        return String.format("redirect:/question/detail/%s", questionId);
+    }
 }

@@ -36,7 +36,7 @@ public class Question extends BaseEntity {
     private String content;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
-    private List<Answer> answerList;
+    private Set<Answer> answerList;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SiteUser siteUser;
@@ -45,7 +45,7 @@ public class Question extends BaseEntity {
     private Set<SiteUser> voter;
 
     @Builder
-    private Question(Integer id, String subject, String content, List<Answer> answerList,
+    public Question(Integer id, String subject, String content, Set<Answer> answerList,
             SiteUser siteUser) {
         this.id = id;
         this.subject = subject;
