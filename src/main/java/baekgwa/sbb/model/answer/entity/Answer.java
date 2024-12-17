@@ -14,7 +14,6 @@ import jakarta.persistence.ManyToOne;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

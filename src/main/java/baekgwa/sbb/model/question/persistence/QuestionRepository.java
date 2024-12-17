@@ -4,6 +4,7 @@ import baekgwa.sbb.model.question.entity.Question;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,4 +28,6 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     @EntityGraph(attributePaths = {"voter"})
     @Query("SELECT q FROM Question q WHERE q.id = :id")
     Optional<Question> findByIdWithVoter(@Param("id") Integer id);
+
+    Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 }

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +61,7 @@ public class QuestionServiceImpl implements QuestionService {
                                                 .anyMatch(voter -> voter.getUsername()
                                                         .equals(loginUsername)))
                                         .build()
-                        ).toList()
+                                ).toList()
                 )
                 .build();
     }
@@ -81,9 +82,11 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<QuestionDto.MainInfo> getList(int page, int size) {
+    public Page<QuestionDto.MainInfo> getList(int page, int size, String keyword) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
-        return questionRepository.findAll(pageable)
+        Specification<Question> spec = QuestionSpecificationBuilder.searchByKeyword(keyword);
+
+        return questionRepository.findAll(spec, pageable)
                 .map(
                         question -> QuestionDto.MainInfo
                                 .builder()

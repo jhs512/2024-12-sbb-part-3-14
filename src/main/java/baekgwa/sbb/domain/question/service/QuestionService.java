@@ -11,7 +11,7 @@ public interface QuestionService {
 
     void create(String subject, String content, String username);
 
-    Page<QuestionDto.MainInfo> getList(int page, int size);
+    Page<QuestionDto.MainInfo> getList(int page, int size, String keyword);
 
     void modifyQuestion(Integer questionId, String loginUsername, QuestionForm questionForm);
 

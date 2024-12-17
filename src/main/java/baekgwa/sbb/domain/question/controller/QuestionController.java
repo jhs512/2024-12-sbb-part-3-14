@@ -61,9 +61,11 @@ public class QuestionController {
     public String list(
             Model model,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
-        Page<QuestionDto.MainInfo> paging = questionService.getList(page, size);
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+        Page<QuestionDto.MainInfo> paging = questionService.getList(page, size, keyword);
         model.addAttribute("paging", paging);
+        model.addAttribute("keyword", keyword);
         return "question_list";
     }
 
