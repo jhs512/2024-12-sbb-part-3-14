@@ -1,12 +1,15 @@
 package com.programmers.page;
 
+import com.programmers.exception.PageOutOfRangeException;
 import com.programmers.page.dto.PageRequestDto;
 import java.util.Map;
 import java.util.Objects;
 import lombok.experimental.UtilityClass;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 @UtilityClass
 public class PageableUtils {
@@ -31,5 +34,18 @@ public class PageableUtils {
                     .toList());
         }
         return PageRequest.of(page - 1, size, sort);
+    }
+
+
+    public static <T> Page<T> getPage(JpaRepository<T, Long> jpaRepository, PageRequestDto requestDto, int defaultPageSize, String defaultSortField){
+        Pageable pageable = createPageable(requestDto, defaultPageSize, defaultSortField);
+        long totalCount = jpaRepository.count();
+        long maxPage = totalCount / pageable.getPageSize() + totalCount % pageable.getPageSize() == 0 ? 0 : 1;
+
+        if (maxPage < pageable.getPageNumber() + 1) {
+            throw new PageOutOfRangeException("page out of range");
+        }else{
+            return jpaRepository.findAll(pageable);
+        }
     }
 }
