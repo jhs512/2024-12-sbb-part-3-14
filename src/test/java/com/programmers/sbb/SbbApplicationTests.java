@@ -1,4 +1,4 @@
-package com.nhnacademy.sbb;
+package com.programmers.sbb;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
