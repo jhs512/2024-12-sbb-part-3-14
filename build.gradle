@@ -61,6 +61,9 @@ dependencies {
     // security
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // markdown
+    implementation 'org.commonmark:commonmark:0.21.0'
 }
 
 tasks.named('test') {

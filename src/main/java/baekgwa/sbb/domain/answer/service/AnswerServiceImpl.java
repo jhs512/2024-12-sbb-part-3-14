@@ -53,7 +53,7 @@ public class AnswerServiceImpl implements AnswerService {
                 .builder()
                 .id(question.getId())
                 .subject(question.getSubject())
-                .content(question.getSubject())
+                .content(question.getContent())
                 .createDate(question.getCreateDate())
                 .modifyDate(question.getModifyDate())
                 .author(question.getSiteUser().getUsername())
