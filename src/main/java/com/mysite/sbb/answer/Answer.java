@@ -1,18 +1,20 @@
 package com.mysite.sbb.answer;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import com.mysite.sbb.qustion.Question;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.mysite.sbb.user.SiteUser;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.ManyToOne;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @Getter
 @Setter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Answer {
 
     @Id
@@ -22,9 +24,17 @@ public class Answer {
     @Column(columnDefinition = "Text")
     private String content;
 
+    @CreatedDate
     private LocalDateTime createDate;
 
-    @ManyToOne
+    @LastModifiedDate
+    private LocalDateTime modifyDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SiteUser user;
+    @ManyToMany
+    private Set<SiteUser> voterSet;
 
 }

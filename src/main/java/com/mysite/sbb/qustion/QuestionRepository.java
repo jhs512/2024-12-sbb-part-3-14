@@ -9,4 +9,5 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Question findBySubjectAndContent(String subject, String content);
     Page<Question> findAll(Pageable pageable);
     Page<Question> findAllByOrderByIdDesc(Pageable pageable);
+    void deleteById(Long placeId);
 }

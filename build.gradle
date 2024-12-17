@@ -29,6 +29,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	//시큐리티 thymeleaf-extras-springsecurity6 패키지는 타임리프 템플릿 엔진과 스프링 시큐리티 프레임워크를 함께 사용할 때 필요한 타임리프의 확장 기능이다.
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 }
 
 tasks.named('test') {

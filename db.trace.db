@@ -1,0 +1,6 @@
+2024-12-13 14:13:48.409216+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "QUESTIONSITE_USER_ANSWER_LIST" not found; SQL statement:
+select * from questionSITE_USER_ANSWER_LIST [42102-232]
+2024-12-13 15:36:30.569647+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]SITE_USER"; expected "SAVEPOINT, SCRIPT, SHUTDOWN"; SQL statement:
+SITE_USER [42001-232]

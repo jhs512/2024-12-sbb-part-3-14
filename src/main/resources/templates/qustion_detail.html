@@ -1,23 +1,124 @@
-<html layout:decorate="~{layout}">
-<div layout:fragment="content"  class="container my-3">
+<html layout:decorate="~{layout}" xmlns:th="http://www.w3.org/1999/xhtml">
+<div layout:fragment="content" class="container my-3">
     <h2 class="border-bottom py-2" th:text="${content.subject}"></h2>
     <div class="card my-3">
         <div class="card-body">
             <div class="card-text" style="white-space: pre-line;" th:text="${content.content}"></div>
-            <div class="d-flex justify-content-end">
-                <div class="badge bg-light text-dark p-2 text-start">
-                    <div th:text="${#temporals.format(content.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+            <div class="d-flex justify-content-between align-items-center"
+                 th:if="${content.user != null and #authentication.name  == content.user.username}">
+                <div>
+                    <button type="button" th:onclick="|location.href='@{/question/recommend/{id}(id=${content.id})}'|"
+                            sec:authorize="isAuthenticated()"
+                            class="btn btn-danger btn-sm me-2"
+                            th:text="|추천 ${#lists.size(content.voterSet)}|"></button>
+                    <button type="button" th:onclick="|location.href='@{/question/delete/{id}(id=${content.id})}'|"
+                            class="btn btn-danger btn-sm me-2"
+                            th:text="삭제"></button>
+                    <button type="button" th:onclick="|location.href='@{/question/modify/{id}(id=${content.id})}'|"
+                            class="btn btn-secondary btn-sm"
+                            th:text="수정"></button>
+                </div>
+                <div>
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div th:text="${content.user.username}"></div>
+                        <div th:text="${#temporals.format(content.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="text-secondary">([[${content.user.id}]])</div>
+                    </div>
+                    <div class="badge bg-light text-dark p-2 text-start"
+                         th:if="${content.modifyDate != content.createDate}">
+                        <div></div>
+                        <div>수정일</div>
+                        <div th:text="${#temporals.format(content.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    </div>
+                </div>
+            </div>
+            <div th:unless="${content.user != null and #authentication.name  == content.user.username}"
+                 class="d-flex justify-content-between align-items-center">
+                <div>
+                    <button type="button" th:onclick="|location.href='@{/question/recommend/{id}(id=${content.id})}'|"
+                            sec:authorize="isAnonymous()" disabled
+                            class="btn btn-danger btn-sm me-2"
+                            th:text="|추천 ${#lists.size(content.voterSet)}|"></button>
+                    <button type="button" th:onclick="|location.href='@{/question/recommend/{id}(id=${content.id})}'|"
+                            sec:authorize="isAuthenticated()"
+                            class="btn btn-danger btn-sm me-2"
+                            th:text="|추천 ${#lists.size(content.voterSet)}|"></button>
+                </div>
+                <div>
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div th:text="${content.user.username}"></div>
+                        <div th:text="${#temporals.format(content.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="text-secondary">([[${content.user.id}]])</div>
+                    </div>
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div>수정일</div>
+                        <div th:text="${#temporals.format(content.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <h5 class="border-bottom my-3 py-2" th:text="|${#lists.size(content.answerList)}개의 답변이 있습니다.|"></h5>
     <div class="card my-3" th:each="answer : ${content.answerList}">
+        <a th:id="|answer_${answer.id}|"></a>
         <div class="card-body">
             <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
-            <div class="d-flex justify-content-end">
-                <div class="badge bg-light text-dark p-2 text-start">
-                    <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+            <div class="d-flex justify-content-between align-items-center"
+                 th:if="${answer.user != null and #authentication.name  == answer.user.username}">
+                <div>
+                    <button type="button" th:onclick="|location.href='@{/answer/recommend/{id}(id=${answer.id})}'|"
+                            class="btn btn-danger btn-sm me-2"
+                            sec:authorize="isAuthenticated()"
+                            th:text="|추천 ${#lists.size(answer.voterSet)}|"></button>
+
+                    <button type="button" th:onclick="|location.href='@{/answer/delete/{id}(id=${answer.id})}'|"
+                            class="btn btn-secondary btn-sm"
+                            th:text="삭제"></button>
+
+                    <button type="button" th:onclick="|location.href='@{/answer/modify/{id}(id=${answer.id})}'|"
+                            class="btn btn-secondary btn-sm"
+                            th:text="수정"></button>
+                </div>
+                <div>
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div th:text="${answer.user.username}"></div>
+                        <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="text-secondary">([[${answer.user.id}]])</div>
+                    </div>
+                    <div class="badge bg-light text-dark p-2 text-start"
+                         th:if="${answer.modifyDate != answer.createDate}">
+                        <div></div>
+                        <div>수정일</div>
+                        <div th:text="${#temporals.format(answer.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    </div>
+                </div>
+            </div>
+            <div th:unless="${answer.user != null and #authentication.name  == answer.user.username}"
+                 class="d-flex justify-content-between align-items-center">
+                <div>
+                    <button type="button" th:onclick="|location.href='@{/answer/recommend/{id}(id=${answer.id})}'|"
+                            class="btn btn-danger btn-sm me-2"
+                            sec:authorize="isAnonymous()" disabled
+                            th:text="|추천 ${#lists.size(answer.voterSet)}|">
+                    </button>
+                    <button type="button" th:onclick="|location.href='@{/answer/recommend/{id}(id=${answer.id})}'|"
+                            class="btn btn-danger btn-sm me-2"
+                            sec:authorize="isAuthenticated()"
+                            th:text="|추천 ${#lists.size(answer.voterSet)}|">
+                    </button>
+                </div>
+                <div>
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div th:text="${answer.user.username}"></div>
+                        <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                        <div class="text-secondary">([[${answer.user.id}]])</div>
+                    </div>
+                    <div class="badge bg-light text-dark p-2 text-start"
+                         th:if="${answer.modifyDate != answer.createDate}">
+                        <div></div>
+                        <div>수정일</div>
+                        <div th:text="${#temporals.format(answer.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -25,10 +126,13 @@
 
     <form th:action="@{|/answer/create/${content.id}|}" th:object="${answerForm}" method="post" class="my-3">
         <div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
-            <div th:each="err : ${#fields.allErrors()}" th:text="${err}" />
+            <div th:each="err : ${#fields.allErrors()}" th:text="${err}"/>
         </div>
-        <textarea name="content" id="content" rows="15" class="form-control"></textarea>
-        <input type="submit" value="답변등록" class="btn btn-primary my-2">
+        <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control"
+                  rows="10"></textarea>
+        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" rows="10"></textarea>
+        <input sec:authorize="isAnonymous()" disabled type="submit" value="답변등록" class="btn btn-primary my-2">
+        <input sec:authorize="isAuthenticated()" type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
 </div>
 </html>
