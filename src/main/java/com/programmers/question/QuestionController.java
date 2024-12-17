@@ -8,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,24 +24,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("questions")
 public class QuestionController {
     private final QuestionService questionService;
+    private final QuestionRegisterRequestDto EMPTY_REQUEST = new QuestionRegisterRequestDto(null, null);
 
-    @ExceptionHandler
-    public String exceptionHandle(Model model, ValidationException e) {
-        return "redirect:/question/list";
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String exceptionHandle(Model model, MethodArgumentNotValidException e) {
+        return "redirect:/questions/all";
     }
 
     @GetMapping("/create")
-    public String registerForm() {
+    public String registerForm(Model model) {
+        model.addAttribute("questionForm", EMPTY_REQUEST);
         return "register";
     }
 
     @PostMapping("/create")
     public String registerQuestion(
             @Valid @ModelAttribute QuestionRegisterRequestDto requestDto,
+            BindingResult bindingResult,
             Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("questionForm", requestDto);
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                if (error instanceof FieldError fieldError) {
+                    model.addAttribute( fieldError.getField() + "IsInvalid", true);
+                    model.addAttribute(fieldError.getField() + "Warning", fieldError.getDefaultMessage());
+                }
+            }
+            return "register";
+        }
         Question question = questionService.createQuestion(requestDto);
         model.addAttribute("question", question);
-        return "redirect:/question/list";
+        return "redirect:/questions/all";
     }
 
     @GetMapping("/all")
