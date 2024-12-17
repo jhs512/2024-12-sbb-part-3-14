@@ -4,7 +4,7 @@ import baekgwa.sbb.domain.answer.dto.AnswerDto;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
 
 public interface AnswerService {
-    void create(Integer id, String content, String username);
+    Integer create(Integer id, String content, String username);
 
     QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id, String loginUsername);
 

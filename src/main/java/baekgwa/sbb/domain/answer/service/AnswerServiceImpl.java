@@ -26,19 +26,21 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Transactional
     @Override
-    public void create(Integer id, String content, String username) {
+    public Integer create(Integer id, String content, String username) {
         Question question = questionRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("question not found"));
 
         SiteUser siteUser = userRepository.findByUsername(username).orElseThrow(
                 () -> new DataNotFoundException("site user not found"));
 
-        answerRepository.save(Answer
+        Answer saveAnswer = answerRepository.save(Answer
                 .builder()
                 .content(content)
                 .question(question)
                 .siteUser(siteUser)
                 .build());
+
+        return saveAnswer.getId();
     }
 
     @Transactional(readOnly = true)

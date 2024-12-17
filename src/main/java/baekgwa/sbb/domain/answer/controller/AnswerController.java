@@ -37,8 +37,8 @@ public class AnswerController {
             model.addAttribute("question", question);
             return "question_detail";
         }
-        answerService.create(id, answerForm.getContent(), principal.getName());
-        return String.format("redirect:/question/detail/%s", id);
+        Integer answerId = answerService.create(id, answerForm.getContent(), principal.getName());
+        return String.format("redirect:/question/detail/%s#answer_%s", id, answerId);
     }
 
     @GetMapping("/modify/{id}")
@@ -58,7 +58,7 @@ public class AnswerController {
             return "answer_form";
         }
         Integer modifiedQuestionId = answerService.modifyAnswer(id, principal.getName(), answerForm.getContent());
-        return String.format("redirect:/question/detail/%s", modifiedQuestionId);
+        return String.format("redirect:/question/detail/%s#answer_%s", modifiedQuestionId, id);
     }
 
     @GetMapping("/delete/{id}")
@@ -70,7 +70,7 @@ public class AnswerController {
     @GetMapping("/vote/{id}")
     public String answerVote(Principal principal, @PathVariable("id") Integer id) {
         Integer questionId = answerService.vote(id, principal.getName());
-        return String.format("redirect:/question/detail/%s", questionId);
+        return String.format("redirect:/question/detail/%s#answer_%s", questionId, id);
     }
 
     @GetMapping("/vote/cancel/{id}")
