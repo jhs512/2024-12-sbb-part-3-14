@@ -5,10 +5,8 @@ import com.programmers.exception.NotFoundDataException;
 import com.programmers.page.PageableUtils;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.dto.QuestionRegisterRequestDto;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,7 +25,6 @@ public class QuestionService {
                         .build()
         );
     }
-
 
     public Page<Question> findAllQuestions(PageRequestDto requestDto) {
         return PageableUtils.getPage(questionRepository, requestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);

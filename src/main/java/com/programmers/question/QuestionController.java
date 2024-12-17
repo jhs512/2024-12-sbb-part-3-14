@@ -33,7 +33,7 @@ public class QuestionController {
         return "question/register";
     }
 
-    @PostMapping("/register")
+    @PostMapping("/create")
     public String registerQuestion(
             @Valid @ModelAttribute QuestionRegisterRequestDto requestDto,
             Model model) {

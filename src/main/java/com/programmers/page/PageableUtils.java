@@ -42,7 +42,7 @@ public class PageableUtils {
         long totalCount = jpaRepository.count();
         long maxPage = totalCount / pageable.getPageSize() + totalCount % pageable.getPageSize() == 0 ? 0 : 1;
 
-        if (maxPage < pageable.getPageNumber() + 1) {
+        if (pageable.getPageNumber() != 0 && maxPage < pageable.getPageNumber() + 1) {
             throw new PageOutOfRangeException("page out of range");
         }else{
             return jpaRepository.findAll(pageable);
