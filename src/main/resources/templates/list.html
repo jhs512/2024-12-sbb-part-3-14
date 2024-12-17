@@ -10,8 +10,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="question, loop : ${questionList}">
-                <td th:text="${loop.count}"></td>
+            <tr th:each="question : ${questionPage.getContent()}">
+                <td th:text="${question.id}"></td>
                 <td>
                     <a th:href="@{|/questions/${question.id}|}" th:text="${question.subject}"></a>
                 </td>
@@ -19,7 +19,15 @@
             </tr>
             </tbody>
     </table>
+    <div class="d-flex justify-content-center">
+        <div th:if="${questionPage.totalPages > 0}">
+            <ul class="pagination">
+                <li class="page-item" th:each="page : ${#numbers.sequence(1, questionPage.totalPages)}">
+                    <a class="page-link" th:href="@{|/questions/all?page=${page}|}" th:text="${page}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
     <a th:href="@{/questions/create}" class="btn btn-primary">질문 등록하기</a>
 </div>
-</body>
 </html>

@@ -54,7 +54,7 @@ public class QuestionController {
             Model model,
             @Valid @ModelAttribute PageRequestDto pageRequestDto) {
         Page<Question> questionPage = questionService.findAllQuestions(pageRequestDto);
-        model.addAttribute("questionList", questionPage.getContent());
+        model.addAttribute("questionPage", questionPage);
         return "list";
     }
 
