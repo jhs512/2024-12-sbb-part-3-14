@@ -3,10 +3,10 @@ package com.programmers.question.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public record QuestionRegisterRequestDto (
-        @NotBlank
+        @NotBlank(message = "제목은 공백일 수 없습니다.")
         String subject,
 
-        @NotBlank
+        @NotBlank(message = "내용은 공백일 수 없습니다.")
         String content
 ) {
 }

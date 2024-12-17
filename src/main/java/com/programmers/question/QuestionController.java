@@ -32,8 +32,8 @@ public class QuestionController {
     }
 
     @GetMapping("/create")
-    public String registerForm(Model model) {
-        model.addAttribute("questionForm", EMPTY_REQUEST);
+    public String registerForm(QuestionRegisterRequestDto requestDto) {
+//        model.addAttribute("questionForm", EMPTY_REQUEST);
         return "register";
     }
 
@@ -43,13 +43,13 @@ public class QuestionController {
             BindingResult bindingResult,
             Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("questionForm", requestDto);
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                if (error instanceof FieldError fieldError) {
-                    model.addAttribute( fieldError.getField() + "IsInvalid", true);
-                    model.addAttribute(fieldError.getField() + "Warning", fieldError.getDefaultMessage());
-                }
-            }
+//            model.addAttribute("questionForm", requestDto);
+//            for (ObjectError error : bindingResult.getAllErrors()) {
+//                if (error instanceof FieldError fieldError) {
+//                    model.addAttribute( fieldError.getField() + "IsInvalid", true);
+//                    model.addAttribute(fieldError.getField() + "Warning", fieldError.getDefaultMessage());
+//                }
+//            }
             return "register";
         }
         Question question = questionService.createQuestion(requestDto);
