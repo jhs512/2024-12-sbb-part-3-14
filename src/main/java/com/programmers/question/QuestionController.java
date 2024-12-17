@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -16,15 +18,16 @@ public class QuestionController {
     private final QuestionService questionService;
 
 
+    @GetMapping("/list")
     public String findAllQuestions(
             Model model,
-            @Valid PageRequestDto pageRequestDto,
+            @Valid @ModelAttribute PageRequestDto pageRequestDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "redirect:question/questions";
+            return "redirect:/question/list";
         }else {
-            Page<Question> questions = questionService.findAllQuestions(pageRequestDto);
-            model.addAttribute("questions", questions);
+            Page<Question> questionPage = questionService.findAllQuestions(pageRequestDto);
+            model.addAttribute("questionList", questionPage.getContent());
             return "question/list";
         }
     }
