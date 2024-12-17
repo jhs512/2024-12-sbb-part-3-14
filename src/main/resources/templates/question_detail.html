@@ -64,26 +64,34 @@
                 <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
                    th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
-                   th:text="수정"></a>
+                   th:text="수정">
+
+                </a>
                 <a href="javascript:void(0)" th:data-uri="@{|/answer/delete/${answer.id}|}"
                    class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
                    th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
-                   th:text="삭제"></a>
+                   th:text="삭제">
+
+                </a>
+                <a th:href="@{|/answer/detail/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
+                   th:text="댓글">
+
+                </a>
             </div>
         </div>
     </div>
     <!-- 답변 반복 끝 -->
     <!-- 답변 작성 -->
-    <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="my-3">
+    <form th:action="@{|/answer/create/${question.id}?page=${paging.number}|}" th:object="${answerForm}" method="post" class="my-3">
         <div th:replace="~{form_errors::formErrorsFragment}"></div>
-        <textarea sec:authorize="isAnonymous()" th:field="*{content}" rows="10" class="form-control"></textarea>
+        <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" rows="10" class="form-control"></textarea>
         <textarea sec:authorize="isAuthenticated()" th:field="*{content}" rows="10" class="form-control"></textarea>
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
     <!-- 답변 작성 끝 -->
     <!-- 페이징 번호  -->
-    <div th:if="${!paging.isEmpty()}">
+    <div th:if="${paging != null and !paging.isEmpty()}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${!paging.hasPrevious()} ? 'disabled'">
                 <a class="page-link"
@@ -99,7 +107,7 @@
                    th:text="${page+1}"
                    th:href="@{|?page=${page}|}">
                 </a>
-            </li>
+            </li>properti
             <li class="pate-item" th:classappend="${!paging.hasNext()} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{|?page=${paging.number+1}|}">

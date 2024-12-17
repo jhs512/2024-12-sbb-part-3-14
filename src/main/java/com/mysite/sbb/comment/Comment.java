@@ -1,48 +1,43 @@
-package com.mysite.sbb.answer;
+package com.mysite.sbb.comment;
 
-import com.mysite.sbb.comment.Comment;
-import com.mysite.sbb.question.Question;
+import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Answer {
+@Entity
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    @Setter(AccessLevel.PRIVATE)
+    private Integer id;
+
+    @CreatedDate
+    @Setter(AccessLevel.PRIVATE)
+    private LocalDateTime createDate;
+
+    @LastModifiedDate
+    @Setter(AccessLevel.PRIVATE)
+    private LocalDateTime modifyDate;
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @CreatedDate
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
-
     @ManyToOne
-    private Question question;
+    private Answer answer;
 
     @ManyToOne
     private SiteUser author;
-
-    @ManyToMany
-    private Set<SiteUser> voter;
-
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
-    private List<Comment> commentList;
 }

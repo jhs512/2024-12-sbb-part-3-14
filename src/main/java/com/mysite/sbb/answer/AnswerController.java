@@ -1,11 +1,13 @@
 package com.mysite.sbb.answer;
 
+import com.mysite.sbb.comment.CommentForm;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.question.QuestionService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -31,17 +33,20 @@ public class AnswerController {
                                @PathVariable("id") Integer id,
                                @Valid AnswerForm answerForm,
                                BindingResult bindingResult,
-                               Principal principal) {
+                               Principal principal,
+                               @RequestParam(value="page", defaultValue = "0") int page) {
 
         Question question = questionService.getQuestion(id);
         SiteUser siteUser = this.userService.getUser(principal.getName());
 
         if (bindingResult.hasErrors()) {
+            Page<Answer> paging = this.answerService.getList(id, page);
+            model.addAttribute("paging", paging);
             model.addAttribute("question", question);
             return "question_detail";
         }
         Answer answer = answerService.create(question, answerForm.getContent(), siteUser);
-        return String.format("redirect:/question/detail/%s#answer_%s", id, answer.getId());
+        return String.format("redirect:/question/detail/%s?page=%s#answer_%s", id, page, answer.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -94,5 +99,18 @@ public class AnswerController {
         SiteUser siteUser = this.userService.getUser(principal.getName());
         this.answerService.vote(answer, siteUser);
         return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), answer.getId());
+    }
+
+    @GetMapping("/detail/{id}")
+    public String detail(
+            Model model,
+            @PathVariable("id") Integer answerId,
+            CommentForm commentForm) {
+
+        Answer answer = answerService.getAnswer(answerId);
+        Question question = questionService.getQuestion(answer.getQuestion().getId());
+        model.addAttribute("question", question);
+        model.addAttribute("answer", answer);
+        return "answer_detail";
     }
 }
