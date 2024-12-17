@@ -1,6 +1,8 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3">
-    <h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
+    <h2 class="border-bottom py-2" >
+        <a class="fw-bold" th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+    </h2>
     <!-- 답변 -->
     <div class="card-my-3">
         <div class="card-body">
@@ -44,8 +46,32 @@
                     <div th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
             </div>
+            <div class="my-3">
+                <a th:href="@{|/comment/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary"
+                   sec:authorize="isAuthenticated()"
+                   th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                   th:text="수정">
+
+                </a>
+                <a href="javascript:void(0)" th:data-uri="@{|/comment/delete/${comment.id}|}"
+                   class="delete btn btn-sm btn-outline-secondary"
+                   sec:authorize="isAuthenticated()"
+                   th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                   th:text="삭제">
+                </a>
+            </div>
         </div>
     </div>
     <!-- 댓글 끝 -->
 </div>
+<script layout:fragment="script" type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            }
+        });
+    });
+</script>
 </html>

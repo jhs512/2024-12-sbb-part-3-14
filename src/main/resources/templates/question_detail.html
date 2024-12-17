@@ -74,9 +74,9 @@
                    th:text="삭제">
 
                 </a>
-                <a th:href="@{|/answer/detail/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
-                   th:text="댓글">
-
+                <a th:href="@{|/answer/detail/${answer.id}|}" class="btn btn-sm btn-outline-secondary">
+                    댓글
+                    <span class="badge rounded-pill bg-success" th:text="${#lists.size(answer.commentList)}"></span>
                 </a>
             </div>
         </div>
