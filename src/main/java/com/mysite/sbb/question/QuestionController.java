@@ -98,7 +98,7 @@ public class QuestionController {
         }
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
-        model.addAttribute("categoryId", question.getCategory().getId());
+        questionForm.setCategoryId(question.getCategory().getId());
         model.addAttribute("categoryList", categoryService.getCategoryList());
         return "question_form";
     }

@@ -8,8 +8,8 @@
             <label for="subject" class="form-label">카테고리</label>
             <select th:field="*{categoryId}" class="form-select" style="width:200px;">
                 <option th:each="category : ${categoryList}"
-                        th:value="${category.id}"
                         th:selected="${category.id == categoryId}"
+                        th:value="${category.id}"
                         th:text="${category.title}"></option>
             </select>
         </div>
