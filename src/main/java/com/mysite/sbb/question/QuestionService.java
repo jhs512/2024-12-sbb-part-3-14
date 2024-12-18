@@ -2,6 +2,7 @@ package com.mysite.sbb.question;
 
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.category.Category;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -35,27 +36,29 @@ public class QuestionService {
         }
     }
 
-    public void create(String subject, String content, SiteUser author) {
+    public void create(String subject, String content, SiteUser author, Category category) {
         Question question = Question.builder()
                 .subject(subject)
                 .content(content)
                 .author(author)
+                .category(category)
                 .build();
         questionRepository.save(question);
     }
 
-    public Page<Question> getList(int page, String kw) {
+    public Page<Question> getList(int page, String kw, int categoryId) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         // Specification<Question> spec = search(kw);
         // return this.questionRepository.findAll(spec, pageable);
-        return this.questionRepository.findAllByKeyword(kw, pageable);
+        return this.questionRepository.findAllByKeywordAndCategory(kw, categoryId, pageable);
     }
 
-    public void modify(Question question, String subject, String content) {
+    public void modify(Question question, String subject, String content, Category category) {
         question.setSubject(subject);
         question.setContent(content);
+        question.setCategory(category);
         this.questionRepository.save(question);
     }
 
@@ -68,6 +71,7 @@ public class QuestionService {
         this.questionRepository.save(question);
     }
 
+    /*
     private Specification<Question> search(String kw) {
         return new Specification<>() {
             private static final long serialVersionUID = 1L;
@@ -85,4 +89,5 @@ public class QuestionService {
             }
         };
     }
+     */
 }

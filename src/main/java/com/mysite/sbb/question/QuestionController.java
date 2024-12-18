@@ -3,6 +3,8 @@ package com.mysite.sbb.question;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerForm;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.category.Category;
+import com.mysite.sbb.category.CategoryService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
@@ -27,12 +29,18 @@ public class QuestionController {
     private final AnswerService answerService;
     private final QuestionService questionService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @GetMapping("/list")
     public String list(Model model,
                        @RequestParam(value="page", defaultValue = "0") int page,
-                       @RequestParam(value="kw", defaultValue = "") String kw) {
-        Page<Question> paging = this.questionService.getList(page, kw);
+                       @RequestParam(value="kw", defaultValue = "") String kw,
+                       @RequestParam(value="category", defaultValue= "1") int categoryId) {
+        Page<Question> paging = this.questionService.getList(page, kw, categoryId);
+        List<Category> categoryList = categoryService.getCategoryList();
+        Category category = categoryService.getCategory(categoryId);
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("category", category);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         return "question_list";
@@ -52,28 +60,36 @@ public class QuestionController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String questionCreate(QuestionForm questionForm) {
+    public String questionCreate(
+            Model model,
+            QuestionForm questionForm) {
+        model.addAttribute("categoryList", categoryService.getCategoryList());
         return "question_form";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String questionCreate(@Valid QuestionForm questionForm,
-                                 BindingResult bindingResult,
-                                 Principal principcal
-                                 ) {
+    public String questionCreate( Model model,
+                                  @Valid QuestionForm questionForm,
+                                  BindingResult bindingResult,
+                                  Principal principcal ){
+
         SiteUser siteUser = userService.getUser(principcal.getName());
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("categoryList", categoryService.getCategoryList());
             return "question_form";
         }
-        this.questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
+
+        Category category = categoryService.getCategory(questionForm.getCategoryId());
+        this.questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser, category);
         return "redirect:/question/list";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String questionModify(QuestionForm questionForm,
+    public String questionModify( Model model,
+                                  QuestionForm questionForm,
                                  @PathVariable("id") Integer id,
                                  Principal principal) {
         Question question = this.questionService.getQuestion(id);
@@ -82,6 +98,8 @@ public class QuestionController {
         }
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
+        model.addAttribute("categoryId", question.getCategory().getId());
+        model.addAttribute("categoryList", categoryService.getCategoryList());
         return "question_form";
     }
 
@@ -99,7 +117,8 @@ public class QuestionController {
         if (!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.questionService.modify(question, questionForm.getSubject(), questionForm.getContent());
+        Category category = categoryService.getCategory(questionForm.getCategoryId());
+        this.questionService.modify(question, questionForm.getSubject(), questionForm.getContent(), category);
         return String.format("redirect:/question/detail/%s", id);
     }
 
