@@ -7,9 +7,10 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
-public class QuestionSpecificationBuilder {
+public enum QuestionSpecificationBuilder {
+    INSTANCE;
 
-    public static Specification<Question> searchByKeyword(String keyword) {
+    public Specification<Question> searchByKeyword(String keyword) {
         return (root, query, cb) -> {
             query.distinct(true);
             Join<Question, SiteUser> authorJoin = root.join("siteUser", JoinType.LEFT);

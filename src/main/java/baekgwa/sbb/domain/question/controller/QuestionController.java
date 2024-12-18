@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +31,12 @@ public class QuestionController {
     public String detail(
             Model model,
             @PathVariable("id") Integer id,
-            AnswerForm answerForm,
+            @ModelAttribute(name = "answerForm") AnswerForm answerForm,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             Principal principal) {
         String username = principal == null ? null : principal.getName();
-        QuestionDto.DetailInfo question = questionService.getQuestion(id, username);
+        QuestionDto.DetailInfo question = questionService.getQuestion(id, username, page, size);
         model.addAttribute("question", question);
         return "question_detail";
     }
@@ -74,7 +77,7 @@ public class QuestionController {
             QuestionForm questionForm,
             @PathVariable("id") Integer id,
             Principal principal) {
-        QuestionDto.DetailInfo question = questionService.getQuestion(id, principal.getName());
+        QuestionDto.DetailInfo question = questionService.getQuestion(id, principal.getName(), 0, 0);
         if (!question.getAuthor().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }

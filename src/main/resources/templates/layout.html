@@ -12,6 +12,10 @@
     <!-- sbb CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
     <title>백과의 질문게시판</title>
+
+    <!-- CSRF 토큰 추가 -->
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
 </head>
 <body>
 <!-- 네비게이션바 -->

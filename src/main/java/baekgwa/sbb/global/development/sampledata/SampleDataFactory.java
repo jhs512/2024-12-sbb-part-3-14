@@ -41,12 +41,12 @@ public class SampleDataFactory {
     public void addQuestionAndAnswer() {
         SiteUser siteUser = userRepository.findByUsername("test").orElseThrow(
                 () -> new DataNotFoundException("테스트용 계정을 찾을 수 없습니다."));
-        for(int i=1; i<=300; i++) {
+        for(int i=1; i<=100; i++) {
             Question question = createQuestion(String.format("%d번 질문입니다!", i),
                     String.format("%d번의 상세 질문 내용 입니다!!", i), siteUser);
             questionRepository.save(question);
 
-            int randomCount = new Random().nextInt(2, 5);
+            int randomCount = new Random().nextInt(5, 20);
             for(int j=1; j<=randomCount; j++) {
                 Answer answer = createAnswer(question, String.format("%d번 질문의 %d번째 답변 입니다!", i, j), siteUser);
                 answerRepository.save(answer);

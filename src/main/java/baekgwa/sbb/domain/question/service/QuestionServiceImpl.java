@@ -5,11 +5,11 @@ import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
+import baekgwa.sbb.model.answer.persistence.AnswerRepository;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
-import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,14 +26,19 @@ import org.springframework.web.server.ResponseStatusException;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     @Override
-    public QuestionDto.DetailInfo getQuestion(Integer id, String loginUsername) {
-        Question question = questionRepository.findByIdWithAnswersAndSiteUserAndVoter(id)
+    public QuestionDto.DetailInfo getQuestion(Integer id, String loginUsername, Integer page,
+            Integer size) {
+        Question question = questionRepository.findByIdWithSiteUserAndVoter(id)
                 .orElseThrow(
                         () -> new DataNotFoundException("question not found"));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
+        Page<Answer> answer = answerRepository.findByQuestionIdOrderByVoterCountDesc(id, pageable);
 
         return QuestionDto.DetailInfo
                 .builder()
@@ -47,21 +52,17 @@ public class QuestionServiceImpl implements QuestionService {
                 .userVote(question.getVoter().stream()
                         .anyMatch(voter -> voter.getUsername().equals(loginUsername)))
                 .answerList(
-                        question.getAnswerList().stream()
-                                .sorted(Comparator.comparing(Answer::getCreateDate))
-                                .map(answer -> AnswerDto.AnswerDetailInfo
+                        answer.map(data -> AnswerDto.AnswerDetailInfo
                                         .builder()
-                                        .id(answer.getId())
-                                        .content(answer.getContent())
-                                        .modifyDate(answer.getModifyDate())
-                                        .createDate(answer.getCreateDate())
-                                        .author(answer.getSiteUser().getUsername())
-                                        .voteCount(answer.getVoter().stream().count())
-                                        .userVote(answer.getVoter().stream()
-                                                .anyMatch(voter -> voter.getUsername()
-                                                        .equals(loginUsername)))
-                                        .build()
-                                ).toList()
+                                        .id(data.getId())
+                                        .content(data.getContent())
+                                        .modifyDate(data.getModifyDate())
+                                        .createDate(data.getCreateDate())
+                                        .author(data.getSiteUser().getUsername())
+                                        .voteCount(data.getVoter().stream().count())
+                                        .userVote(data.getVoter().stream().anyMatch(
+                                                voter -> voter.getUsername().equals(loginUsername)))
+                                        .build())
                 )
                 .build();
     }
@@ -84,7 +85,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Page<QuestionDto.MainInfo> getList(int page, int size, String keyword) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
-        Specification<Question> spec = QuestionSpecificationBuilder.searchByKeyword(keyword);
+        Specification<Question> spec = QuestionSpecificationBuilder.INSTANCE.searchByKeyword(keyword);
 
         return questionRepository.findAll(spec, pageable)
                 .map(

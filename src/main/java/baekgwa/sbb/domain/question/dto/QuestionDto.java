@@ -1,9 +1,8 @@
 package baekgwa.sbb.domain.question.dto;
 
 import baekgwa.sbb.domain.answer.dto.AnswerDto;
-import baekgwa.sbb.domain.answer.dto.AnswerDto.AnswerDetailInfo;
+import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,14 +17,13 @@ public class QuestionDto {
         private final LocalDateTime modifyDate;
         private final String author;
         private final Long voterCount;
-        private final List<AnswerDto.AnswerDetailInfo> answerList;
+        private final Page<AnswerDto.AnswerDetailInfo> answerList;
         private final boolean userVote;
 
         @Builder
         private DetailInfo(Integer id, String subject, String content, LocalDateTime createDate,
                 LocalDateTime modifyDate, String author, Long voterCount,
-                List<AnswerDetailInfo> answerList,
-                boolean userVote) {
+                Page<AnswerDto.AnswerDetailInfo> answerList, boolean userVote) {
             this.id = id;
             this.subject = subject;
             this.content = content;

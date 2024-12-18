@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 @RequestMapping("/answer")
@@ -30,10 +31,12 @@ public class AnswerController {
             @PathVariable("id") Integer id,
             @Valid AnswerForm answerForm,
             BindingResult bindingResult,
-            Principal principal) {
+            Principal principal,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         if (bindingResult.hasErrors()) {
             String loginUsername = principal == null ? null : principal.getName();
-            QuestionDto.DetailInfo question = answerService.getQuestionByIdAndAnswers(id, loginUsername);
+            QuestionDto.DetailInfo question = answerService.getQuestionByIdAndAnswers(id, loginUsername, page, size);
             model.addAttribute("question", question);
             return "question_detail";
         }
