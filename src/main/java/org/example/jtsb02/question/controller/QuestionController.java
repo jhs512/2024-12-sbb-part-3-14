@@ -1,7 +1,9 @@
 package org.example.jtsb02.question.controller;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.form.QuestionForm;
 import org.example.jtsb02.question.service.QuestionService;
 import org.springframework.stereotype.Controller;
@@ -33,4 +35,10 @@ public class QuestionController {
         return "redirect:/";
     }
 
+    @GetMapping("/list")
+    public String getQuestions(Model model) {
+        List<QuestionDto> questions = questionService.getQuestions();
+        model.addAttribute("questions", questions);
+        return "question_list";
+    }
 }
