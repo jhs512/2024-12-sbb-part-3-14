@@ -35,12 +35,10 @@
 
     <h5 class="border-bottom my-3 py-2" th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
 
-    <form th:action="@{|/question/detail/${question.id}|}" method="get" id="orderForm">
-        <select id="select_order" name="order" onchange="selectOrder()" th:value="${order}">
-            <option th:value="createDate" th:selected="${order.equals('createDate')}" th:data-order="createDate">최신순</option>
-            <option th:value="voter" th:selected="${order.equals('voter')}" th:data-order="voter">추천순</option>
-        </select>
-    </form>
+    <select id="select_order" name="order" onchange="selectWithOrder()" th:value="${order}">
+        <option th:value="createDate" th:selected="${order.equals('createDate')}" th:data-order="createDate">최신순</option>
+        <option th:value="voter" th:selected="${order.equals('voter')}" th:data-order="voter">추천순</option>
+    </select>
 
     <div class="card my-3" th:each="answer : ${answerList}">
         <a th:id="|answer_${answer.id}|"></a>
@@ -78,17 +76,17 @@
     <div th:if="${!answerList.isEmpty()}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${!answerList.hasPrevious} ? 'disabled'">
-                <a class="page-link" href="javascript:void(0)" th:data-page="${answerList.number-1}">
+                <a class="page-link" href="javascript:void(0)" th:data-page="${answerList.number - 1}">
                     <span>이전</span>
                 </a>
             </li>
-            <li th:each="page: ${#numbers.sequence(0, answerList.totalPages-1)}"
-                th:if="${page >= answerList.number-5 and page <= answerList.number+5}"
+            <li th:each="page: ${#numbers.sequence(0, answerList.totalPages - 1)}"
+                th:if="${page >= answerList.number - 5 and page <= answerList.number+5}"
                 th:classappend="${page == answerList.number} ? 'active'" class="page-item">
                 <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
             </li>
             <li class="page-item" th:classappend="${!answerList.hasNext} ? 'disabled'">
-                <a class="page-link" href="javascript:void(0)" th:data-page="${answerList.number+1}">
+                <a class="page-link" href="javascript:void(0)" th:data-page="${answerList.number + 1}">
                     <span>다음</span>
                 </a>
             </li>
@@ -127,13 +125,17 @@
     const page_elements = document.getElementsByClassName("page-link");
     Array.from(page_elements).forEach(function(element) {
         element.addEventListener('click', function() {
-            document.getElementById('select_order').value = this.dataset.order;
+            const order = document.getElementById("select_order").value;
+            document.getElementById('order').value = order;
             document.getElementById('page').value = this.dataset.page;
             document.getElementById('detailForm').submit();
         });
     });
-    function selectOrder() {
-        document.getElementById("orderForm").submit();
+    function selectWithOrder() {
+        const order = document.getElementById("select_order").value;
+        document.getElementById("order").value = order;
+        document.getElementById("page").value = 0;
+        document.getElementById("detailForm").submit();
     }
 </script>
 </html>
