@@ -30,10 +30,12 @@ public class QuestionService {
 
     public Page<Question> getList(int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createDate"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        return questionRepository.findAllByKeyword(kw, pageable);
+        sorts.add(Sort.Order.desc("createDate")); // 정렬 기준: 생성일 내림차순
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts)); // Pageable 객체 생성
+        Specification<Question> spec = search(kw); // 검색 조건 생성
+        return questionRepository.findAll(spec, pageable); // 검색 및 페이징 결과 반환
     }
+
 
     public Question getQuestion(Integer id) {
         Optional<Question> question = questionRepository.findById(id);
@@ -72,6 +74,7 @@ public class QuestionService {
     private Specification<Question> search(String kw){
         return new Specification<Question>() {
             private static final long serialVersionUID = 1L;
+
             @Override
             public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 query.distinct(true);
