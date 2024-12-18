@@ -40,6 +40,11 @@ public class CommentService {
         }
     }
 
+    public void modify(Comment comment, String content) {
+        comment.setContent(content);
+        commentRepository.save(comment);
+    }
+
     public void delete(Comment comment) {
         commentRepository.delete(comment);
     }
