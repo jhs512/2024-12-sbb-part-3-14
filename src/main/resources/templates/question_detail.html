@@ -30,6 +30,13 @@
                    th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
                    th:text="삭제"></a>
             </div>
+            <hr>
+            <div th:each="comment : ${commentList}">
+                <div th:text="${comment.content}"></div>
+                - <span th:text="${comment.author.username}"></span>
+                , <span th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+                <hr>
+            </div>
         </div>
     </div>
 
