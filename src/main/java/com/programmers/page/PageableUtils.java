@@ -42,8 +42,6 @@ public class PageableUtils {
         long totalCount = jpaRepository.count();
 
         long maxPage = totalCount / pageable.getPageSize() + (totalCount % pageable.getPageSize() == 0 ? 0 : 1);
-        System.out.println("Total count: " + totalCount);
-        System.out.println("Max Page: " + maxPage);
 
         if (totalCount == 0){
             return Page.empty(pageable);

@@ -29,6 +29,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     runtimeOnly("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation ("org.slf4j:slf4j-api")
+    implementation ("ch.qos.logback:logback-classic")
 }
 
 tasks.withType<Test> {

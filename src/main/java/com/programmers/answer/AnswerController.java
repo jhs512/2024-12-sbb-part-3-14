@@ -1,2 +1,4 @@
-package com.programmers.answer;public class AnswerController {
+package com.programmers.answer;
+
+public class AnswerController {
 }

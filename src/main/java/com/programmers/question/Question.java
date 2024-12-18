@@ -1,13 +1,8 @@
 package com.programmers.question;
 
 import com.programmers.answer.Answer;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -50,6 +45,9 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     private List<Answer> answerList;
+
+    @Transient
+    private long answerCount;
 
     public void addAnswer(Answer answer) {
         this.answerList.add(answer);
