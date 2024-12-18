@@ -25,6 +25,7 @@ public class CommentController {
     private final QuestionService questionService;
     private final UserService userService;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/question/{id}")
     public String createQuestionComment(
             @ModelAttribute CommentForm commentForm,
@@ -38,6 +39,7 @@ public class CommentController {
         return "redirect:/question/detail/%s".formatted(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/answer/{id}")
     public String createAnswerComment(
             @ModelAttribute CommentForm commentForm,

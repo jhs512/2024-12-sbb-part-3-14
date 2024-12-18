@@ -43,7 +43,8 @@
             </div>
             <div>
                 <form th:action="@{|/comment/create/question/${id}|}" method="post" th:object="${commentForm}">
-                    <input type="text" th:field="*{content}" id="question_comment" required>
+                    <input type="text" sec:authorize="isAnonymous()" disabled th:field="*{content}" placeholder="로그인이 필요합니다.">
+                    <input type="text" sec:authorize="isAuthenticated()" th:field="*{content}" id="question_comment" required>
                     <input type="hidden" th:name="questionId" th:value="${question.id}">
                     <input type="submit" value="등록">
                 </form>
@@ -100,7 +101,8 @@
             </div>
             <div>
                 <form th:action="@{|/comment/create/answer/${id}|}" method="post" th:object="${commentForm}">
-                    <input type="text" th:field="*{content}" id="answer_comment" required>
+                    <input type="text" sec:authorize="isAnonymous()" disabled th:field="*{content}" placeholder="로그인이 필요합니다.">
+                    <input type="text" sec:authorize="isAuthenticated()" th:field="*{content}" id="answer_comment" required>
                     <input type="hidden" th:name="answerId" th:value="${answer.id}">
                     <input type="submit" value="등록">
                 </form>
