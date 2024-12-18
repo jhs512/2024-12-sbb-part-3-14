@@ -4,7 +4,7 @@ import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.repository.AnswerRepository;
 import com.mysite.sbb.domain.Question;
 import com.mysite.sbb.repository.QuestionRepository;
-import com.mysite.sbb.service.QuestionService;
+import com.mysite.sbb.service.impl.QuestionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +26,7 @@ class SbbApplicationTests {
 	private AnswerRepository answerRepository;
 
 	@Autowired
-	QuestionService questionService;
+	QuestionServiceImpl questionServiceImpl;
 
 	@Test
 	void addQuestion() {
@@ -138,7 +138,7 @@ class SbbApplicationTests {
 		for (int i = 0; i <= 300; i++) {
 			String subject = String.format("테스트 데이터입니다:[%03d]", i);
 			String content = "내용무";
-			questionService.create(subject, content, null);
+			questionServiceImpl.create(subject, content, null);
 		}
 	}
 

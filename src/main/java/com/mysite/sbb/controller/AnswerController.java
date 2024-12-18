@@ -3,10 +3,10 @@ package com.mysite.sbb.controller;
 import com.mysite.sbb.form.AnswerForm;
 import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
-import com.mysite.sbb.service.AnswerService;
-import com.mysite.sbb.service.QuestionService;
+import com.mysite.sbb.service.impl.AnswerServiceImpl;
+import com.mysite.sbb.service.impl.QuestionServiceImpl;
 import com.mysite.sbb.domain.SiteUser;
-import com.mysite.sbb.service.UserService;
+import com.mysite.sbb.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,9 +27,9 @@ import java.security.Principal;
 @Controller
 public class AnswerController {
 
-    private final QuestionService questionService; // 질문 데이터를 처리하는 서비스
-    private final AnswerService answerService;     // 답변 데이터를 처리하는 서비스
-    private final UserService userService;         // 사용자 데이터를 처리하는 서비스
+    private final QuestionServiceImpl questionServiceImpl; // 질문 데이터를 처리하는 서비스
+    private final AnswerServiceImpl answerServiceImpl;     // 답변 데이터를 처리하는 서비스
+    private final UserServiceImpl userServiceImpl;         // 사용자 데이터를 처리하는 서비스
 
     // 인증된 사용자만 접근 가능
     @PreAuthorize("isAuthenticated()")
@@ -37,9 +37,9 @@ public class AnswerController {
     public String createAnswer(Model model, @PathVariable Integer id,
                                @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {
         // 1. 질문 ID를 사용하여 질문 객체 조회
-        Question question = questionService.getQuestion(id);
+        Question question = questionServiceImpl.getQuestion(id);
         // 2. 현재 로그인된 사용자 정보 조회
-        SiteUser siteUser = userService.getUser(principal.getName());
+        SiteUser siteUser = userServiceImpl.getUser(principal.getName());
 
         // 3. 답변 내용에 유효성 검증 오류가 있으면 다시 질문 상세 페이지로 이동
         if(bindingResult.hasErrors()) {
@@ -48,7 +48,7 @@ public class AnswerController {
         }
 
         // 4. 답변 생성 및 저장
-        Answer answer = this.answerService.create(question, answerForm.getContent(), siteUser);
+        Answer answer = this.answerServiceImpl.create(question, answerForm.getContent(), siteUser);
 
         // 5. 질문 상세 페이지로 리다이렉트하며 앵커를 사용해 새로 생성된 답변 위치로 이동
         return String.format("redirect:/question/detail/%s#answer_%s",
@@ -60,7 +60,7 @@ public class AnswerController {
     @GetMapping("/modify/{id}")
     public String answerModify(AnswerForm answerForm, @PathVariable("id") Integer id, Principal principal) {
         // 1. 수정할 답변 조회
-        Answer answer = this.answerService.getAnswer(id);
+        Answer answer = this.answerServiceImpl.getAnswer(id);
         // 2. 수정 권한 확인: 작성자가 아니면 예외 발생
         if (!answer.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
@@ -80,12 +80,12 @@ public class AnswerController {
             return "answer_form";
         }
         // 2. 수정할 답변 조회 및 작성자 확인
-        Answer answer = this.answerService.getAnswer(id);
+        Answer answer = this.answerServiceImpl.getAnswer(id);
         if (!answer.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         // 3. 답변 수정
-        this.answerService.modify(answer, answerForm.getContent());
+        this.answerServiceImpl.modify(answer, answerForm.getContent());
         // 4. 수정된 답변 위치로 이동
         return String.format("redirect:/question/detail/%s#answer_%s",
                 answer.getQuestion().getId(), answer.getId());
@@ -96,12 +96,12 @@ public class AnswerController {
     @GetMapping("/delete/{id}")
     public String answerDelete(Principal principal, @PathVariable("id") Integer id) {
         // 1. 삭제할 답변 조회 및 작성자 확인
-        Answer answer = this.answerService.getAnswer(id);
+        Answer answer = this.answerServiceImpl.getAnswer(id);
         if (!answer.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
         // 2. 답변 삭제
-        this.answerService.delete(answer);
+        this.answerServiceImpl.delete(answer);
         // 3. 질문 상세 페이지로 리다이렉트
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }
@@ -111,11 +111,11 @@ public class AnswerController {
     @GetMapping("/vote/{id}")
     public String answerVote(Principal principal, @PathVariable("id") Integer id) {
         // 1. 투표할 답변 조회
-        Answer answer = this.answerService.getAnswer(id);
+        Answer answer = this.answerServiceImpl.getAnswer(id);
         // 2. 로그인된 사용자 정보 조회
         try {
-            SiteUser siteUser = this.userService.getUser(principal.getName());
-            this.answerService.vote(answer, siteUser);
+            SiteUser siteUser = this.userServiceImpl.getUser(principal.getName());
+            this.answerServiceImpl.vote(answer, siteUser);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

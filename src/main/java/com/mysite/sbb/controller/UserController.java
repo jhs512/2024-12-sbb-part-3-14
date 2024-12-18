@@ -1,6 +1,6 @@
 package com.mysite.sbb.controller;
 
-import com.mysite.sbb.service.UserService;
+import com.mysite.sbb.service.impl.UserServiceImpl;
 import com.mysite.sbb.form.UserCreateForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/user") // 모든 URL이 "/user"로 시작
 public class UserController {
 
-    private final UserService userService; // 사용자 관련 비즈니스 로직 처리
+    private final UserServiceImpl userServiceImpl; // 사용자 관련 비즈니스 로직 처리
 
     /**
      * 사용자 가입 폼 페이지를 반환.
@@ -78,7 +78,7 @@ public class UserController {
 
         // 3. 사용자 생성
         try {
-            userService.create(
+            userServiceImpl.create(
                     userCreateForm.getUsername(),
                     userCreateForm.getEmail(),
                     userCreateForm.getPassword1());
