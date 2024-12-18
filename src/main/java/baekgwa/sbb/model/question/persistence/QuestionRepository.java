@@ -1,6 +1,7 @@
 package baekgwa.sbb.model.question.persistence;
 
 import baekgwa.sbb.model.question.entity.Question;
+import baekgwa.sbb.model.user.entity.SiteUser;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,4 +35,6 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Optional<Question> findByIdWithVoter(@Param("id") Integer id);
 
     Page<Question> findAll(Specification<Question> spec, Pageable pageable);
+
+    Page<Question> findAllBySiteUser(SiteUser siteUser, Pageable pageable);
 }

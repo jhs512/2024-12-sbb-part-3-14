@@ -22,8 +22,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/question")
-@RequiredArgsConstructor
 public class QuestionController {
+
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
+    }
 
     private final QuestionService questionService;
 

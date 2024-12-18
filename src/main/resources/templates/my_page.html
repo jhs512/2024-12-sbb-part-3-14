@@ -1,0 +1,86 @@
+<html layout:decorate="~{layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div layout:fragment="content" class="container my-3">
+
+    <!-- 사용자 프로필 -->
+    <div class="d-flex justify-content-center align-items-center mb-3">
+        <div class="card col-12 col-md-6 col-lg-4">
+            <img th:src="@{/images/default.avif}" class="card-img-top" alt="기본이미지">
+            <div class="card-body">
+                <h5 class="card-title" th:text="'회원 이름 : ' + ${mypageInfo.username}">Card title</h5>
+                <p class="card-text" th:text="${mypageInfo.userIntroduction}">Some quick example text
+                    to
+                    build on the card title and make up the bulk of the card's content.</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" th:text="'Email : ' + ${mypageInfo.email}">email</li>
+                <li class="list-group-item">Not Use</li>
+            </ul>
+            <div class="card-body">
+                <a href="#" class="card-link">Github</a>
+                <a href="#" class="card-link">Blog</a>
+            </div>
+        </div>
+    </div>
+    <!-- 사용자 프로필 -->
+    <!-- 사용자 글 목록 -->
+    <h2 class="border-bottom py-2" th:text="'나의 질문 목록'"></h2>
+    <div class="row row-cols-1 row-cols-md-4 g-4 mb-2">
+        <div class="col" th:each="paging, loop : ${mypageInfo.questionInfos}">
+            <div class="card h-100">
+                <img th:src="@{/images/default.avif}" class="card-img-top" alt="기본이미지">
+                <div class="card-body">
+                    <a th:href="@{|/question/detail/${paging.id}|}"
+                       class="card-title" th:text="${paging.subject}">
+                        질문 제목
+                    </a>
+                    <p class="card-text text-truncate" th:text="${paging.content}">질문 내용</p>
+                    <p class="card-text text-end" th:text="${#temporals.format(paging.createDate, 'yyyy-mm-dd')}">생성일</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-body-secondary">
+                        최근 수정일<br>
+                        <span th:text="${#temporals.format(paging.modifyDate, 'yyyy-MM-dd HH:mm')}">2024-12-18 15:30</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${!mypageInfo.questionInfos.isEmpty()}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${!mypageInfo.questionInfos.hasPrevious()} ? 'disabled'">
+                <a class="page-link" href="javascript:void(0)" th:data-page="${mypageInfo.questionInfos.number-1}">
+                    <span>이전</span>
+                </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(0, mypageInfo.questionInfos.totalPages-1)}"
+                th:if="${page >= mypageInfo.questionInfos.number-5 and page <= mypageInfo.questionInfos.number+5}"
+                th:classappend="${page == mypageInfo.questionInfos.number} ? 'active'"
+                class="page-item">
+                <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
+            </li>
+            <li class="page-item" th:classappend="${!mypageInfo.questionInfos.hasNext()} ? 'disabled'">
+                <a class="page-link" href="javascript:void(0)" th:data-page="${mypageInfo.questionInfos.number+1}">
+                    <span>다음</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <form th:action="@{/user/my-page}" method="get" id="searchForm">
+        <input type="hidden" id="page" name="page" th:value="${mypageInfo.questionInfos.number}">
+    </form>
+    <!-- 사용자 글목록 -->
+
+</div>
+<script layout:fragment="script" type='text/javascript'>
+  const page_elements = document.getElementsByClassName("page-link");
+  Array.from(page_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+      document.getElementById('page').value = this.dataset.page;
+      document.getElementById('searchForm').submit();
+    });
+  });
+</script>
+</html>

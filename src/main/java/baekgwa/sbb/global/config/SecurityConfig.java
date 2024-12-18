@@ -39,6 +39,8 @@ public class SecurityConfig {
                         .requestMatchers("/answer/create/**").authenticated()
                         .requestMatchers("/answer/modify/**").authenticated()
                         .requestMatchers("/answer/vote/**").authenticated()
+
+                        .requestMatchers("/user/my-page/**").authenticated()
                         .anyRequest().permitAll()
                 )
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))

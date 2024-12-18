@@ -116,7 +116,7 @@
     </div>
     <!-- 답변 반복 끝  -->
 
-    <!-- 답변 페이징 -->
+    <!-- 답변 넘버링 -->
     <div th:if="${!question.answerList.isEmpty()}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${!question.answerList.hasPrevious()} ? 'disabled'">

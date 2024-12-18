@@ -1,15 +1,19 @@
 package baekgwa.sbb.domain.user.controller;
 
+import baekgwa.sbb.domain.user.dto.UserDto.MypageInfo;
 import baekgwa.sbb.domain.user.form.UserForm;
 import baekgwa.sbb.domain.user.service.UserService;
 import jakarta.validation.Valid;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -56,5 +60,17 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "login_form";
+    }
+
+    @GetMapping("/my-page")
+    public String myPage(
+            Principal principal,
+            Model model,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "8") int size
+    ) {
+        MypageInfo mypageInfo = userService.getUserInfo(principal.getName(), page, size);
+        model.addAttribute("mypageInfo", mypageInfo);
+        return "my_page";
     }
 }
