@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     public String createCategory(
             CategoryForm categoryForm

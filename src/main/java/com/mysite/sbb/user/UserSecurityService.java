@@ -38,9 +38,4 @@ public class UserSecurityService implements UserDetailsService {
         }
         return new User(siteUser.getUsername(), siteUser.getPassword(), authorities);
     }
-
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
 }

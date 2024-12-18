@@ -28,7 +28,20 @@ public class UserService {
         if (siteUser.isPresent()) {
             return siteUser.get();
         } else{
-            throw new DataNotFoundException("siteuser not found");
+            throw new DataNotFoundException("user not found");
         }
+    }
+
+    public boolean existsUser(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public void changePassword(SiteUser user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    public boolean validatePassword(SiteUser user, String password) {
+        return passwordEncoder.matches(password, user.getPassword());
     }
 }

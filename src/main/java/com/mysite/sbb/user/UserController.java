@@ -1,19 +1,34 @@
 package com.mysite.sbb.user;
 
+import com.mysite.sbb.PasswordUtil;
+import com.mysite.sbb.email.Email;
+import com.mysite.sbb.email.EmailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
     private final UserService userService;
+    private final EmailService emailService;
+
+    @Value("${spring.mail.username}")
+    private String username;
+
+    @Value("${spring.mail.password}")
+    private String password;
 
     @GetMapping("/signup")
     public String signup(UserCreateForm userCreateForm) {
@@ -53,6 +68,77 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
+        System.out.println(username + " " + password);
         return "login_form";
     }
+
+    @GetMapping("/find-password")
+    public String findPassword(UserFindPasswordForm userFindPasswordForm) {
+        return "find_password_form";
+    }
+
+    @PostMapping("/find-password")
+    public String findPassword(@Valid UserFindPasswordForm userFindPasswordForm,
+                               BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()) {
+            return "find_password_form";
+        }
+
+        String username = userFindPasswordForm.getUsername();
+        if(!userService.existsUser(username)){
+            bindingResult.reject("invalid_user", "유효하지 않은 ID 입니다.");
+            return "find_password_form";
+        }
+        SiteUser user = userService.getUser(username);
+        if(!userFindPasswordForm.getEmail().equals(user.getEmail())) {
+            bindingResult.reject("invalid_email", "유효하지 않은 이메일 입니다.");
+            return "find_password_form";
+        }
+
+        // 임시 비밀번호 생성
+        String tempPassword = PasswordUtil.createTempPassword(10);
+        System.out.println(tempPassword + " !!");
+        // 이메일로 임시 비밀번호 전송
+        Email email = new Email(user.getEmail(), "임시 비밀번호입니다" , String.format("임시 비밀번호 : %s", tempPassword));
+        emailService.sendEmail(email);
+        // 임시 비밀번호로 비밀번호 변경
+        userService.changePassword(user, tempPassword);
+
+        return "redirect:/user/login";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/change-password")
+    public String changePassword(UserChangePasswordForm userChangePasswordForm) {
+        return "change_password_form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/change-password")
+    public String changePassword(@Valid UserChangePasswordForm userChangePasswordForm,
+                                 BindingResult bindingResult,
+                                 Principal principal) {
+
+        if(bindingResult.hasErrors()) {
+            return "change_password_form";
+        }
+
+        String username = principal.getName();
+        SiteUser user = userService.getUser(username);
+        if(!userService.validatePassword(user, userChangePasswordForm.getOldPassword())){
+            bindingResult.reject("invalidPassword", "유효하지 않은 비밀번호입니다.");
+            return "change_password_form";
+        }
+
+        if(!userChangePasswordForm.getNewPassword1().equals(userChangePasswordForm.getNewPassword2())) {
+            bindingResult.reject("passwordCheckFailed", "비밀번호 확인 실패하였습니다.");
+            return "change_password_form";
+        }
+
+        userService.changePassword(user, userChangePasswordForm.getNewPassword1());
+
+        return "redirect:/user/logout";
+    }
+
 }

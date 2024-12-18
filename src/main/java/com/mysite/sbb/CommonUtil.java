@@ -17,7 +17,4 @@ public class CommonUtil {
         return renderer.render(document);
     }
 
-    public static String encode(String text){
-        return URLEncoder.encode(text, StandardCharsets.UTF_8);
-    }
 }

@@ -14,7 +14,11 @@
             <label for="password" class="form-label">비밀번호</label>
             <input type="password" name="password" id="password" class="form-control">
         </div>
-        <button type="submit" class="btn btn-primary">로그인</button>
+        <!-- 버튼 그룹 -->
+        <div class="d-flex align-items-center">
+            <button type="submit" class="btn btn-primary me-2">로그인</button>
+            <a th:href="@{/user/find-password}" class="btn btn-primary btn-sm">비밀번호 찾기</a>
+        </div>
     </form>
 </div>
 </html>
