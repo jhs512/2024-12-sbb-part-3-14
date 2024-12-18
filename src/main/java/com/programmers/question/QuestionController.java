@@ -1,5 +1,7 @@
 package com.programmers.question;
 
+import com.programmers.answer.Answer;
+import com.programmers.answer.AnswerService;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.dto.QuestionRegisterRequestDto;
 import jakarta.validation.Valid;
@@ -9,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("questions")
 public class QuestionController {
     private final QuestionService questionService;
-    private final QuestionRegisterRequestDto EMPTY_REQUEST = new QuestionRegisterRequestDto(null, null);
+    private final AnswerService answerService;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public String exceptionHandle(Model model, MethodArgumentNotValidException e) {
@@ -61,9 +61,12 @@ public class QuestionController {
     @GetMapping("/{questionId}")
     public String findQuestionById(
             @PathVariable Long questionId,
+            @Valid @ModelAttribute PageRequestDto pageRequestDto,
             Model model) {
         Question question = questionService.findQuestionById(questionId);
-            model.addAttribute("question", question);
-            return "question_detail";
+        Page<Answer> answerPage = answerService.getAnswers(pageRequestDto);
+        model.addAttribute("question", question);
+        model.addAttribute("answerPage", answerPage);
+        return "question_detail";
     }
 }
