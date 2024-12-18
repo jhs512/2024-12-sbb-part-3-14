@@ -31,11 +31,18 @@
                    th:text="삭제"></a>
             </div>
             <hr>
-            <div th:each="comment : ${commentList}">
+            <div th:each="comment : ${question.commentList}">
                 <div th:text="${comment.content}"></div>
                 - <span th:text="${comment.author.username}"></span>
                 , <span th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></span>
                 <hr>
+            </div>
+            <div>
+                <form th:action="@{|/comment/create/question/${id}|}" method="post">
+                    <input type="text" name="content">
+                    <input type="hidden" name="questionId" th:value="${question.id}">
+                    <input type="submit" value="등록">
+                </form>
             </div>
         </div>
     </div>
@@ -76,6 +83,19 @@
                    sec:authorize="isAuthenticated()"
                    th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
                    th:text="삭제"></a>
+            </div>
+            <div th:each="comment : ${answer.commentList}">
+                <div th:text="${comment.content}"></div>
+                - <span th:text="${comment.author.username}"></span>
+                , <span th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+                <hr>
+            </div>
+            <div>
+                <form th:action="@{|/comment/create/answer/${id}|}" method="post">
+                    <input type="text" name="content">
+                    <input type="hidden" name="answerId" th:value="${answer.id}">
+                    <input type="submit" value="등록">
+                </form>
             </div>
         </div>
     </div>

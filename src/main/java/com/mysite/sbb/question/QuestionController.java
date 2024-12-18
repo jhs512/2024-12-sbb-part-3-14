@@ -4,6 +4,7 @@ import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerForm;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
@@ -28,6 +29,7 @@ import java.util.List;
 public class QuestionController {
     private final QuestionService questionService;
     private final AnswerService answerService;
+    private final CommentService commentService;
     private final UserService userService;
 
     @GetMapping("/list")
@@ -49,27 +51,10 @@ public class QuestionController {
         Question question = questionService.getQuestion(id);
         Page<Answer> paging = answerService.getAnswers(question, page, order);
 
-        SiteUser temp = new SiteUser();
-        temp.setUsername("테스트유저");
-        List<Comment> commentList = new ArrayList<>() {{
-            Comment comment1 = new Comment();
-            comment1.setQuestion(question);
-            comment1.setContent("댓글11");
-            comment1.setCreateDate(LocalDateTime.now());
-            comment1.setAuthor(temp);
-            add(comment1);
-            Comment comment2 = new Comment();
-            comment2.setQuestion(question);
-            comment2.setContent("댓글22");
-            comment2.setCreateDate(LocalDateTime.now());
-            comment2.setAuthor(temp);
-            add(comment2);
-        }};
-
         model.addAttribute("question", question);
         model.addAttribute("answerList", paging);
         model.addAttribute("order", order);
-        model.addAttribute("commentList", commentList);
+        //model.addAttribute("commentList", commentList);
         return "question_detail";
     }
 
