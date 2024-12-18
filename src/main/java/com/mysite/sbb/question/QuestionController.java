@@ -4,6 +4,7 @@ import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerForm;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.comment.CommentForm;
 import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
@@ -45,6 +46,7 @@ public class QuestionController {
             Model model,
             @PathVariable("id") Integer id,
             AnswerForm answerForm,
+            CommentForm commentForm,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "order", defaultValue = "createDate") String order
     ) {

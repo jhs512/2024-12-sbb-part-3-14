@@ -38,9 +38,9 @@
                 <hr>
             </div>
             <div>
-                <form th:action="@{|/comment/create/question/${id}|}" method="post">
-                    <input type="text" name="content">
-                    <input type="hidden" name="questionId" th:value="${question.id}">
+                <form th:action="@{|/comment/create/question/${id}|}" method="post" th:object="${commentForm}">
+                    <input type="text" th:field="*{content}" id="question_comment" required>
+                    <input type="hidden" th:name="questionId" th:value="${question.id}">
                     <input type="submit" value="등록">
                 </form>
             </div>
@@ -91,9 +91,9 @@
                 <hr>
             </div>
             <div>
-                <form th:action="@{|/comment/create/answer/${id}|}" method="post">
-                    <input type="text" name="content">
-                    <input type="hidden" name="answerId" th:value="${answer.id}">
+                <form th:action="@{|/comment/create/answer/${id}|}" method="post" th:object="${commentForm}">
+                    <input type="text" th:field="*{content}" id="answer_comment" required>
+                    <input type="hidden" th:name="answerId" th:value="${answer.id}">
                     <input type="submit" value="등록">
                 </form>
             </div>
