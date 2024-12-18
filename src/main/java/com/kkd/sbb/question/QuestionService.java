@@ -59,4 +59,13 @@ public class QuestionService {
     public void delete(Question question){
         this.questionRepository.delete(question);
     }
+
+    public void vote(Question question, SiteUser siteUser) {
+        if (question.getVoter().contains(siteUser)) {
+            question.getVoter().remove(siteUser);
+        } else {
+            question.getVoter().add(siteUser);
+        }
+        this.questionRepository.save(question);
+    }
 }

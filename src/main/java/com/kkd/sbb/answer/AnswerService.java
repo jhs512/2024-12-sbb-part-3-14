@@ -43,4 +43,15 @@ public class AnswerService {
     public void delete(Answer answer){
         this.answerRepository.delete(answer);
     }
+
+    public void vote(Answer answer, SiteUser siteUser) {
+        if (answer.getVoter().contains(siteUser)) {
+            // 이미 추천한 사용자라면 추천 취소
+            answer.getVoter().remove(siteUser);
+        } else {
+            // 추천하지 않은 사용자라면 추천 추가
+            answer.getVoter().add(siteUser);
+        }
+        this.answerRepository.save(answer);
+    }
 }
