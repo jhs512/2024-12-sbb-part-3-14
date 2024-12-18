@@ -40,8 +40,8 @@
             <td class="text-start">
                 <a th:href="@{/question/detail/{id}(id=${question.id})}" th:text="${question.subject}"></a>
                 <span class="text-danger small ms-2"
-                      th:if="${#lists.size(question.answerList) > 0}"
-                th:text="${#lists.size(question.answerList)}">
+                      th:if="${question.answerCount > 0}"
+                th:text="${question.answerCount}">
                 </span>
             </td>
 

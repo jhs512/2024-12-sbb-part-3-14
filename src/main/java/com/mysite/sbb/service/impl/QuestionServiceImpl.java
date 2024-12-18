@@ -1,5 +1,6 @@
 package com.mysite.sbb.service.impl;
 
+import com.mysite.sbb.dto.QuestionListDTO;
 import com.mysite.sbb.exception.DataNotFoundException;
 import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
@@ -15,10 +16,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -27,17 +29,26 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
 
     @Override
-    public List<Question> getList() {
-        return questionRepository.findAll();
+    public List<QuestionListDTO> getList() {
+
+        List<Question> all = questionRepository.findAll();
+
+        return all.stream()
+                .map(QuestionListDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Page<Question> getList(int page, String kw) {
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createDate")); // 정렬 기준: 생성일 내림차순
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts)); // Pageable 객체 생성
-        Specification<Question> spec = search(kw); // 검색 조건 생성
-        return questionRepository.findAll(spec, pageable); // 검색 및 페이징 결과 반환
+    public Page<QuestionListDTO> getList(int page, String kw) {
+        // 1. 정렬 조건 설정
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
+
+        // 2. 검색 조건 설정
+        Specification<Question> spec = search(kw);
+
+        // 3. 엔티티 -> DTO 변환
+        Page<Question> questions = questionRepository.findAll(spec, pageable);// 검색 및 페이징 결과
+        return questions.map(QuestionListDTO::new);
     }
 
 
@@ -82,7 +93,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Specification<Question> search(String kw){
-        return new Specification<Question>() {
+        return new Specification<>() {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override

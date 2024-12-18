@@ -1,5 +1,6 @@
 package com.mysite.sbb.controller;
 
+import com.mysite.sbb.dto.QuestionListDTO;
 import com.mysite.sbb.form.QuestionForm;
 import com.mysite.sbb.repository.QuestionRepository;
 import com.mysite.sbb.form.AnswerForm;
@@ -34,7 +35,7 @@ public class QuestionController {
     public String list(Model model,
                        @RequestParam(value="page", defaultValue = "0") int page,
                        @RequestParam(value = "kw", defaultValue = "") String kw) {
-        Page<Question> paging = questionServiceImpl.getList(page, kw);
+        Page<QuestionListDTO> paging = questionServiceImpl.getList(page, kw);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         return "question_list";
