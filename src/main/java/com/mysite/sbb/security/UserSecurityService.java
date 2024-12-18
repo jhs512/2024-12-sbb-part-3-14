@@ -1,5 +1,7 @@
-package com.mysite.sbb.user;
+package com.mysite.sbb.security;
 
+import com.mysite.sbb.repository.UserRepository;
+import com.mysite.sbb.domain.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

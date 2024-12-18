@@ -1,9 +1,12 @@
-package com.mysite.sbb.question;
+package com.mysite.sbb.controller;
 
-import com.mysite.sbb.answer.AnswerForm;
-import com.mysite.sbb.answer.AnswerService;
-import com.mysite.sbb.user.SiteUser;
-import com.mysite.sbb.user.UserService;
+import com.mysite.sbb.form.QuestionForm;
+import com.mysite.sbb.repository.QuestionRepository;
+import com.mysite.sbb.form.AnswerForm;
+import com.mysite.sbb.domain.Question;
+import com.mysite.sbb.domain.SiteUser;
+import com.mysite.sbb.service.QuestionService;
+import com.mysite.sbb.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,9 +41,13 @@ public class QuestionController {
     }
 
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
+    public String detail(Model model,
+                         @PathVariable("id") Integer id,
+                         AnswerForm answerForm) {
         Question question = this.questionService.getQuestion(id);
+
         model.addAttribute("question", question);
+
         return "question_detail";
     }
 

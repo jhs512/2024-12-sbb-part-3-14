@@ -1,10 +1,10 @@
 package com.mysite.sbb;
 
-import com.mysite.sbb.answer.Answer;
-import com.mysite.sbb.answer.AnswerRepository;
-import com.mysite.sbb.question.Question;
-import com.mysite.sbb.question.QuestionRepository;
-import com.mysite.sbb.question.QuestionService;
+import com.mysite.sbb.domain.Answer;
+import com.mysite.sbb.repository.AnswerRepository;
+import com.mysite.sbb.domain.Question;
+import com.mysite.sbb.repository.QuestionRepository;
+import com.mysite.sbb.service.QuestionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

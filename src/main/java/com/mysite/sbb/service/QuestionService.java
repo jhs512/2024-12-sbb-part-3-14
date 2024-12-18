@@ -1,11 +1,12 @@
-package com.mysite.sbb.question;
+package com.mysite.sbb.service;
 
-import com.mysite.sbb.DataNotFoundException;
-import com.mysite.sbb.answer.Answer;
-import com.mysite.sbb.user.SiteUser;
+import com.mysite.sbb.exception.DataNotFoundException;
+import com.mysite.sbb.domain.Answer;
+import com.mysite.sbb.domain.Question;
+import com.mysite.sbb.domain.SiteUser;
+import com.mysite.sbb.repository.QuestionRepository;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,8 +1,10 @@
-package com.mysite.sbb.answer;
+package com.mysite.sbb.service;
 
-import com.mysite.sbb.DataNotFoundException;
-import com.mysite.sbb.question.Question;
-import com.mysite.sbb.user.SiteUser;
+import com.mysite.sbb.exception.DataNotFoundException;
+import com.mysite.sbb.repository.AnswerRepository;
+import com.mysite.sbb.domain.Answer;
+import com.mysite.sbb.domain.Question;
+import com.mysite.sbb.domain.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

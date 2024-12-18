@@ -1,5 +1,6 @@
-package com.mysite.sbb.user;
+package com.mysite.sbb.repository;
 
+import com.mysite.sbb.domain.SiteUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
