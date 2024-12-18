@@ -67,8 +67,10 @@ public class QuestionService {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        Specification<Question> search = search(kw);
-        return this.questionRepository.findAll(search,pageable);
+//        Specification<Question> search = search(kw);
+//        return this.questionRepository.findAll(search,pageable);
+
+        return this.questionRepository.findAllByKeyword(kw, pageable);
     }
 
     public void modify(Question question, String subject, String content){
