@@ -40,6 +40,10 @@ public class CommentService {
         }
     }
 
+    public List<Comment> getComments(SiteUser user) {
+        return commentRepository.findAllByAuthor(user);
+    }
+
     public void modify(Comment comment, String content) {
         comment.setContent(content);
         commentRepository.save(comment);

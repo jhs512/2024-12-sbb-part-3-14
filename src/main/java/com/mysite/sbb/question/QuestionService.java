@@ -36,6 +36,10 @@ public class QuestionService {
         }
     }
 
+    public List<Question> getQuestions(SiteUser user) {
+        return questionRepository.findAllByAuthor(user);
+    }
+
     public Page<Question> getList(Category category, int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));

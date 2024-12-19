@@ -1,13 +1,15 @@
 package com.mysite.sbb.user;
 
 import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.comment.Comment;
+import com.mysite.sbb.comment.CommentService;
+import com.mysite.sbb.question.Question;
+import com.mysite.sbb.question.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,12 +20,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.InputMismatchException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final QuestionService questionService;
+    private final AnswerService answerService;
+    private final CommentService commentService;
 
     @GetMapping("/signup")
     public String signup(UserCreateForm userCreateForm) {
@@ -59,6 +65,21 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "login_form";
+    }
+
+    @GetMapping("/info")
+    public String info(Principal principal, Model model) {
+        SiteUser siteUser = userService.getUser(principal.getName());
+        List<Question> questionList = questionService.getQuestions(siteUser);
+        List<Answer> answerList = answerService.getAnswers(siteUser);
+        List<Comment> commentList = commentService.getComments(siteUser);
+
+        model.addAttribute("user", siteUser);
+        model.addAttribute("question_list", questionList);
+        model.addAttribute("answer_list", answerList);
+        model.addAttribute("comment_list", commentList);
+
+        return "user_info";
     }
 
     @GetMapping("/login/temp_password")

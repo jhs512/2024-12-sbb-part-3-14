@@ -15,6 +15,9 @@
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/signup}">회원가입</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/info}">회원정보</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/password_change}">비밀번호 변경</a>
                 </li>
             </ul>

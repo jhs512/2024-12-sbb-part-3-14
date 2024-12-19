@@ -39,6 +39,10 @@ public class AnswerService {
         }
     }
 
+    public List<Answer> getAnswers(SiteUser user) {
+        return answerRepository.findAllByAuthor(user);
+    }
+
     public Page<Answer> getAnswers(Question question, Integer page, String columName) {
         Pageable pageable = PageRequest.of(page, 5);
 
