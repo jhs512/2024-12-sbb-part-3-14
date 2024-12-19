@@ -107,7 +107,7 @@
                    th:text="${page+1}"
                    th:href="@{|?page=${page}|}">
                 </a>
-            </li>properti
+            </li>
             <li class="pate-item" th:classappend="${!paging.hasNext()} ? 'disabled'">
                 <a class="page-link"
                    th:href="@{|?page=${paging.number+1}|}">

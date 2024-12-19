@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,5 +60,28 @@ public class AnswerService {
         int itemsPerPage = 5;
         Pageable pageable = PageRequest.of(page, itemsPerPage);
         return this.answerRepository.findAnswerByQuestionIdOrderByVoterCountDesc(questionId, pageable);
+    }
+
+    public Page<Answer> getMyAnswerList(String username, int page) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+
+        int itemsPerPage = 5;
+        Pageable pageable = PageRequest.of(page, itemsPerPage, Sort.by(sorts));
+        return this.answerRepository.findAllByAuthor_Username(username, pageable);
+    }
+
+    public int getPageNumber(int answerId) {
+        Optional<Answer> optionalAnswer = this.answerRepository.findById(answerId);
+        if(optionalAnswer.isEmpty()) throw new DataNotFoundException("존재하지 않는 답변입니다.");
+
+        Answer answer = optionalAnswer.get();
+        List<Answer> answerList = this.answerRepository.findAllByQuestion_Id(answer.getQuestion().getId());
+
+        answerList.sort((o1, o2) -> Integer.compare(o2.getVoter().size(), o1.getVoter().size()));
+        int index = answerList.indexOf(answer);
+
+        int itemsPerPage = 5;
+        return index / itemsPerPage;
     }
 }

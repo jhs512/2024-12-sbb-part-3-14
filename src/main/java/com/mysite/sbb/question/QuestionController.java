@@ -143,4 +143,14 @@ public class QuestionController {
         this.questionService.vote(question, siteUser);
         return String.format("redirect:/question/detail/%s", id);
     }
+
+    @GetMapping("/my-question")
+    public String myQuestion(Model model,
+                             @RequestParam(value="page", defaultValue = "0") int page,
+                             Principal principal) {
+        String username = principal.getName();
+        Page<Question> paging = questionService.getMyQuestionList(username, page);
+        model.addAttribute("paging", paging);
+        return "my_question";
+    }
 }

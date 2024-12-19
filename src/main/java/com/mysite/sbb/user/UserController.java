@@ -1,6 +1,8 @@
 package com.mysite.sbb.user;
 
 import com.mysite.sbb.PasswordUtil;
+import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.email.Email;
 import com.mysite.sbb.email.EmailService;
 import com.mysite.sbb.question.Question;
@@ -14,10 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -29,6 +28,7 @@ public class UserController {
     private final UserService userService;
     private final EmailService emailService;
     private final QuestionService questionService;
+    private final AnswerService answerService;
 
     @Value("${spring.mail.username}")
     private String username;
@@ -126,18 +126,18 @@ public class UserController {
                                  BindingResult bindingResult,
                                  Principal principal) {
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return "change_password_form";
         }
 
         String username = principal.getName();
         SiteUser user = userService.getUser(username);
-        if(!userService.validatePassword(user, userChangePasswordForm.getOldPassword())){
+        if (!userService.validatePassword(user, userChangePasswordForm.getOldPassword())) {
             bindingResult.reject("invalidPassword", "유효하지 않은 비밀번호입니다.");
             return "change_password_form";
         }
 
-        if(!userChangePasswordForm.getNewPassword1().equals(userChangePasswordForm.getNewPassword2())) {
+        if (!userChangePasswordForm.getNewPassword1().equals(userChangePasswordForm.getNewPassword2())) {
             bindingResult.reject("passwordCheckFailed", "비밀번호 확인 실패하였습니다.");
             return "change_password_form";
         }
@@ -146,15 +146,4 @@ public class UserController {
 
         return "redirect:/user/logout";
     }
-
-    @GetMapping("/my-question")
-    public String myInfo(Model model,
-                         @RequestParam(value="page", defaultValue = "0") int page,
-                         Principal principal) {
-        String username = principal.getName();
-        Page<Question> paging = questionService.getMyQuestionList(username, page);
-        model.addAttribute("paging", paging);
-        return "my_question";
-    }
-
 }

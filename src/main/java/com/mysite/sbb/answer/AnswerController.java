@@ -113,4 +113,22 @@ public class AnswerController {
         model.addAttribute("answer", answer);
         return "answer_detail";
     }
+
+    @GetMapping("/my-answer")
+    public String myAnswer(Model model,
+                           @RequestParam(value="page", defaultValue = "0") int page,
+                           Principal principal) {
+        String username = principal.getName();
+        Page<Answer> paging = answerService.getMyAnswerList(username, page);
+        model.addAttribute("paging", paging);
+        return "my_answer";
+    }
+
+    @GetMapping("/my-answer/{id}")
+    public String myAnswer(@PathVariable("id") int id) {
+        Answer answer = answerService.getAnswer(id);
+        int questionId = answer.getQuestion().getId();
+        int pageNum = answerService.getPageNumber(id);
+        return String.format("redirect:/question/detail/%s?page=%s#answer_%s", questionId, pageNum, id);
+    }
 }
