@@ -59,12 +59,12 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionDetailDTO getQuestionDetail(Integer id, int page) {
+    public QuestionDetailDTO getQuestionDetail(Integer id, int page, String sortKeyword) {
         // 1. 질문 조회
         Question question = questionRepository.findById(id).orElseThrow(() -> new DataNotFoundException("question not found"));
 
         // 2. 답변 페이징
-        Pageable pageable = PageRequest.of(page, 5,  Sort.by(Sort.Order.desc("createDate")));
+        Pageable pageable = PageRequest.of(page, 5,  Sort.by(Sort.Order.desc(sortKeyword)));
         Page<Answer> answers  = answerRepository.findByQuestion(question, pageable);
 
         // 3. DTO 변환

@@ -3,6 +3,7 @@ package com.mysite.sbb.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -34,4 +35,8 @@ public class Answer {
 
     @ManyToMany
     Set<SiteUser> voter;
+
+    // 추천 수 계산 필드
+    @Formula("(SELECT COUNT(AV.VOTER_ID) FROM ANSWER_VOTER AV where AV.answer_id = id)")
+    private Integer voterCount;
 }

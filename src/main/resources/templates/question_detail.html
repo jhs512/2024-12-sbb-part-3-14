@@ -42,16 +42,18 @@
         </div>
     </div>
 
+
     <!-- 답변 정렬 선택 -->
-<!--    <div class="d-flex justify-content-end my-3">-->
-<!--        <form th:action="@{|/question/detail/${question.id}|}" method="get" id="sortForm">-->
-<!--            <input type="hidden" name="page" th:value="${question.answers.number != null ? question.answers.number : 0}">-->
-<!--            <select class="form-select form-select-sm" name="sort" id="sortSelect" onchange="document.getElementById('sortForm').submit()">-->
-<!--                <option th:value="recommendation" th:selected="${sort == 'recommendation'}">추천순</option>-->
-<!--                <option th:value="createDate" th:selected="${sort == 'createDate'}">최신순</option>-->
-<!--            </select>-->
-<!--        </form>-->
-<!--    </div>-->
+    <div class="d-flex justify-content-end my-3">
+        <!-- 정렬 기준 선택 폼 -->
+        <form th:action="@{|/question/detail/${question.id}|}" method="get" id="sortForm">
+            <!-- 정렬 기준 -->
+            <select class="form-select form-select-sm d-inline w-auto" name="sortKeyword" id="sortSelect">
+                <option th:value="createDate" th:selected="${sort == 'createDate'}">최신순</option>
+                <option th:value="voterCount" th:selected="${sort == 'voterCount'}">추천순</option>
+            </select>
+        </form>
+    </div>
 
     <!-- 답변의 갯수 표시-->
     <h5 class="border-bottom my-3 py-2" th:text="${question.answerCount != null ? question.answerCount : 0} + '개의 답변이 있습니다.'"></h5>
@@ -148,6 +150,7 @@
 </div>
 <script layout:fragment="script" type='text/javascript'>
     document.addEventListener('DOMContentLoaded', function() {
+        // 페이징 버튼 동작
         const page_elements = document.getElementsByClassName("page-link");
         Array.from(page_elements).forEach(function(element) {
             element.addEventListener('click', function() {
@@ -158,8 +161,15 @@
             });
         });
 
-        const delete_elements = document.getElementsByClassName("delete");
+        // 정렬 변경
+        const sortSelect = document.getElementById('sortSelect');
+        sortSelect.addEventListener('change', function () {
+            const sortForm = document.getElementById('sortForm');
+            sortForm.submit();
+        });
 
+        // 삭제 버튼 동작
+        const delete_elements = document.getElementsByClassName("delete");
         Array.from(delete_elements).forEach(function (element) {
             element.addEventListener('click', function () {
                 if (confirm("정말로 삭제하시겠습니까?")) {
@@ -168,8 +178,8 @@
             });
         });
 
+        // 추천 버튼 동작
         const recommend_elements = document.getElementsByClassName("recommend");
-
         Array.from(recommend_elements).forEach(function(element) {
             element.addEventListener('click', function() {
                 if(confirm("정말로 추천하시겠습니까?")) {

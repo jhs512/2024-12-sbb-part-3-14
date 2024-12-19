@@ -38,11 +38,13 @@ public class QuestionController {
     @GetMapping(value = "/detail/{id}")
     public String detail(Model model,
                          @PathVariable("id") Integer id,
-                         @RequestParam(value = "page", defaultValue = "0") int page) {
+                         @RequestParam(value = "page", defaultValue = "0") int page,
+                         @RequestParam(value = "sortKeyword", defaultValue = "createDate") String sortKeyword) {
 
-        QuestionDetailDTO question = this.questionServiceImpl.getQuestionDetail(id, page);
+        QuestionDetailDTO question = this.questionServiceImpl.getQuestionDetail(id, page, sortKeyword);
 
         model.addAttribute("question", question);
+        model.addAttribute("sort", sortKeyword); // 선택된 정렬 기준 전달
         model.addAttribute("answerForm", new AnswerForm()); // Form 초기화
         return "question_detail";
     }
