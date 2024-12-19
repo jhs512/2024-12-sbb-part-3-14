@@ -24,13 +24,13 @@ public class QuestionController {
     @GetMapping("/create")
     public String createQuestion(Model model, QuestionForm questionForm) {
         model.addAttribute("questionForm", questionForm);
-        return "question_form";
+        return "question/form/create";
     }
 
     @PostMapping("/create")
     public String createQuestion(@Valid QuestionForm questionForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "question_form";
+            return "question/form/create";
         }
         questionService.createQuestion(questionForm);
         return "redirect:/question/list";
@@ -40,14 +40,14 @@ public class QuestionController {
     public String getQuestions(Model model) {
         List<QuestionDto> questions = questionService.getQuestions();
         model.addAttribute("questions", questions);
-        return "question_list";
+        return "question/list";
     }
 
     @GetMapping("/detail/{id}")
     public String getQuestion(@PathVariable("id") Long id, Model model) {
         QuestionDto question = questionService.getQuestion(id);
         model.addAttribute("question", question);
-        return "question_detail";
+        return "question/detail";
     }
 
     @GetMapping("/modify/{id}")
@@ -57,14 +57,14 @@ public class QuestionController {
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
         model.addAttribute("questionForm", questionForm);
-        return "question_modify_form";
+        return "question/form/modify";
     }
 
     @PostMapping("/modify/{id}")
     public String modifyQuestion(@PathVariable("id") Long id, @Valid QuestionForm questionForm,
         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "question_modify_form";
+            return "question/form/modify";
         }
         questionService.modifyQuestion(id, questionForm);
         return String.format("redirect:/question/detail/%s", id);
