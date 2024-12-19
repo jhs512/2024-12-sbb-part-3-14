@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("questions")
@@ -38,6 +40,7 @@ public class QuestionController {
 
     @PostMapping("/create")
     public String registerQuestion(
+            Principal principal,
             @Valid @ModelAttribute QuestionRegisterRequestDto requestDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

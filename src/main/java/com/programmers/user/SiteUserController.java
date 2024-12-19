@@ -7,9 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class SiteUserController {
     private final SiteUserService siteUserService;
 
@@ -25,7 +27,15 @@ public class SiteUserController {
             BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return "signup_form";
+        }else if(!signupDto.password().equals(signupDto.passwordConfirmation())){
+            return "signup_form";
         }
-        return "signin_form";
+        siteUserService.save(signupDto);
+        return "redirect:login";
+    }
+
+    @GetMapping("/login")
+    public String signInForm(){
+        return "signIn_form";
     }
 }

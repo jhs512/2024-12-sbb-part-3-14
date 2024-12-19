@@ -10,11 +10,9 @@ public record SignupDto(
         String userName,
 
         @NotBlank
-        @Pattern(regexp = "")
         String password,
 
         @NotBlank
-        @Pattern(regexp = "")
         String passwordConfirmation,
 
 

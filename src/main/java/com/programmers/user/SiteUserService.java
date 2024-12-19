@@ -12,6 +12,9 @@ public class SiteUserService {
     private final PasswordEncoder passwordEncoder;
 
     public SiteUser save(SignupDto signupDto) {
+        if(siteUserRepository.existsByUsername(signupDto.userName())){
+
+        }
         return siteUserRepository.save(SiteUser.builder()
                         .username(signupDto.userName())
                         .password(passwordEncoder.encode(signupDto.password()))
