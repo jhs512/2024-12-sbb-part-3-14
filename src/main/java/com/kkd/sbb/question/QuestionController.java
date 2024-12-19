@@ -1,6 +1,8 @@
 package com.kkd.sbb.question;
 
+import com.kkd.sbb.answer.Answer;
 import com.kkd.sbb.answer.AnswerForm;
+import com.kkd.sbb.answer.AnswerService;
 import com.kkd.sbb.user.SiteUser;
 import com.kkd.sbb.user.UserService;
 import jakarta.validation.Valid;
@@ -23,6 +25,7 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final UserService userService;
+    private final AnswerService answerService;
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
@@ -34,10 +37,15 @@ public class QuestionController {
     }
 
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
+    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm,
+                         @RequestParam(value="ans-page", defaultValue="0") int answerPage,
+                         @RequestParam(value="ans-ordering", defaultValue="time") String answerOrderMethod) {
+        this.questionService.viewUp(id);
         Question question = this.questionService.getQuestion(id);
+        Page<Answer> answerPaging = this.answerService.getAnswerList(question,
+                answerPage, answerOrderMethod);
         model.addAttribute("question", question);
-
+        model.addAttribute("ans_paging", answerPaging);
         return "question_detail";
     }
 

@@ -3,6 +3,7 @@ package com.kkd.sbb.question;
 import com.kkd.sbb.answer.Answer;
 import com.kkd.sbb.user.SiteUser;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,8 +34,12 @@ public class Question {
     private SiteUser author;
 
     @ManyToMany
-    Set<SiteUser> voter;
+    private Set<SiteUser> voter;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
+
+    @Column(columnDefinition = "integer default 0")
+    @NotNull
+    private Integer views;
 }

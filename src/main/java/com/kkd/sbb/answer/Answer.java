@@ -29,7 +29,7 @@ public class Answer {
     private SiteUser author;
 
     @ManyToMany
-    Set<SiteUser> voter;
+    private Set<SiteUser> voter;
 
     @ManyToOne
     private Question question;
