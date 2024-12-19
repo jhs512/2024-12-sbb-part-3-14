@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.InputMismatchException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -58,6 +59,21 @@ public class UserService {
         );
         setTemporaryPassword(user, randomPassword);
         mailSender.send(message);
+    }
+
+    public void changePassword(SiteUser user, String oldPassword, String newPassword) {
+        if (checkPassword(user, oldPassword)) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        } else {
+            throw new InputMismatchException();
+        }
+    }
+
+    private boolean checkPassword(SiteUser user, String oldPassword) {
+        String currentPassword = user.getPassword();
+
+        return passwordEncoder.matches(oldPassword, currentPassword);
     }
 
     private void setTemporaryPassword(SiteUser user, String temporaryPassword) {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.InputMismatchException;
 
 @RequiredArgsConstructor
 @Controller
@@ -76,5 +77,27 @@ public class UserController {
         }
 
         return "redirect:/user/login";
+    }
+
+    @GetMapping("/password_change")
+    public String passwordChange() {
+        return "password_change_form";
+    }
+
+    @PostMapping("/password_change")
+    public String passwordChange(
+            @RequestParam("old_password") String oldPassword,
+            @RequestParam("new_password")String newPassword,
+            Model model,
+            Principal principal) {
+        try {
+            SiteUser user = userService.getUser(principal.getName());
+            userService.changePassword(user, oldPassword, newPassword);
+        } catch (InputMismatchException e) {
+            model.addAttribute("error", "현재 비밀번호를 다시 입력해주세요.");
+            return "password_change_form";
+        }
+
+        return "redirect:/";
     }
 }
