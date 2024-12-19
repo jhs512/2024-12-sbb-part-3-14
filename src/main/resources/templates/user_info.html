@@ -7,6 +7,9 @@
             <li th:text="|이메일: ${user.email}|"></li>
         </ul>
     </div>
+    <div>
+        <a sec:authorize="isAuthenticated()" th:href="@{/user/password_change}">비밀번호 변경</a>
+    </div>
     <h5 class="my-3 border-bottom pb-2">내가 질문한 글</h5>
     <table class="table">
         <thead class="table-dark">
