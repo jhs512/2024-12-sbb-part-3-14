@@ -69,7 +69,9 @@ public class QuestionController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String questionCreate(QuestionForm questionForm) {
+    public String questionCreate(QuestionForm questionForm, @RequestParam ("category_id") Integer categoryId) {
+        Category category = categoryService.getCategory(categoryId);
+        questionForm.setCategory(category);
         return "question_form";
     }
 
@@ -80,8 +82,8 @@ public class QuestionController {
             return "question_form";
         }
         SiteUser siteUser = userService.getUser(principal.getName());
-        questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
-        return "redirect:/question/list";
+        questionService.create(questionForm.getCategory(), questionForm.getSubject(), questionForm.getContent(), siteUser);
+        return "redirect:/question/list?category_id=%s".formatted(questionForm.getCategory().getId());
     }
 
     @PreAuthorize("isAuthenticated()")

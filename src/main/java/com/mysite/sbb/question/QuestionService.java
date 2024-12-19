@@ -46,8 +46,9 @@ public class QuestionService {
         return questionRepository.findAllByCategoryAndKeyword(category, kw, pageable);
     }
 
-    public void create(String subject, String content, SiteUser user) {
+    public void create(Category category, String subject, String content, SiteUser user) {
         Question q = new Question();
+        q.setCategory(category);
         q.setSubject(subject);
         q.setContent(content);
         q.setCreateDate(LocalDateTime.now());
