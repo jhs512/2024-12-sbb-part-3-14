@@ -31,7 +31,7 @@ class QuestionServiceTest {
     private QuestionService questionService; // 테스트할 클래스
 
     @Test
-    @DisplayName("createQuestion 테스트")
+    @DisplayName("QuestionService - createQuestion 테스트 - HappyPath")
     void createQuestion() {
         //given: 테스트를 위한 데이터 준비
         QuestionForm questionForm = createQuestionForm("테스트 제목", "테스트 내용");
@@ -51,15 +51,12 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("getQuestions 테스트")
+    @DisplayName("QuestionService - getQuestions 테스트 - HappyPath")
     void getQuestions() {
         //given
-        QuestionForm questionForm1 = createQuestionForm("제목1", "내용1");
-        QuestionForm questionForm2 = createQuestionForm("제목2", "내용2");
-        Question question1 = createQuestion(1L, questionForm1);
-        Question question2 = createQuestion(2L, questionForm2);
+        Question question1 = createQuestion(1L, createQuestionForm("제목1", "내용1"));
+        Question question2 = createQuestion(2L, createQuestionForm("제목2", "내용2"));
         List<Question> questions = List.of(question1, question2);
-
         when(questionRepository.findAll()).thenReturn(questions);
 
         //when
@@ -75,12 +72,10 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("getQuestion, addHits 테스트")
+    @DisplayName("QuestionService - getQuestion, addHits 테스트 - HappyPath")
     void getQuestion() {
         //given
-        QuestionForm questionForm = createQuestionForm("제목1", "내용1");
-        Question question = createQuestion(1L, questionForm);
-
+        Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
         when(questionRepository.save(Mockito.any(Question.class))).thenAnswer(
             invocation -> invocation.getArgument(0));
@@ -93,17 +88,16 @@ class QuestionServiceTest {
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getSubject()).isEqualTo("제목1");
         assertThat(result.getContent()).isEqualTo("내용1");
+        assertThat(question.getHits()).isEqualTo(0);
         assertThat(result.getHits()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("modifyQuestion 테스트")
+    @DisplayName("QuestionService - modifyQuestion 테스트 - HappyPath")
     void modifyQuestion() {
         //given
-        QuestionForm questionForm = createQuestionForm("제목1", "내용1");
+        Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         QuestionForm modifyQuestionForm = createQuestionForm("수정한 제목1", "수정한 내용1");
-        Question question = createQuestion(1L, questionForm);
-
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
         when(questionRepository.save(Mockito.any(Question.class))).thenAnswer(
             invocation -> invocation.getArgument(0));
@@ -112,21 +106,20 @@ class QuestionServiceTest {
 
         //when
         questionService.modifyQuestion(1L, modifyQuestionForm);
-
-        //then
         verify(questionRepository, times(1)).save(captor.capture());
         Question save = captor.getValue();
+
+        //then
         assertThat(save.getId()).isEqualTo(1L);
         assertThat(save.getSubject()).isEqualTo("수정한 제목1");
         assertThat(save.getContent()).isEqualTo("수정한 내용1");
     }
 
     @Test
-    @DisplayName("deleteQuestion 테스트")
+    @DisplayName("QuestionService - deleteQuestion 테스트 - HappyPath")
     void deleteQuestion() {
         //given
-        QuestionForm questionForm = createQuestionForm("제목1", "내용1");
-        Question question = createQuestion(1L, questionForm);
+        Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
 
         //when
