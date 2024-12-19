@@ -32,8 +32,8 @@ public class QuestionController {
         if (bindingResult.hasErrors()) {
             return "question/form/create";
         }
-        questionService.createQuestion(questionForm);
-        return "redirect:/question/list";
+        Long questionId = questionService.createQuestion(questionForm);
+        return String.format("redirect:/question/detail/%s", questionId);
     }
 
     @GetMapping("/list")

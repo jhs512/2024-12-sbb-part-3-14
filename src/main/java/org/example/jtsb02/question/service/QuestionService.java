@@ -16,8 +16,9 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public void createQuestion(QuestionForm questionForm) {
-        questionRepository.save(Question.of(questionForm.getSubject(), questionForm.getContent()));
+    public Long createQuestion(QuestionForm questionForm) {
+        return questionRepository.save(
+            Question.of(questionForm.getSubject(), questionForm.getContent())).getId();
     }
 
     public List<QuestionDto> getQuestions() {
