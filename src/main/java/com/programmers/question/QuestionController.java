@@ -39,14 +39,12 @@ public class QuestionController {
     @PostMapping("/create")
     public String registerQuestion(
             @Valid @ModelAttribute QuestionRegisterRequestDto requestDto,
-            BindingResult bindingResult,
-            Model model) {
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "register";
         }
         Question question = questionService.createQuestion(requestDto);
-        model.addAttribute("question", question);
-        return "redirect:/questions/all";
+        return "redirect:/questions/" + question.getId();
     }
 
     @GetMapping("/all")
