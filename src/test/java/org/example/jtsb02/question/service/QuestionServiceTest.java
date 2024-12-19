@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.form.QuestionForm;
@@ -30,18 +31,10 @@ class QuestionServiceTest {
     @DisplayName("createQuestion 테스트")
     void createQuestion() {
         //given: 테스트를 위한 데이터 준비
-        QuestionForm questionForm = new QuestionForm();
-        questionForm.setSubject("테스트 제목");
-        questionForm.setContent("테스트 내용");
+        QuestionForm questionForm = createQuestionForm("테스트 제목", "테스트 내용");
 
         // Question 객체를 생성하는 mock 설정
-        Question mockQuestion = Question.builder()
-            .id(1L)
-            .subject(questionForm.getSubject())
-            .content(questionForm.getContent())
-            .createdAt(LocalDateTime.now())
-            .hits(0)
-            .build();
+        Question mockQuestion = createQuestion(1L, questionForm);
 
         // questionRepository.save() 메서드가 호출될 때 mockQuestion 객체를 반환하도록 설정
         when(questionRepository.save(Mockito.any(Question.class))).thenReturn(mockQuestion);
@@ -58,8 +51,10 @@ class QuestionServiceTest {
     @DisplayName("getQuestions 테스트")
     void getQuestions() {
         //given
-        Question question1 = Question.of("제목1", "내용1");
-        Question question2 = Question.of("제목2", "내용2");
+        QuestionForm questionForm1 = createQuestionForm("제목1", "내용1");
+        QuestionForm questionForm2 = createQuestionForm("제목2", "내용2");
+        Question question1 = createQuestion(1L, questionForm1);
+        Question question2 = createQuestion(2L, questionForm2);
         List<Question> questions = List.of(question1, question2);
 
         when(questionRepository.findAll()).thenReturn(questions);
@@ -74,5 +69,44 @@ class QuestionServiceTest {
         assertThat(result.getFirst().getContent()).isEqualTo("내용1");
         assertThat(result.get(1).getSubject()).isEqualTo("제목2");
         assertThat(result.get(1).getContent()).isEqualTo("내용2");
+    }
+
+    @Test
+    @DisplayName("getQuestion, addHits 테스트")
+    void getQuestion() {
+        //given
+        QuestionForm questionForm = createQuestionForm("제목1", "내용1");
+        Question question = createQuestion(1L, questionForm);
+
+        when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+        when(questionRepository.save(Mockito.any(Question.class))).thenAnswer(
+            invocation -> invocation.getArgument(0));
+
+        //when
+        QuestionDto result = questionService.getQuestion(1L);
+
+        //then
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getSubject()).isEqualTo("제목1");
+        assertThat(result.getContent()).isEqualTo("내용1");
+        assertThat(result.getHits()).isEqualTo(1);
+    }
+
+    private QuestionForm createQuestionForm(String subject, String content) {
+        QuestionForm questionForm = new QuestionForm();
+        questionForm.setSubject(subject);
+        questionForm.setContent(content);
+        return questionForm;
+    }
+
+    private Question createQuestion(Long id, QuestionForm questionForm) {
+        return Question.builder()
+            .id(id)
+            .subject(questionForm.getSubject())
+            .content(questionForm.getContent())
+            .createdAt(LocalDateTime.now())
+            .hits(0)
+            .build();
     }
 }
