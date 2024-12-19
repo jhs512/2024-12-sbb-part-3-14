@@ -1,5 +1,6 @@
 package com.mysite.sbb.service.impl;
 
+import com.mysite.sbb.dto.QuestionDetailDTO;
 import com.mysite.sbb.dto.QuestionListDTO;
 import com.mysite.sbb.exception.DataNotFoundException;
 import com.mysite.sbb.domain.Answer;
@@ -29,7 +30,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
 
     @Override
-    public List<QuestionListDTO> getList() {
+    public List<QuestionListDTO> getAllQuestions() {
 
         List<Question> all = questionRepository.findAll();
 
@@ -51,6 +52,15 @@ public class QuestionServiceImpl implements QuestionService {
         return questions.map(QuestionListDTO::new);
     }
 
+    @Override
+    public QuestionDetailDTO getQuestionDetail(Integer id) {
+        Optional<Question> question = questionRepository.findById(id);
+        if(question.isPresent()) {
+            return new QuestionDetailDTO(question.get(), question.get().getAnswerList());
+        } else {
+            throw new DataNotFoundException("question not found");
+        }
+    }
 
     @Override
     public Question getQuestion(Integer id) {

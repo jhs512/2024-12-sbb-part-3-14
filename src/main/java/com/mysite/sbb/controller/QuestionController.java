@@ -1,5 +1,6 @@
 package com.mysite.sbb.controller;
 
+import com.mysite.sbb.dto.QuestionDetailDTO;
 import com.mysite.sbb.dto.QuestionListDTO;
 import com.mysite.sbb.form.QuestionForm;
 import com.mysite.sbb.repository.QuestionRepository;
@@ -45,7 +46,7 @@ public class QuestionController {
     public String detail(Model model,
                          @PathVariable("id") Integer id,
                          AnswerForm answerForm) {
-        Question question = this.questionServiceImpl.getQuestion(id);
+        QuestionDetailDTO question = this.questionServiceImpl.getQuestionDetail(id);
 
         model.addAttribute("question", question);
 

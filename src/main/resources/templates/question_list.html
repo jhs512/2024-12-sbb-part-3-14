@@ -32,7 +32,7 @@
         </thead>
         <tbody>
         <!-- 페이징된 질문 데이터 출력 -->
-        <tr class="text-center" th:each="question, loop : ${paging}">
+        <tr class="text-center" th:each="question, loop : ${paging.content}">
             <!-- 번호 계산: 총 데이터 수에서 현재 페이지의 시작 인덱스를 빼고 루프 인덱스를 뺌 -->
             <td th:text="${paging.getTotalElements() - (paging.number * paging.size) - loop.index}"></td>
 
@@ -46,7 +46,7 @@
             </td>
 
             <!-- 질문 작성자 -->
-            <td><span th:if="${question.author != null}" th:text="${question.author.username}"></span></td>
+            <td><span th:if="${question.authorName != null}" th:text="${question.authorName}"></span></td>
 
             <!-- 작성일 포맷: yyyy-MM-dd HH:mm -->
             <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>

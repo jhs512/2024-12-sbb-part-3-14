@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * 사용자 가입(Signup) 및 로그인(Login) 요청을 처리하는 컨트롤러 클래스.
- *
+ * <p>
  * 요청 흐름
- *
+ * <p>
  * [사용자 요청]
  * 1. 사용자가 /board/write 경로로 POST 요청
  *    ↓
