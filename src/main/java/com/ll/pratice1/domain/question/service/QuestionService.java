@@ -2,6 +2,7 @@ package com.ll.pratice1.domain.question.service;
 
 import com.ll.pratice1.DataNotFoundException;
 import com.ll.pratice1.domain.answer.Answer;
+import com.ll.pratice1.domain.answer.repository.AnswerRepository;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.question.repository.QuestionRepository;
 import com.ll.pratice1.domain.user.SiteUser;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
     //    public List<Question> getList() {
     //        return this.questionRepository.findAll();
@@ -34,6 +36,14 @@ public class QuestionService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         Specification<Question> spec = search(kw);
         return this.questionRepository.findAll(spec, pageable);
+    }
+
+    public Page<Answer> getAnswerList(Question question, int page) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        // 페이징된 Answer 리스트 반환
+        return answerRepository.findByQuestion(question, pageable);
     }
 
     public Question getQuestion(int id) {
@@ -88,5 +98,6 @@ public class QuestionService {
             }
         };
     }
+
 
 }

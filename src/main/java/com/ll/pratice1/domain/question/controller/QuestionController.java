@@ -1,6 +1,7 @@
 package com.ll.pratice1.domain.question.controller;
 
 
+import com.ll.pratice1.domain.answer.Answer;
 import com.ll.pratice1.domain.answer.AnswerForm;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.question.QuestionForm;
@@ -15,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -39,9 +39,11 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id,
-                         AnswerForm answerForm){
+    public String detail(Model model, @RequestParam(value = "page", defaultValue = "0")int page,
+                         @PathVariable("id") Integer id, AnswerForm answerForm){
         Question question = this.questionService.getQuestion(id);
+        Page<Answer> paging = questionService.getAnswerList(question,page);
+        model.addAttribute("paging", paging);
         model.addAttribute("question", question);
         return "question_detail";
     }
@@ -105,5 +107,4 @@ public class QuestionController {
         return String.format("redirect:/question/detail/%s", question.getId());
     }
 
-    private final LocalValidatorFactoryBean defaultValidator;
 }

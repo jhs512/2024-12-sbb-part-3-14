@@ -48,7 +48,7 @@
                 th:if="${page >= paging.number-5 and page <= paging.number+5}"
                 th:classappend="${page == paging.number} ? 'active'"
                 class="page-item">
-                <a class="page-link"th:text="${page}" href="javascript:void(0)" th:data-page="${page}"></a>
+                <a class="page-link" th:text="${page}" href="javascript:void(0)" th:data-page="${page}"></a>
             </li>
             <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
                 <a class="page-link" thref="javascript:void(0)" th:data-page="${paging.number+1}">

@@ -1,9 +1,9 @@
 package com.ll.pratice1;
 
 import com.ll.pratice1.domain.answer.Answer;
+import com.ll.pratice1.domain.answer.service.AnswerService;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.question.repository.QuestionRepository;
-import com.ll.pratice1.domain.question.service.QuestionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +24,7 @@ class Pratice1ApplicationTests {
     private QuestionRepository questionRepository;
 
     @Autowired
-    private QuestionService questionService;
+    private AnswerService answerService;
 
 
     @Test
@@ -51,10 +51,14 @@ class Pratice1ApplicationTests {
 
     @Test
     void test3() {
-        for (int i = 1; i <= 150; i++) {
-            String subject = String.format("테스트 데이터입니다:[%03d]", i);
-            String content = "내용무";
-            this.questionService.create(subject, content, null);
+        for (int i = 1; i <= 50; i++) {
+            String content = "답변 페이징 테스트";
+            Optional<Question> question = this.questionRepository.findById(160);
+            if(question.isPresent()){
+                this.answerService.create(question.get(), content, null);
+            }
         }
     }
+
+
 }
