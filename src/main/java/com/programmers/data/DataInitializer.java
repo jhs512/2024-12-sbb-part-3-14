@@ -21,16 +21,16 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         siteUserService.save(SignupDto.builder()
-                        .userName("user")
-                        .password("password")
-                        .passwordConfirmation("password")
+                        .userName("asdasd")
+                        .password("asd")
+                        .passwordConfirmation("asd")
                         .email("email")
                 .build());
         // 가짜 Principal 생성
         Principal principal = new Principal() {
             @Override
             public String getName() {
-                return "user";  // 가짜 사용자 이름
+                return "asdasd";  // 가짜 사용자 이름
             }
         };
         for (int i = 1; i <= 60; i++) {
