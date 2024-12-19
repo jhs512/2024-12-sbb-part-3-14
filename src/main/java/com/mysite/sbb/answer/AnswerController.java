@@ -66,6 +66,16 @@ public class AnswerController {
         model.addAttribute("answerList", answers);
         return "answer_list";
     }
+    @PostMapping("/comment_create/{id}")
+    public String createComment(Model model,@PathVariable("id") Integer id,@Valid AnswerForm answerForm, BindingResult bindingResult,Principal principal) {
+        Answer answer = answerService.getAnswer(id);
+        Question question = answerService.getQestion(id);
+        SiteUser user = userService.getSiteUser(principal.getName());
+        answerService.create(user,question,answer, answerForm.getContent());
+        List<Answer> answers = this.answerService.getList();
+        model.addAttribute("answerList", answers);
+        return String.format("redirect:/question/detail/%s", question.getId());
+    }
     @GetMapping("recommend/{id}")
     public String recommned(Model model,@PathVariable("id") Integer id,Principal principal){
         Answer answer = answerService.getAnswer(id);

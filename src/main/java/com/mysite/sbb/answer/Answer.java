@@ -1,7 +1,8 @@
 package com.mysite.sbb.answer;
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
+
 
 import com.mysite.sbb.qustion.Question;
 import com.mysite.sbb.user.SiteUser;
@@ -38,12 +39,14 @@ public class Answer {
     @ManyToMany
     private Set<SiteUser> voterSet;
 
-
-    @ManyToOne(fetch =FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Answer parent;
 
-    @OneToMany
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> child;
+
+    private String orderNum;
+
 
     public int getVoterCount(){
         return voterSet.size();

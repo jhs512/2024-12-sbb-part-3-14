@@ -36,7 +36,20 @@ public class AnswerService {
         answer.setCreateDate(LocalDateTime.now());
         answer.setQuestion(question);
         answer.setUser(siteUser);
-
+        this.answerRepository.save(answer);
+        answer.setOrderNum(answer.getId().toString());
+        this.answerRepository.save(answer);
+    }
+    public void create(SiteUser siteUser, Question question,Answer parent, String content) {
+        if(parent.getParent() != null)
+            parent =parent.getParent();
+        Answer answer = new Answer();
+        answer.setContent(content);
+        answer.setCreateDate(LocalDateTime.now());
+        answer.setQuestion(question);
+        answer.setUser(siteUser);
+        answer.setParent(parent);
+        answer.setOrderNum(parent.getId() +"-" +(parent.getChild().size()+1));
         this.answerRepository.save(answer);
     }
     public void delete(int id){
@@ -53,7 +66,7 @@ public class AnswerService {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 3, Sort.by(sorts));
-        return this.answerRepository.findAllByQuestion(question,pageable);
+        return this.answerRepository.findAllByQuestionOrderByOrderNum(question,pageable);
     }
     public Answer modify(int id,String content){
         Optional<Answer> optional_answer = this.answerRepository.findById(id);
