@@ -13,6 +13,7 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Question findBySubject(String subject);
     Question findBySubjectAndContent(String subject, String Content);
     List<Question> findBySubjectLike(String subject);
+    Page<Question> findAllByAuthor_Username(String username, Pageable pageable);
     Page<Question> findAll(Pageable pageable);
     Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 

@@ -3,16 +3,21 @@ package com.mysite.sbb.user;
 import com.mysite.sbb.PasswordUtil;
 import com.mysite.sbb.email.Email;
 import com.mysite.sbb.email.EmailService;
+import com.mysite.sbb.question.Question;
+import com.mysite.sbb.question.QuestionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 
@@ -23,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final EmailService emailService;
+    private final QuestionService questionService;
 
     @Value("${spring.mail.username}")
     private String username;
@@ -139,6 +145,16 @@ public class UserController {
         userService.changePassword(user, userChangePasswordForm.getNewPassword1());
 
         return "redirect:/user/logout";
+    }
+
+    @GetMapping("/my-question")
+    public String myInfo(Model model,
+                         @RequestParam(value="page", defaultValue = "0") int page,
+                         Principal principal) {
+        String username = principal.getName();
+        Page<Question> paging = questionService.getMyQuestionList(username, page);
+        model.addAttribute("paging", paging);
+        return "my_question";
     }
 
 }

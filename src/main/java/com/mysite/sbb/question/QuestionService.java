@@ -71,6 +71,14 @@ public class QuestionService {
         this.questionRepository.save(question);
     }
 
+    public Page<Question> getMyQuestionList(String username, int page) {
+        int itemsPerPage = 10;
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, itemsPerPage, Sort.by(sorts));
+        return this.questionRepository.findAllByAuthor_Username(username, pageable);
+    }
+
     /*
     private Specification<Question> search(String kw) {
         return new Specification<>() {
