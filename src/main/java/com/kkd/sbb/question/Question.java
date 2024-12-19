@@ -41,5 +41,5 @@ public class Question {
 
     @Column(columnDefinition = "integer default 0")
     @NotNull
-    private Integer views;
+    private Integer views = 0;
 }
