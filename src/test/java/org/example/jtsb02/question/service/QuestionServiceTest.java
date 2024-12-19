@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.form.QuestionForm;
 import org.example.jtsb02.question.repository.QuestionRepository;
@@ -50,5 +52,27 @@ class QuestionServiceTest {
         // then: 결과 검증
         assertThat(questionId).isNotNull();
         assertThat(questionId).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("getQuestions 테스트")
+    void getQuestions() {
+        //given
+        Question question1 = Question.of("제목1", "내용1");
+        Question question2 = Question.of("제목2", "내용2");
+        List<Question> questions = List.of(question1, question2);
+
+        when(questionRepository.findAll()).thenReturn(questions);
+
+        //when
+        List<QuestionDto> result = questionService.getQuestions();
+
+        //then
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.getFirst().getSubject()).isEqualTo("제목1");
+        assertThat(result.getFirst().getContent()).isEqualTo("내용1");
+        assertThat(result.get(1).getSubject()).isEqualTo("제목2");
+        assertThat(result.get(1).getContent()).isEqualTo("내용2");
     }
 }
