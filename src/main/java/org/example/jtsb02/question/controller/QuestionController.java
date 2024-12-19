@@ -29,7 +29,7 @@ public class QuestionController {
 
     @PostMapping("/create")
     public String createQuestion(@Valid QuestionForm questionForm, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return "question_form";
         }
         questionService.createQuestion(questionForm);
@@ -48,5 +48,25 @@ public class QuestionController {
         QuestionDto question = questionService.getQuestion(id);
         model.addAttribute("question", question);
         return "question_detail";
+    }
+
+    @GetMapping("/modify/{id}")
+    public String modifyQuestion(@PathVariable("id") Long id, Model model,
+        QuestionForm questionForm) {
+        QuestionDto question = questionService.getQuestion(id);
+        questionForm.setSubject(question.getSubject());
+        questionForm.setContent(question.getContent());
+        model.addAttribute("questionForm", questionForm);
+        return "question_modify_form";
+    }
+
+    @PostMapping("/modify/{id}")
+    public String modifyQuestion(@PathVariable("id") Long id, @Valid QuestionForm questionForm,
+        BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "question_modify_form";
+        }
+        questionService.modifyQuestion(id, questionForm);
+        return String.format("redirect:/question/detail/%s", id);
     }
 }

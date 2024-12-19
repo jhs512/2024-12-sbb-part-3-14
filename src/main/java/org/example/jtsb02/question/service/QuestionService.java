@@ -1,5 +1,6 @@
 package org.example.jtsb02.question.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.common.exception.DataNotFoundException;
@@ -30,5 +31,15 @@ public class QuestionService {
 
     private Question addHits(Question question) {
         return questionRepository.save(question.toBuilder().hits(question.getHits() + 1).build());
+    }
+
+    public void modifyQuestion(Long id, QuestionForm questionForm) {
+        Question question = questionRepository.findById(id)
+            .orElseThrow(() -> new DataNotFoundException("Question not found"));
+        questionRepository.save(question.toBuilder()
+            .subject(questionForm.getSubject())
+            .content(questionForm.getContent())
+            .modifiedAt(LocalDateTime.now())
+            .build());
     }
 }
