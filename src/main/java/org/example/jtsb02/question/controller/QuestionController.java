@@ -33,7 +33,7 @@ public class QuestionController {
             return "question_form";
         }
         questionService.createQuestion(questionForm);
-        return "redirect:/";
+        return "redirect:/question/list";
     }
 
     @GetMapping("/list")
