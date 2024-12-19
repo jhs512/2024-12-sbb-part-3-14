@@ -104,10 +104,11 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-comment")
     public String myComment(Model model,
+                            @RequestParam(value = "page", defaultValue = "0") int page,
                             Principal principal) {
         String username = principal.getName();
-        List<Comment> commentList = commentService.getMyCommentList(username);
-        model.addAttribute("commentList", commentList);
+        Page<Comment> paging = commentService.getMyCommentList(username, page);
+        model.addAttribute("paging", paging);
         return "my_comment";
     }
 

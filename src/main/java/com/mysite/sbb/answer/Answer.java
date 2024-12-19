@@ -25,7 +25,7 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Integer Id;
+    private Integer id;
 
     @Column(columnDefinition = "TEXT")
     private String content;

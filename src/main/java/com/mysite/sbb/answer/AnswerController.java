@@ -1,6 +1,8 @@
 package com.mysite.sbb.answer;
 
+import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.comment.CommentForm;
+import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.question.QuestionService;
 import com.mysite.sbb.user.SiteUser;
@@ -26,6 +28,7 @@ public class AnswerController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final UserService userService;
+    private final CommentService commentService;
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
@@ -102,14 +105,16 @@ public class AnswerController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(
-            Model model,
-            @PathVariable("id") Integer answerId,
-            CommentForm commentForm) {
+    public String detail( Model model,
+                          @PathVariable("id") Integer answerId,
+                          @RequestParam(value="page", defaultValue="0") int page,
+                          CommentForm commentForm) {
 
         Answer answer = answerService.getAnswer(answerId);
+        Page<Comment> paging = commentService.getCommentList(answerId, page);
         Question question = questionService.getQuestion(answer.getQuestion().getId());
         model.addAttribute("question", question);
+        model.addAttribute("paging", paging);
         model.addAttribute("answer", answer);
         return "answer_detail";
     }
