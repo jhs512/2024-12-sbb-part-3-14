@@ -42,4 +42,10 @@ public class QuestionService {
             .modifiedAt(LocalDateTime.now())
             .build());
     }
+
+    public void deleteQuestion(Long id) {
+        Question question = questionRepository.findById(id)
+            .orElseThrow(() -> new DataNotFoundException("Question not found"));
+        questionRepository.delete(question);
+    }
 }
