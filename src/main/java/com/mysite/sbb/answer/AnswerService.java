@@ -5,12 +5,18 @@ import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.qustion.Question;
 import com.mysite.sbb.qustion.QuestionRepository;
 import com.mysite.sbb.user.SiteUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +48,12 @@ public class AnswerService {
     public Answer getAnswer(int id){
         return this.answerRepository.findById(id).get();
 
+    }
+    public Page<Answer> getList(Question question , int page) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, 3, Sort.by(sorts));
+        return this.answerRepository.findAllByQuestion(question,pageable);
     }
     public Answer modify(int id,String content){
         Optional<Answer> optional_answer = this.answerRepository.findById(id);

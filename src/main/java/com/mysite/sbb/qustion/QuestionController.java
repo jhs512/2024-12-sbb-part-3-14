@@ -1,6 +1,8 @@
 package com.mysite.sbb.qustion;
 
+import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerForm;
+import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequestMapping("/question")
 public class QuestionController {
     private final QuestionService questionService;
+    private final AnswerService answerService;
     private final UserService userService;
 
     @GetMapping("/list")
@@ -71,8 +74,13 @@ public class QuestionController {
 
 
     @GetMapping("/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id,AnswerForm answerForm){
-        model.addAttribute("content",questionService.getQuestion(id));
+    public String detail(Model model, @PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "0") int page, AnswerForm answerForm){
+        Question question = questionService.getQuestion(id);
+        Page<Answer> answerList = answerService.getList(question,page);
+        List<Answer> answerBest = this.questionService.best(id);
+        model.addAttribute("paging",answerList);
+        model.addAttribute("content",question);
+        model.addAttribute("best",answerBest);
         return "qustion_detail";
     }
     @GetMapping("recommend/{id}")

@@ -1,7 +1,8 @@
 package com.mysite.sbb.qustion;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import com.mysite.sbb.answer.Answer;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -18,8 +19,6 @@ import org.springframework.data.domain.Pageable;
 import com.mysite.sbb.answer.Answer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.Set;
 
 import com.mysite.sbb.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +77,13 @@ public class QuestionService {
             question.setSubject(content);
             question.setContent(subject);
             return question;
+    }
+    public List<Answer> best(int id){
+        Question question = this.getQuestion(id);
+        List<Answer> answers = question.getAnswerList();
+        return  answers.stream().filter(q -> !q.getVoterSet().isEmpty())
+                .sorted(Comparator.comparing(Answer::getVoterCount).reversed()).limit(3)
+                .toList();
     }
 
     private Specification<Question> search(String kw) {
