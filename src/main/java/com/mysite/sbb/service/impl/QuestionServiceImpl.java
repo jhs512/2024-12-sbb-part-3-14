@@ -7,6 +7,7 @@ import com.mysite.sbb.dto.QuestionDetailDTO;
 import com.mysite.sbb.dto.QuestionListDTO;
 import com.mysite.sbb.exception.DataNotFoundException;
 import com.mysite.sbb.form.QuestionForm;
+import com.mysite.sbb.repository.AnswerRepository;
 import com.mysite.sbb.repository.QuestionRepository;
 import com.mysite.sbb.service.QuestionService;
 import jakarta.persistence.criteria.*;
@@ -32,6 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final UserServiceImpl userServiceImpl;
+    private final AnswerRepository answerRepository;
 
     @Override
     public List<QuestionListDTO> getAllQuestions() {
@@ -57,13 +59,16 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionDetailDTO getQuestionDetail(Integer id) {
-        Optional<Question> question = questionRepository.findById(id);
-        if (question.isPresent()) {
-            return new QuestionDetailDTO(question.get(), question.get().getAnswerList());
-        } else {
-            throw new DataNotFoundException("question not found");
-        }
+    public QuestionDetailDTO getQuestionDetail(Integer id, int page) {
+        // 1. 질문 조회
+        Question question = questionRepository.findById(id).orElseThrow(() -> new DataNotFoundException("question not found"));
+
+        // 2. 답변 페이징
+        Pageable pageable = PageRequest.of(page, 5,  Sort.by(Sort.Order.desc("createDate")));
+        Page<Answer> answers  = answerRepository.findByQuestion(question, pageable);
+
+        // 3. DTO 변환
+        return new QuestionDetailDTO(question, answers);
     }
 
     @Override

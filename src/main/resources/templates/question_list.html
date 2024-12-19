@@ -83,7 +83,7 @@
 
     <!-- 검색 및 페이징 폼 -->
     <form th:action="@{/question/list}" method="get" id="searchForm">
-        <!-- 검색 키워드와 페이지 번호를 Hidden 필드로 전달 -->
+        <!-- 검색 키워드와 키워드를 Hidden 필드로 전달 -->
         <input type="hidden" id="kw" name="kw" th:value="${kw}">
         <input type="hidden" id="page" name="page" th:value="${paging.number}">
     </form>

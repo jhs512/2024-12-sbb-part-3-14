@@ -22,7 +22,7 @@ public interface QuestionService {
     Question getQuestion(Integer id);
 
     // 질문 상세 정보를 위한 DTO 조회
-    QuestionDetailDTO getQuestionDetail(Integer id);
+    QuestionDetailDTO getQuestionDetail(Integer id, int page);
 
     // 질문 생성
     void create(QuestionForm questionForm, String userName);

@@ -24,10 +24,7 @@ import java.security.Principal;
 @Controller
 public class QuestionController {
 
-    private final QuestionRepository questionRepository;
-
     private final QuestionServiceImpl questionServiceImpl;
-    private final UserServiceImpl userServiceImpl;
 
     @GetMapping("/list")
     public String list(Model model,
@@ -39,8 +36,11 @@ public class QuestionController {
     }
 
     @GetMapping(value = "/detail/{id}")
-    public String detail(@PathVariable("id") Integer id, Model model) {
-        QuestionDetailDTO question = this.questionServiceImpl.getQuestionDetail(id);
+    public String detail(Model model,
+                         @PathVariable("id") Integer id,
+                         @RequestParam(value = "page", defaultValue = "0") int page) {
+
+        QuestionDetailDTO question = this.questionServiceImpl.getQuestionDetail(id, page);
 
         model.addAttribute("question", question);
         model.addAttribute("answerForm", new AnswerForm()); // Form 초기화
