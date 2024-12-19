@@ -1,6 +1,7 @@
 package com.kkd.sbb.user;
 
 
+import com.kkd.sbb.DataNotFoundException;
 import com.kkd.sbb.answer.Answer;
 import com.kkd.sbb.answer.AnswerService;
 import com.kkd.sbb.question.Question;
@@ -9,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.security.SecureRandom;
+import java.util.Random;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ public class UserController {
     private final UserService userService;
     private final QuestionService questionService;
     private final AnswerService answerService;
+    private final JavaMailSender mailSender;
 
     @GetMapping("/signup")
     public String signup(UserCreateForm userCreateForm) {
@@ -103,7 +109,7 @@ public class UserController {
         model.addAttribute("username", siteUser.getUsername());
         model.addAttribute("userEmail", siteUser.getEmail());
         if (bindingResult.hasErrors()) {
-            return this.profile(userUpdateForm, model, principal, 0, 0, 0, 0);
+            return "profile";
         }
 
         if(!this.userService.isMatch(userUpdateForm.getOriginPassword(), siteUser.getPassword())) {
@@ -124,5 +130,61 @@ public class UserController {
             bindingResult.reject("updateFailed", e.getMessage());
         }
         return "profile";
+    }
+
+    @GetMapping("/find-account")
+    public String findAccount(Model model) {
+        model.addAttribute("sendConfirm", false);
+        model.addAttribute("error", false);
+        return "find_account";
+    }
+
+    @PostMapping("/find-account")
+    public String findAccount(Model model, @RequestParam(value="email") String email) {
+        try {
+            SiteUser siteUser = this.userService.getUserByEmail(email);
+            model.addAttribute("sendConfirm", true);
+            model.addAttribute("userEmail", email);
+            model.addAttribute("error", false);
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(email);
+            simpleMailMessage.setSubject("계정 정보입니다.");
+            StringBuffer sb = new StringBuffer();
+            String newPassword = PasswordGenerator.generateRandomPassword();
+            sb.append(siteUser.getUsername()).append("계정의 비밀번호를 새롭게 초기화 했습니다..\n").append("새 비밀번호는 ")
+                    .append(newPassword).append("입니다.\n")
+                    .append("로그인 후 내 정보에서 새로 비밀번호를 지정해주세요.");
+            simpleMailMessage.setText(sb.toString());
+            this.userService.update(siteUser, newPassword);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mailSender.send(simpleMailMessage);
+                }
+            }).start();
+        } catch(DataNotFoundException e) {
+            model.addAttribute("sendConfirm", false);
+            model.addAttribute("error", true);
+        }
+        return "find_account";
+    }
+    public static class PasswordGenerator {
+        private static final String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
+        private static final String CHAR_UPPER = CHAR_LOWER.toUpperCase();
+        private static final String NUMBER = "0123456789";
+        private static final String OTHER_CHAR = "!@#$%&*()_+-=[]?";
+        private static final String PASSWORD_ALLOW_BASE = CHAR_LOWER + CHAR_UPPER + NUMBER + OTHER_CHAR;
+        private static final int PASSWORD_LENGTH = 12;
+        public static String generateRandomPassword() {
+            if (PASSWORD_LENGTH < 1) throw new IllegalArgumentException("Password length must be at least 1");
+            StringBuilder sb = new StringBuilder(PASSWORD_LENGTH);
+            Random random = new SecureRandom();
+            for (int i = 0; i < PASSWORD_LENGTH; i++) {
+                int rndCharAt = random.nextInt(PASSWORD_ALLOW_BASE.length());
+                char rndChar = PASSWORD_ALLOW_BASE.charAt(rndCharAt);
+                sb.append(rndChar);
+            }
+            return sb.toString();
+        }
     }
 }
