@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.form.QuestionForm;
@@ -31,7 +32,7 @@ class QuestionServiceTest {
     private QuestionService questionService; // 테스트할 클래스
 
     @Test
-    @DisplayName("QuestionService - createQuestion 테스트 - HappyPath")
+    @DisplayName("질문 등록")
     void createQuestion() {
         //given: 테스트를 위한 데이터 준비
         QuestionForm questionForm = createQuestionForm("테스트 제목", "테스트 내용");
@@ -51,7 +52,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("QuestionService - getQuestions 테스트 - HappyPath")
+    @DisplayName("질문 목록 조회")
     void getQuestions() {
         //given
         Question question1 = createQuestion(1L, createQuestionForm("제목1", "내용1"));
@@ -72,7 +73,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("QuestionService - getQuestion, addHits 테스트 - HappyPath")
+    @DisplayName("질문 조회시 조회수 증가")
     void getQuestion() {
         //given
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
@@ -93,7 +94,20 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("QuestionService - modifyQuestion 테스트 - HappyPath")
+    @DisplayName("존재하지 않는 질문 ID로 조회")
+    void getQuestion_notFound() {
+        //given
+        when(questionRepository.findById(1L)).thenReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> questionService.getQuestion(1L))
+            .isInstanceOf(DataNotFoundException.class)
+            .hasMessage("Question not found");
+    }
+
+    @Test
+    @DisplayName("질문 수정")
     void modifyQuestion() {
         //given
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
@@ -116,7 +130,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("QuestionService - deleteQuestion 테스트 - HappyPath")
+    @DisplayName("질문 삭제")
     void deleteQuestion() {
         //given
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
