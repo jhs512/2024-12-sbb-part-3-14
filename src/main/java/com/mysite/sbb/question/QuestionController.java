@@ -1,9 +1,10 @@
 package com.mysite.sbb.question;
 
-import com.mysite.sbb.comment.Comment;
+import com.mysite.sbb.category.Category;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerForm;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.category.CategoryService;
 import com.mysite.sbb.comment.CommentForm;
 import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.user.SiteUser;
@@ -20,8 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/question")
@@ -32,12 +31,20 @@ public class QuestionController {
     private final AnswerService answerService;
     private final CommentService commentService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
-        Page<Question> paging = questionService.getList(page, kw);
+    public String list(
+            Model model,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "kw", defaultValue = "") String kw,
+            @RequestParam(value = "category_id", defaultValue = "1") Integer categoryId
+    ) {
+        Category category = categoryService.getCategory(categoryId);
+        Page<Question> paging = questionService.getList(category, page, kw);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
+        model.addAttribute("category_id", categoryId);
         return "question_list";
     }
 

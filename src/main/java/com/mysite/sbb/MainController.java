@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MainController {
     @GetMapping("/")
     public String home() {
-        return "redirect:/question/list";
+        return "redirect:/question/list?id=1";
     }
 
     @GetMapping("/about")

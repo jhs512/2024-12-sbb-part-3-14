@@ -2,6 +2,7 @@ package com.mysite.sbb.question;
 
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.category.Category;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +36,14 @@ public class QuestionService {
         }
     }
 
-    public Page<Question> getList(int page, String kw) {
+    public Page<Question> getList(Category category, int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         Specification<Question> spec = search(kw);
 
         //return questionRepository.findAll(spec, pageable);
-        return questionRepository.findAllByKeyword(kw, pageable);
+        return questionRepository.findAllByCategoryAndKeyword(category, kw, pageable);
     }
 
     public void create(String subject, String content, SiteUser user) {
