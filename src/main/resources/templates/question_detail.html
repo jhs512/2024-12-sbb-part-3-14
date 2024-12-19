@@ -1,26 +1,29 @@
-<div class="d-flex justify-content-between align-items-center border-bottom my-3 py-2">
-	<h2 th:text="${question.subject}"></h2>
-	<h5 th:text="${question.hits}"></h5>
-</div>
-<div class="card my-3">
-	<div class="card-body">
-		<div class="card-text" th:utext="${question.content}"></div>
-		<div class="d-flex justify-content-end">
-			<div th:if="${question.modifiedAt != null}" class="badge bg-light text-dark p-2 text-start mx-3">
-				<div class="mb-2">수정일자</div>
-				<div th:text="${#temporals.format(question.modifiedAt, 'yyyy-MM-dd HH:mm')}"></div>
+<html layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="ko">
+<div layout:fragment="content" class="container my-3">
+	<div class="border-bottom py-2">
+		<h2 th:text="${question.subject}"></h2>
+		<h5 th:text="${question.hits}"></h5>
+	</div>
+	<div class="card my-3">
+		<div class="card-body">
+			<div class="card-text" style="white-space: pre-line;" th:text="${question.content}"></div>
+			<div class="d-flex justify-content-end">
+				<div class="badge bg-light text-dark p-2 text-start" th:if="${question.modifiedAt != null}">
+					<div>수정일자</div>
+					<div th:text="${#temporals.format(question.modifiedAt, 'yyyy-MM-dd HH:mm')}"></div>
+				</div>
+				<div class="badge bg-light text-dark p-2 text-start">
+					<div class="mb-2">작성일자</div>
+					<div th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+				</div>
 			</div>
-			<div class="badge bg-light text-dark p-2 text-start">
-				<div class="mb-2">작성일자</div>
-				<div th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
-			</div>
+			<a th:href="@{|/question/modify/${question.id}|}" th:text="수정"></a>
+			<a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}" th:text="삭제"></a>
 		</div>
-		<a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary" th:text="수정"></a>
-		<a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}"
-		   class="delete btn btn-sm btn-outline-secondary" th:text="삭제"></a>
 	</div>
 </div>
-<script>
+
+<script layout:fragment="script" type="text/javascript">
   const delete_elements = document.getElementsByClassName("delete");
   Array.from(delete_elements).forEach(function (element) {
     element.addEventListener('click', function () {
@@ -30,3 +33,4 @@
     });
   });
 </script>
+</html>

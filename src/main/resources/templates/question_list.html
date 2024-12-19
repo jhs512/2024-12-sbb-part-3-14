@@ -1,22 +1,26 @@
-<table class="table">
-	<thead class="table-dark">
-	<tr class="text-center">
-		<th>번호</th>
-		<th style="width:50%">제목</th>
-		<th>작성자</th>
-		<th>작성일시</th>
-		<th>조회수</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr class="text-center" th:each="question, loop : ${questions}">
-		<td th:text="${loop.index + 1}"></td>
-		<td class="text-start">
-			<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
-		</td>
-		<td></td>
-		<td th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
-		<td th:text="${question.hits}"></td>
-	</tr>
-	</tbody>
-</table>
+<html layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="ko">
+<div layout:fragment="content" class="container my-3">
+	<table class="table">
+		<thead class="table-dark">
+		<tr>
+			<th>번호</th>
+			<th style="width:50%">제목</th>
+			<th>작성자</th>
+			<th>작성일시</th>
+			<th>조회수</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="question, loop : ${questions}">
+			<td th:text="${loop.index + 1}"></td>
+			<td>
+				<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+			</td>
+			<td></td>
+			<td th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+			<td th:text="${question.hits}"></td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+</html>
