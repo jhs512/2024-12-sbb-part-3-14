@@ -110,4 +110,16 @@ public class CommentController {
         model.addAttribute("commentList", commentList);
         return "my_comment";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String vote(@PathVariable("id") int id,
+                       Principal principal) {
+        String username = principal.getName();
+        SiteUser user = userService.getUser(username);
+        Comment comment = commentService.getComment(id);
+        this.commentService.vote(user, comment);
+
+        return String.format("redirect:/answer/detail/%s#comment_%s", comment.getAnswer().getId(), comment.getId());
+    }
 }

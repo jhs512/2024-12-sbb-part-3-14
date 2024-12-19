@@ -42,6 +42,11 @@ public class CommentService {
     }
 
     public List<Comment> getMyCommentList(String username) {
-        return commentRepository.findAllByAuthor_Username(username);
+        return this.commentRepository.findAllByAuthor_Username(username);
+    }
+
+    public void vote(SiteUser user, Comment comment) {
+        comment.getVoter().add(user);
+        this.commentRepository.save(comment);
     }
 }
