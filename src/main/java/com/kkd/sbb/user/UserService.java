@@ -31,4 +31,14 @@ public class UserService {
             throw new UsernameNotFoundException("User not found");
         }
     }
+
+    public SiteUser update(SiteUser user, String newPassword) {
+        user.setPassword(this.passwordEncoder.encode(newPassword));
+        this.userRepository.save(user);
+        return user;
+    }
+
+    public boolean isMatch(String rawPassword, String encodedPassword) {
+        return this.passwordEncoder.matches(rawPassword, encodedPassword);
+    }
 }
