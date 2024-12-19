@@ -1,6 +1,5 @@
 package com.mysite.sbb.category;
 
-import com.mysite.sbb.CommonUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

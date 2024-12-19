@@ -7,6 +7,8 @@ import com.mysite.sbb.category.Category;
 import com.mysite.sbb.category.CategoryService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
+import com.mysite.sbb.util.CommonUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,10 +49,16 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(Model model,
+    public String detail(HttpServletRequest httpServletRequest,
+                         Model model,
                          @PathVariable("id") Integer id,
                          AnswerForm answerForm,
                          @RequestParam(value="page", defaultValue="0")int page) {
+
+        // 조회수 증가 로직
+        String ClientIp = CommonUtil.getClientIpAddress(httpServletRequest);
+        this.questionService.incrementViewCount(id, ClientIp);
+
         Question question = this.questionService.getQuestion(id);
         Page<Answer> paging = this.answerService.getList(id, page);
         model.addAttribute("paging", paging);

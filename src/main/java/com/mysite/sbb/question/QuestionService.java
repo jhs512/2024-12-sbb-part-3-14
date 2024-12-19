@@ -11,17 +11,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public List<Question> getList() {
         return this.questionRepository.findAll();
@@ -77,6 +81,20 @@ public class QuestionService {
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, itemsPerPage, Sort.by(sorts));
         return this.questionRepository.findAllByAuthor_Username(username, pageable);
+    }
+
+    public void incrementViewCount(int questionId, String ip) {
+
+        String redisKey = "view:" + questionId + ":ip:" + ip;
+        Boolean hasViewed = redisTemplate.hasKey(redisKey);
+
+        if(hasViewed == null || !hasViewed) {
+            redisTemplate.opsForValue().set(redisKey, "1", 24, TimeUnit.HOURS);
+
+            Question question = getQuestion(questionId);
+            question.setViewCount(question.getViewCount() + 1);
+            questionRepository.save(question);
+        }
     }
 
     /*

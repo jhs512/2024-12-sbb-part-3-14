@@ -1,4 +1,4 @@
-package com.mysite.sbb;
+package com.mysite.sbb.util;
 
 import java.security.SecureRandom;
 

@@ -37,6 +37,8 @@ public class Question {
     @LastModifiedDate
     private LocalDateTime modifyDate;
 
+    private Long viewCount;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 

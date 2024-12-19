@@ -57,6 +57,9 @@ dependencies {
 
 	// 스프링 메일
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// 레디스
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {
