@@ -1,14 +1,22 @@
 package com.mysite.sbb.user;
 
+import com.mysite.sbb.DataNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @Controller
@@ -50,5 +58,23 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "login_form";
+    }
+
+    @GetMapping("/login/temp_password")
+    public String tempPassword() {
+        return "email_check_form";
+    }
+
+    @PostMapping("/login/temp_password")
+    public String tempPassword(String email, Model model) {
+        try {
+            SiteUser user = userService.getUserByEmail(email);
+            userService.sendTemporaryPassword(user);
+        } catch (DataNotFoundException e) {
+            model.addAttribute("error", "등록되지 않은 사용자입니다.");
+            return "email_check_form";
+        }
+
+        return "redirect:/user/login";
     }
 }
