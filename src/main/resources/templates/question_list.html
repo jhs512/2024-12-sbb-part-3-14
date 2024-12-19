@@ -10,7 +10,7 @@
 	</thead>
 	<tbody>
 	<tr class="text-center" th:each="question, loop : ${questions}">
-		<td th:text="${loop.index}"></td>
+		<td th:text="${loop.index + 1}"></td>
 		<td class="text-start">
 			<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
 		</td>

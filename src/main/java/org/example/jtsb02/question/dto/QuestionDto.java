@@ -16,7 +16,7 @@ public class QuestionDto {
     private LocalDateTime modifiedAt;
     private int hits;
 
-    public static QuestionDto from(Question question) {
+    public static QuestionDto fromQuestion(Question question) {
         return QuestionDto.builder()
             .id(question.getId())
             .subject(question.getSubject())
