@@ -2,9 +2,7 @@
 <div layout:fragment="content" class="container my-3">
     <div class="row my-3">
         <div class="my-3">
-            <a th:href="@{/question/list(category_id=1)}">질문답변</a>
-            <a th:href="@{/question/list(category_id=2)}">강좌</a>
-            <a th:href="@{/question/list(category_id=3)}">자유게시판</a>
+            <a class="mx-3" th:each="category : ${categoryList}" th:href="@{/question/list(category_id=${category.id})}" th:text="${category.name}"></a>
         </div>
         <div class="col-6">
             <a th:href="@{/question/create(category_id=${category_id})}" class="btn btn-primary">질문 등록하기</a>

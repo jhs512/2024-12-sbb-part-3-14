@@ -40,11 +40,13 @@ public class QuestionController {
             @RequestParam(value = "kw", defaultValue = "") String kw,
             @RequestParam(value = "category_id", defaultValue = "1") Integer categoryId
     ) {
+        List<Category> categoryList = categoryService.getAllCategories();
         Category category = categoryService.getCategory(categoryId);
         Page<Question> paging = questionService.getList(category, page, kw);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         model.addAttribute("category_id", categoryId);
+        model.addAttribute("categoryList", categoryList);
         return "question_list";
     }
 
