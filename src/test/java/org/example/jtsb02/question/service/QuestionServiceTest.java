@@ -1,6 +1,8 @@
 package org.example.jtsb02.question.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import org.example.jtsb02.question.repository.QuestionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -91,6 +94,31 @@ class QuestionServiceTest {
         assertThat(result.getSubject()).isEqualTo("제목1");
         assertThat(result.getContent()).isEqualTo("내용1");
         assertThat(result.getHits()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("modifyQuestion 테스트")
+    void modifyQuestion() {
+        //given
+        QuestionForm questionForm = createQuestionForm("제목1", "내용1");
+        QuestionForm modifyQuestionForm = createQuestionForm("수정한 제목1", "수정한 내용1");
+        Question question = createQuestion(1L, questionForm);
+
+        when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+        when(questionRepository.save(Mockito.any(Question.class))).thenAnswer(
+            invocation -> invocation.getArgument(0));
+
+        ArgumentCaptor<Question> captor = ArgumentCaptor.forClass(Question.class);
+
+        //when
+        questionService.modifyQuestion(1L, modifyQuestionForm);
+
+        //then
+        verify(questionRepository, times(1)).save(captor.capture());
+        Question save = captor.getValue();
+        assertThat(save.getId()).isEqualTo(1L);
+        assertThat(save.getSubject()).isEqualTo("수정한 제목1");
+        assertThat(save.getContent()).isEqualTo("수정한 내용1");
     }
 
     private QuestionForm createQuestionForm(String subject, String content) {
