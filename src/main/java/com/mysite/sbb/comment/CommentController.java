@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -48,9 +49,9 @@ public class CommentController {
             return "answer_detail";
         }
 
-        this.commentService.create(answer, commentForm.getContent(), author);
+        Comment comment = this.commentService.create(answer, commentForm.getContent(), author);
 
-        return String.format("redirect:/answer/detail/%s", answer.getId());
+        return String.format("redirect:/answer/detail/%s#comment_%s", answer.getId(), comment.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -82,7 +83,7 @@ public class CommentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         commentService.modify(comment, commentForm.getContent());
-        return String.format("redirect:/answer/detail/%s", comment.getAnswer().getId());
+        return String.format("redirect:/answer/detail/%s#comment_%s", comment.getAnswer().getId(), comment.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -100,4 +101,13 @@ public class CommentController {
         return String.format("redirect:/answer/detail/%s", comment.getAnswer().getId());
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/my-comment")
+    public String myComment(Model model,
+                            Principal principal) {
+        String username = principal.getName();
+        List<Comment> commentList = commentService.getMyCommentList(username);
+        model.addAttribute("commentList", commentList);
+        return "my_comment";
+    }
 }

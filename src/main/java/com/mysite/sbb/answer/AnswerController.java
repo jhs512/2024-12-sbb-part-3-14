@@ -114,6 +114,7 @@ public class AnswerController {
         return "answer_detail";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-answer")
     public String myAnswer(Model model,
                            @RequestParam(value="page", defaultValue = "0") int page,
@@ -124,6 +125,7 @@ public class AnswerController {
         return "my_answer";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-answer/{id}")
     public String myAnswer(@PathVariable("id") int id) {
         Answer answer = answerService.getAnswer(id);

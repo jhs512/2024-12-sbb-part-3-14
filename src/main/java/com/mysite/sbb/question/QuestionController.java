@@ -144,6 +144,7 @@ public class QuestionController {
         return String.format("redirect:/question/detail/%s", id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/my-question")
     public String myQuestion(Model model,
                              @RequestParam(value="page", defaultValue = "0") int page,

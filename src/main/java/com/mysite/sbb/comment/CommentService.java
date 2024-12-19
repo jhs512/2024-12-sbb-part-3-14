@@ -6,6 +6,7 @@ import com.mysite.sbb.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,13 +15,13 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
 
-    public void create(Answer answer, String content, SiteUser author) {
+    public Comment create(Answer answer, String content, SiteUser author) {
         Comment comment = Comment.builder()
                 .author(author)
                 .content(content)
                 .answer(answer)
                 .build();
-        this.commentRepository.save(comment);
+        return this.commentRepository.save(comment);
     }
 
     public Comment getComment(int id){
@@ -38,5 +39,9 @@ public class CommentService {
 
     public void delete(Comment comment) {
         commentRepository.delete(comment);
+    }
+
+    public List<Comment> getMyCommentList(String username) {
+        return commentRepository.findAllByAuthor_Username(username);
     }
 }
