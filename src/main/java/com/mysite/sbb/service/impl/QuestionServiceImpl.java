@@ -1,11 +1,12 @@
 package com.mysite.sbb.service.impl;
 
-import com.mysite.sbb.dto.QuestionDetailDTO;
-import com.mysite.sbb.dto.QuestionListDTO;
-import com.mysite.sbb.exception.DataNotFoundException;
 import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
 import com.mysite.sbb.domain.SiteUser;
+import com.mysite.sbb.dto.QuestionDetailDTO;
+import com.mysite.sbb.dto.QuestionListDTO;
+import com.mysite.sbb.exception.DataNotFoundException;
+import com.mysite.sbb.form.QuestionForm;
 import com.mysite.sbb.repository.QuestionRepository;
 import com.mysite.sbb.service.QuestionService;
 import jakarta.persistence.criteria.*;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final UserServiceImpl userServiceImpl;
 
     @Override
     public List<QuestionListDTO> getAllQuestions() {
@@ -55,7 +59,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionDetailDTO getQuestionDetail(Integer id) {
         Optional<Question> question = questionRepository.findById(id);
-        if(question.isPresent()) {
+        if (question.isPresent()) {
             return new QuestionDetailDTO(question.get(), question.get().getAnswerList());
         } else {
             throw new DataNotFoundException("question not found");
@@ -65,7 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Question getQuestion(Integer id) {
         Optional<Question> question = questionRepository.findById(id);
-        if(question.isPresent()) {
+        if (question.isPresent()) {
             return question.get();
         } else {
             throw new DataNotFoundException("question not found");
@@ -73,36 +77,51 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void create(String subject, String content, SiteUser user) {
-        Question q= new Question();
-        q.setSubject(subject);
-        q.setContent(content);
-        q.setCreateDate(LocalDateTime.now());
-        q.setAuthor(user);
-        questionRepository.save(q);
+    public void create(QuestionForm questionForm, String userName) {
+        SiteUser user = userServiceImpl.getUser(userName);
+        Question question = new Question();
+        question.setSubject(questionForm.getSubject());
+        question.setContent(questionForm.getContent());
+        question.setCreateDate(LocalDateTime.now());
+        question.setAuthor(user);
+        questionRepository.save(question);
     }
 
     @Override
-    public void modify(Question question, String subject, String content) {
-        question.setSubject(subject);
-        question.setContent(content);
+    public void modify(Integer id, QuestionForm questionForm, String userName) {
+        Question question = getQuestion(id);
+
+        if (!question.getAuthor().getUsername().equals(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        }
+
+        question.setSubject(questionForm.getSubject());
+        question.setContent(question.getContent());
         question.setModifyDate(LocalDateTime.now());
         questionRepository.save(question);
     }
 
     @Override
-    public void delete(Question question) {
+    public void delete(Integer id, String userName) {
+        Question question = getQuestion(id);
+
+        if (!question.getAuthor().getUsername().equals(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
+        }
+
         this.questionRepository.delete(question);
     }
 
     @Override
-    public void vote(Question question, SiteUser siteUser) {
+    public void vote(Integer id, String userName) {
+        Question question = getQuestion(id);
+        SiteUser siteUser = userServiceImpl.getUser(userName);
         question.getVoter().add(siteUser);
         this.questionRepository.save(question);
     }
 
     @Override
-    public Specification<Question> search(String kw){
+    public Specification<Question> search(String kw) {
         return new Specification<>() {
             @Serial
             private static final long serialVersionUID = 1L;
