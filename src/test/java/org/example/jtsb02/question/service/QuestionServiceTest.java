@@ -121,6 +121,21 @@ class QuestionServiceTest {
         assertThat(save.getContent()).isEqualTo("수정한 내용1");
     }
 
+    @Test
+    @DisplayName("deleteQuestion 테스트")
+    void deleteQuestion() {
+        //given
+        QuestionForm questionForm = createQuestionForm("제목1", "내용1");
+        Question question = createQuestion(1L, questionForm);
+        when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+
+        //when
+        questionService.deleteQuestion(1L);
+
+        //then
+        verify(questionRepository, times(1)).delete(question);
+    }
+
     private QuestionForm createQuestionForm(String subject, String content) {
         QuestionForm questionForm = new QuestionForm();
         questionForm.setSubject(subject);
