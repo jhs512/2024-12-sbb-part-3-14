@@ -26,6 +26,11 @@ public class QuestionService {
     }
 
     public QuestionDto getQuestion(Long id) {
+        return QuestionDto.fromQuestion(questionRepository.findById(id)
+            .orElseThrow(() -> new DataNotFoundException("Question not found")));
+    }
+
+    public QuestionDto getQuestionWithHitsCount(Long id) {
         return QuestionDto.fromQuestion(addHits(questionRepository.findById(id)
             .orElseThrow(() -> new DataNotFoundException("Question not found"))));
     }

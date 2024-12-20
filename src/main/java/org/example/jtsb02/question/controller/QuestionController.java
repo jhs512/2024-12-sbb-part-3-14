@@ -45,7 +45,7 @@ public class QuestionController {
 
     @GetMapping("/detail/{id}")
     public String getQuestion(@PathVariable("id") Long id, Model model) {
-        QuestionDto question = questionService.getQuestion(id);
+        QuestionDto question = questionService.getQuestionWithHitsCount(id);
         model.addAttribute("question", question);
         return "question/detail";
     }
