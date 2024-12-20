@@ -1,11 +1,8 @@
 package com.mysite.sbb.qustion;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.catrgory.Category;
-import com.mysite.sbb.catrgory.CategoryRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -18,8 +15,6 @@ import com.mysite.sbb.user.SiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import com.mysite.sbb.answer.Answer;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.mysite.sbb.DataNotFoundException;
@@ -43,6 +38,9 @@ public class QuestionService {
         } else {
             throw new DataNotFoundException("question not found");
         }
+    }
+    public Question getCurrentQuestion(){
+        return questionRepository.findTopByOrderByCreateDateDesc();
     }
 
     public void create(SiteUser siteUser, String subject, String content,Category category) {

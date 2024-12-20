@@ -3,13 +3,11 @@ package com.mysite.sbb.answer;
 
 import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.qustion.Question;
-import com.mysite.sbb.qustion.QuestionRepository;
 import com.mysite.sbb.user.SiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -81,5 +79,8 @@ public class AnswerService {
     public void vote(Answer answer,SiteUser siteUser){
         answer.getVoterSet().add(siteUser);
         this.answerRepository.save(answer);
+    }
+    public Answer getCurrentAnswer(){
+        return answerRepository.findTopByOrderByCreateDateDesc();
     }
 }

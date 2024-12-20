@@ -12,5 +12,7 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Page<Question> findAllByOrderByIdDesc(Pageable pageable);
     void deleteById(Long placeId);
     Page<Question> findAll(Specification<Question> spec, Pageable pageable);
+    Question findTopByOrderByCreateDateDesc();
+
 
 }
