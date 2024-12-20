@@ -5,6 +5,7 @@
 </head>
 <body>
 <div layout:fragment="content" class="container my-3">
+
     <!-- 질문 -->
     <h2 class="border-bottom py-2" th:text="${question?.subject ?: '제목 없음'}"></h2>
     <div class="card my-3">
@@ -13,11 +14,13 @@
             <div class="d-flex justify-content-end">
                 <div th:if="${question?.modifyDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
                     <div class="mb-2">modified at</div>
-                    <div th:if="${question.modifyDate != null}" th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+                    <div th:if="${question.modifyDate != null}"
+                         th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
-                        <span th:if="${question.authorName != null}" th:text="${question.authorName ?: '작성자 없음'}"></span>
+                        <span th:if="${question.authorName != null}"
+                              th:text="${question.authorName ?: '작성자 없음'}"></span>
                     </div>
                     <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
@@ -39,22 +42,66 @@
                    th:if="${question.authorName != null and #authentication.getPrincipal().getUsername() == question.authorName}"
                    th:text="삭제"></a>
             </div>
+
+            <div class="comments-section border-top mt-3 pt-3">
+                <!--                <div class="d-flex justify-content-between align-items-center mb-2">-->
+                <!--                    &lt;!&ndash;                    <span class="text-muted small">댓글 <span th:text="${question.commentCount ?: 0}">0</span>개</span>&ndash;&gt;-->
+                <!--                    <span class="text-muted small">댓글 <span>0</span>개</span>-->
+                <!--                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"-->
+                <!--                            data-bs-target="#questionComments">댓글 보기-->
+                <!--                    </button>-->
+                <!--                </div>-->
+
+                <!-- 댓글 목록 (접었다 펼 수 있음) -->
+                <!--                <div class="collapse" id="questionComments">-->
+                <!-- 기존 댓글 목록 -->
+                <!--                    <div class="comment-item small border-bottom py-2" th:each="comment : ${question.comments}">-->
+                <!--                        <div class="d-flex justify-content-between">-->
+                <!--                            <div>-->
+                <!--                                <span class="me-2" th:text="${comment.content}">댓글 내용</span>-->
+                <!--                                <span class="text-muted" th:text="${comment.authorName}">작성자</span>-->
+                <!--                            </div>-->
+                <!--                            <div class="text-muted" th:text="${#temporals.format(comment.createDate, 'MM.dd HH:mm')}">-->
+                <!--                                날짜-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                </div>-->
+
+                <!-- 댓글 작성 폼 -->
+                <!--                <form th:action="@{|/comment/create/question/${question.id}|}" method="post"-->
+                <form method="post"
+                      class="mt-2" sec:authorize="isAuthenticated()">
+                    <div class="input-group input-group-sm">
+                        <!-- 익명 사용자일 경우 -->
+                        <!--                        <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control" rows="10"></textarea>-->
+                        <input sec:authorize="isAnonymous()" type="text" name="content" class="form-control" disabled>
+
+                        <!-- 인증된 사용자일 경우 -->
+                        <input sec:authorize="isAuthenticated()" type="text" name="content" class="form-control"
+                               placeholder="댓글을 입력하세요">
+                        <!--                        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" placeholder="답변을 등록하세요" class="form-control" rows="10"></textarea>-->
+
+                        <button class="btn btn-outline-secondary" type="submit">등록</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+    <!--  질문 끝 -->
 
 
     <!-- 답변 헤더 -->
     <div class="d-flex justify-content-between align-items-center border-bottom my-3 py-2">
-    <!-- 답변 갯수 -->
-    <h5 class="mb-0" th:text="${question.answerCount != null ? question.answerCount : 0} + '개의 답변이 있습니다.'"></h5>
+        <!-- 답변 갯수 -->
+        <h5 class="mb-0" th:text="${question.answerCount != null ? question.answerCount : 0} + '개의 답변이 있습니다.'"></h5>
 
-    <!-- 답변 정렬 선택 -->
-    <form th:action="@{|/question/detail/${question.id}|}" method="get" id="sortForm">
-        <select class="form-select form-select-sm d-inline w-auto" name="sortKeyword" id="sortSelect">
-            <option th:value="createDate" th:selected="${sort == 'createDate'}">최신순</option>
-            <option th:value="voterCount" th:selected="${sort == 'voterCount'}">추천순</option>
-        </select>
-    </form>
+        <!-- 답변 정렬 선택 -->
+        <form th:action="@{|/question/detail/${question.id}|}" method="get" id="sortForm">
+            <select class="form-select form-select-sm d-inline w-auto" name="sortKeyword" id="sortSelect">
+                <option th:value="createDate" th:selected="${sort == 'createDate'}">최신순</option>
+                <option th:value="voterCount" th:selected="${sort == 'voterCount'}">추천순</option>
+            </select>
+        </form>
     </div>
 
 
@@ -70,7 +117,8 @@
                 </div>
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
-                        <span th:if="${question.authorName != null}" th:text="${question.authorName ?: '작성자 없음'}"></span>
+                        <span th:if="${question.authorName != null}"
+                              th:text="${question.authorName ?: '작성자 없음'}"></span>
                     </div>
                     <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
@@ -79,7 +127,8 @@
                 <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
                    th:data-uri="@{|/answer/vote/${answer.id}|}">
                     추천
-                    <span class="badge rounded-pill bg-success" th:if="${answer.voterCount != null}" th:text="${answer.voterCount}"></span>
+                    <span class="badge rounded-pill bg-success" th:if="${answer.voterCount != null}"
+                          th:text="${answer.voterCount}"></span>
                 </a>
                 <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
@@ -90,6 +139,40 @@
                    th:if="${answer?.authorName != null and #authentication.getPrincipal().getUsername() == answer.authorName}"
                    th:text="삭제"></a>
             </div>
+
+            <!-- 답변 댓글 영역 -->
+            <div class="comments-section border-top mt-3 pt-3">
+                <!--                <div class="d-flex justify-content-between align-items-center mb-2">-->
+                <!--                    <span class="text-muted small">댓글 <span th:text="${answer.commentCount ?: 0}">0</span>개</span>-->
+                <!--                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"-->
+                <!--                            th:data-bs-target="|#answer${answer.id}Comments|">댓글 보기</button>-->
+                <!--                </div>-->
+
+                <!--                &lt;!&ndash; 댓글 목록 (접었다 펼 수 있음) &ndash;&gt;-->
+                <!--                <div class="collapse" th:id="|answer${answer.id}Comments|">-->
+                <!--                    &lt;!&ndash; 답변 댓글 목록 &ndash;&gt;-->
+                <!--                    <div class="comment-item small border-bottom py-2" th:each="comment : ${answer.comments}">-->
+                <!--                        <div class="d-flex justify-content-between">-->
+                <!--                            <div>-->
+                <!--                                <span class="me-2" th:text="${comment.content}">댓글 내용</span>-->
+                <!--                                <span class="text-muted" th:text="${comment.authorName}">작성자</span>-->
+                <!--                            </div>-->
+                <!--                            <div class="text-muted" th:text="${#temporals.format(comment.createDate, 'MM.dd HH:mm')}">-->
+                <!--                                날짜-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+
+                <!-- 댓글 작성 폼 -->
+                <!--                                <form th:action="@{|/comment/create/answer/${answer.id}|}" method="post"-->
+                <form method="post"
+                      class="mt-2" sec:authorize="isAuthenticated()">
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="content" class="form-control" placeholder="댓글을 입력하세요">
+                        <button class="btn btn-outline-secondary" type="submit">등록</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <!-- 답변 반복 끝-->
@@ -99,10 +182,12 @@
         <div th:replace="form_error :: formErrorsFragment"></div>
 
         <!-- 익명 사용자일 경우 -->
-        <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control" rows="10"></textarea>
+        <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control"
+                  rows="10"></textarea>
 
         <!-- 인증된 사용자일 경우 -->
-        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" rows="10"></textarea>
+        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" placeholder="답변을 등록하세요" class="form-control"
+                  rows="10"></textarea>
 
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
@@ -114,7 +199,7 @@
             <li class="page-item" th:classappend="${question.answers.first} ? 'disabled'">
                 <a class="page-link" href="javascript:void(0)"
                    th:if="${!question.answers.first}"
-                   th:data-page="${question.answers.number}">
+                   th:data-page="${question.answers.number - 1}">
                     <span>이전</span>
                 </a>
             </li>
@@ -130,34 +215,37 @@
                    th:data-page="${page}"></a>
             </li>
 
-            <!-- 다음 페이지 버튼 -->
+            <!--  페이지 버튼 -->
             <li class="page-item" th:classappend="${question.answers.last} ? 'disabled'">
                 <a class="page-link" href="javascript:void(0)"
                    th:if="${!question.answers.last}"
-                   th:data-page="${question.answers.number+1}">
+                   th:data-page="${question.answers.number + 1}">
                     <span>다음</span>
                 </a>
             </li>
         </ul>
     </div>
 
+
     <!-- 검색 및 페이징 폼 -->
     <form th:action="@{|/question/detail/${question.id}|}" method="get" id="pagingForm">
-    <!-- 검색 키워드와 페이지 번호를 Hidden 필드로 전달 -->
-        <input type="hidden" id="page" name="page" th:value="${question.answers.number != null ? question.answers.number : 0}">
+        <!-- 검색 키워드와 페이지 번호를 Hidden 필드로 전달 -->
+        <input type="hidden" id="page" name="page"
+               th:value="${question.answers.number != null ? question.answers.number : 0}">
     </form>
-
 </div>
+
 <script layout:fragment="script" type='text/javascript'>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // 페이징 버튼 동작
         const page_elements = document.getElementsByClassName("page-link");
-        Array.from(page_elements).forEach(function(element) {
-            element.addEventListener('click', function() {
-                // 클릭한 페이지 번호를 hidden 필드에 설정
-                document.getElementById('page').value = this.dataset.page;
-                // 폼 전송
-                document.getElementById('pagingForm').submit();
+        Array.from(page_elements).forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                if(this.dataset.page) {
+                    document.getElementById('page').value = this.dataset.page;
+                    document.getElementById('pagingForm').submit();
+                }
             });
         });
 
@@ -174,17 +262,19 @@
             element.addEventListener('click', function () {
                 if (confirm("정말로 삭제하시겠습니까?")) {
                     location.href = this.dataset.uri;
-                };
+                }
+                ;
             });
         });
 
         // 추천 버튼 동작
         const recommend_elements = document.getElementsByClassName("recommend");
-        Array.from(recommend_elements).forEach(function(element) {
-            element.addEventListener('click', function() {
-                if(confirm("정말로 추천하시겠습니까?")) {
+        Array.from(recommend_elements).forEach(function (element) {
+            element.addEventListener('click', function () {
+                if (confirm("정말로 추천하시겠습니까?")) {
                     location.href = this.dataset.uri;
-                };
+                }
+                ;
             });
         });
 
