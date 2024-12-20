@@ -22,34 +22,34 @@ public class UserController {
 
     @GetMapping("/login")
     public String loginUser() {
-        return "user_login";
+        return "/user/user_login";
     }
     @GetMapping("/signup")
     public String signupUser(UserForm userForm) {
-        return "user_signup";
+        return "/user/user_signup";
     }
 
     @PostMapping("/create")
     public String createUser(@Valid UserForm userForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "user_signup";
+            return "/user/user_signup";
         }
         if (!userForm.getPassword().equals(userForm.getPwCheck())) {
             bindingResult.rejectValue("pwCheck", "passwordInCorrect",
                     "2개의 패스워드가 일치하지 않습니다.");
-            return "user_signup";
+            return "/user/user_signup";
         }
         try {
             this.userService.create(userForm.getUserName(),userForm.getPassword(),userForm.getEmail());
         }catch(DataIntegrityViolationException e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
-            return "user_signup";
+            return "/user/user_signup";
         }catch(Exception e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", e.getMessage());
-            return "user_signup";
+            return "/user/user_signup";
         }
-        return "redirect:/question/list";
+        return "redirect:/question/list/1";
     }
 }

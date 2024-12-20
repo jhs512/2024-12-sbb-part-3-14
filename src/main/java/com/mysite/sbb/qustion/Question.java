@@ -1,5 +1,6 @@
 package com.mysite.sbb.qustion;
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.catrgory.Category;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -38,6 +39,9 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SiteUser user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
 
     @ManyToMany
     private Set<SiteUser> voterSet;

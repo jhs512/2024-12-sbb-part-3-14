@@ -50,7 +50,7 @@ public class AnswerController {
     @GetMapping("/modify/{id}")
     public String modifyViewQuestion(Model model,@PathVariable("id") Integer id,AnswerForm answerForm){
         model.addAttribute("content",answerService.getAnswer(id));
-        return "answer_modify";
+        return "/answer/answer_modify";
     }
     @GetMapping("/delete/{id}")
     public String deleteAnswer(Model model,@PathVariable("id") Integer id,AnswerForm answerForm) {
@@ -64,7 +64,7 @@ public class AnswerController {
     public String createAnswer(Model model) {
         List<Answer> answers = this.answerService.getList();
         model.addAttribute("answerList", answers);
-        return "answer_list";
+        return "/answer/answer_list";
     }
     @PostMapping("/comment_create/{id}")
     public String createComment(Model model,@PathVariable("id") Integer id,@Valid AnswerForm answerForm, BindingResult bindingResult,Principal principal) {

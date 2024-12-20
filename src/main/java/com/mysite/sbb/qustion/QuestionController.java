@@ -3,6 +3,8 @@ package com.mysite.sbb.qustion;
 import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerForm;
 import com.mysite.sbb.answer.AnswerService;
+import com.mysite.sbb.catrgory.Category;
+import com.mysite.sbb.catrgory.CategoryService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
 import jakarta.validation.Valid;
@@ -24,32 +26,37 @@ public class QuestionController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
-    @GetMapping("/list")
-    public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
+    @GetMapping("/list/{id}")
+    public String list(Model model,@PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "kw", defaultValue = "") String kw) {
-        Page<Question> paging = this.questionService.getList(page, kw);
+        Category category = categoryService.getCategory(id);
+        Page<Question> paging = this.questionService.getList(page, kw,category);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
-        return "question_list";
+        model.addAttribute("category",category);
+        return "/question/question_list";
     }
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/insert")
-    public String insertQuestion(QuestionForm questionForm,Principal principal){
+    @GetMapping("/insert/{id}")
+    public String insertQuestion(Model model,QuestionForm questionForm,@PathVariable("id") Integer id,Principal principal){
         if(principal == null) {
-            return "redirect:/question/list";
+            return "redirect:/question/list/"+id;
         }
-
-        return "question_insert";
+        Category category = categoryService.getCategory(id);
+        model.addAttribute("category",category);
+        return "/question/question_insert";
     }
-    @PostMapping("/create")
-    public String createQuestion(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
+    @PostMapping("/create/{id}")
+    public String createQuestion(@PathVariable("id") Integer id,@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
         SiteUser siteUser = this.userService.getSiteUser(principal.getName());
+        Category category = this.categoryService.getCategory(id);
         if (bindingResult.hasErrors()) {
-            return "question_insert";
+            return "/question/question_insert";
         }
-        this.questionService.create(siteUser ,questionForm.getSubject(), questionForm.getContent());
-        return "redirect:/question/list";
+        this.questionService.create(siteUser ,questionForm.getSubject(), questionForm.getContent(),category);
+        return "redirect:/question/list/"+id;
     }
     @GetMapping("/delete/{id}")
     public String deleteQuestion(Model model,@PathVariable("id") Integer id) {
@@ -69,7 +76,7 @@ public class QuestionController {
     @GetMapping("/modify/{id}")
     public String modifyViewQuestion(Model model,@PathVariable("id") Integer id,QuestionForm questionForm){
         model.addAttribute("content",questionService.getQuestion(id));
-        return "question_modify";
+        return "/question/question_modify";
     }
 
 
@@ -81,7 +88,7 @@ public class QuestionController {
         model.addAttribute("paging",answerList);
         model.addAttribute("content",question);
         model.addAttribute("best",answerBest);
-        return "qustion_detail";
+        return "/question/qustion_detail";
     }
     @GetMapping("recommend/{id}")
     public String recommend(Model model,@PathVariable("id") Integer id,Principal principal){
