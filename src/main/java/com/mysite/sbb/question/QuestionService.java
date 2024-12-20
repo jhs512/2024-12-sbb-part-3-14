@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +49,6 @@ public class QuestionService {
     public void create(Category category, String subject, String content, SiteUser user) {
         Question question = Question.builder()
                 .category(category)
-                .createDate(LocalDateTime.now())
                 .subject(subject)
                 .content(content)
                 .author(user)
@@ -62,7 +60,6 @@ public class QuestionService {
     public void modify(Question question, String subject, String content) {
         question.setSubject(subject);
         question.setContent(content);
-        question.setModifyDate(LocalDateTime.now());
         questionRepository.save(question);
     }
 

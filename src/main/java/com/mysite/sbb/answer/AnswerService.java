@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +22,6 @@ public class AnswerService {
     public Answer create(Question question, String content, SiteUser author) {
         Answer answer = Answer.builder()
                 .content(content)
-                .createDate(LocalDateTime.now())
                 .question(question)
                 .author(author)
                 .build();
@@ -62,7 +60,6 @@ public class AnswerService {
 
     public void modify(Answer answer, String content) {
         answer.setContent(content);
-        answer.setModifyDate(LocalDateTime.now());
         answerRepository.save(answer);
     }
 
