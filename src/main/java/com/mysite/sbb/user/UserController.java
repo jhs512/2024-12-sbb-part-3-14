@@ -71,7 +71,7 @@ public class UserController {
     public String info(Principal principal, Model model) {
         SiteUser siteUser = userService.getUser(principal.getName());
         List<Question> questionList = questionService.getQuestions(siteUser);
-        List<Answer> answerList = answerService.getAnswers(siteUser);
+        List<Answer> answerList = answerService.getAnswersByUser(siteUser);
         List<Comment> commentList = commentService.getComments(siteUser);
 
         model.addAttribute("user", siteUser);

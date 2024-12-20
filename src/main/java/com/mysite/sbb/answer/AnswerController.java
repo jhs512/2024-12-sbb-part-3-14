@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.util.List;
 
 @RequestMapping("/answer")
 @RequiredArgsConstructor
@@ -86,5 +87,13 @@ public class AnswerController {
         SiteUser siteUser = userService.getUser(principal.getName());
         answerService.vote(answer, siteUser);
         return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), answer.getId());
+    }
+
+    @GetMapping("/recent")
+    public String recent(Model model) {
+        List<Answer> answerList = answerService.getRecentAnswers();
+        model.addAttribute("answer_list", answerList);
+
+        return "answer_recent";
     }
 }

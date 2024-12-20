@@ -39,7 +39,7 @@ public class AnswerService {
         }
     }
 
-    public List<Answer> getAnswers(SiteUser user) {
+    public List<Answer> getAnswersByUser(SiteUser user) {
         return answerRepository.findAllByAuthor(user);
     }
 
@@ -52,6 +52,10 @@ public class AnswerService {
             return answerRepository.findAllWithVoterCountDesc(question, pageable);
         }
         return null;
+    }
+
+    public List<Answer> getRecentAnswers() {
+        return answerRepository.findAllOrderByCreateDateLimit(5);
     }
 
     public void modify(Answer answer, String content) {

@@ -20,4 +20,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
             + "GROUP BY a.id "
             + "ORDER BY count(v) desc")
     Page<Answer> findAllWithVoterCountDesc(Question question, Pageable pageable);
+
+    @Query("SELECT a FROM Answer a "
+            + "ORDER BY a.createDate desc "
+            + "LIMIT :limit")
+    List<Answer> findAllOrderByCreateDateLimit(Integer limit);
 }
