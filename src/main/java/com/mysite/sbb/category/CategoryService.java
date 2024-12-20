@@ -1,6 +1,6 @@
 package com.mysite.sbb.category;
 
-import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.util.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

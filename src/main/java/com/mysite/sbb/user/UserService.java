@@ -1,6 +1,6 @@
 package com.mysite.sbb.user;
 
-import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.util.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

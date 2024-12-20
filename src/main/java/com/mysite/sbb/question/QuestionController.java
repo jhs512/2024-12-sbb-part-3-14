@@ -29,7 +29,6 @@ import java.util.List;
 public class QuestionController {
     private final QuestionService questionService;
     private final AnswerService answerService;
-    private final CommentService commentService;
     private final UserService userService;
     private final CategoryService categoryService;
 

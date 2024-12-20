@@ -1,6 +1,6 @@
 package com.mysite.sbb.question;
 
-import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.util.DataNotFoundException;
 import com.mysite.sbb.category.Category;
 import com.mysite.sbb.user.SiteUser;
 import lombok.RequiredArgsConstructor;
