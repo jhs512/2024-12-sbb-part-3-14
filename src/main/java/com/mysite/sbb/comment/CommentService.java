@@ -44,6 +44,10 @@ public class CommentService {
         return commentRepository.findAllByAuthor(user);
     }
 
+    public List<Comment> getRecentComments() {
+        return commentRepository.findAllOrderByCreateDateLimit(10);
+    }
+
     public void modify(Comment comment, String content) {
         comment.setContent(content);
         commentRepository.save(comment);

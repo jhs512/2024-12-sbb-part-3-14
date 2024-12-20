@@ -55,7 +55,7 @@ public class AnswerService {
     }
 
     public List<Answer> getRecentAnswers() {
-        return answerRepository.findAllOrderByCreateDateLimit(5);
+        return answerRepository.findAllOrderByCreateDateLimit(10);
     }
 
     public void modify(Answer answer, String content) {

@@ -13,11 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.util.List;
 
 @RequestMapping("/comment")
 @RequiredArgsConstructor
@@ -96,5 +98,13 @@ public class CommentController {
             return "redirect:" + referer;
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/recent")
+    public String recent(Model model) {
+        List<Comment> commentList = commentService.getRecentComments();
+        model.addAttribute("comment_list", commentList);
+
+        return "comment_recent";
     }
 }
