@@ -30,7 +30,10 @@ public class QuestionService {
     public Question getQuestion(Integer id) {
         Optional<Question> question = questionRepository.findById(id);
         if (question.isPresent()) {
-            return question.get();
+            Question q = question.get();
+            q.setViewCount(q.getViewCount() + 1);
+            questionRepository.save(q);
+            return q;
         } else {
             throw new DataNotFoundException("question not found");
         }

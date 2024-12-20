@@ -44,4 +44,6 @@ public class Question {
 
     @ManyToOne
     private Category category;
+
+    private Long viewCount = 0L;
 }
