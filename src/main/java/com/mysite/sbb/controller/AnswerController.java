@@ -1,11 +1,12 @@
 package com.mysite.sbb.controller;
 
-import com.mysite.sbb.form.AnswerForm;
-import com.mysite.sbb.domain.Answer;
-import com.mysite.sbb.domain.Question;
+import com.mysite.sbb.model.answer.dto.AnswerRequestDTO;
+import com.mysite.sbb.model.answer.entity.Answer;
+import com.mysite.sbb.model.question.dto.QuestionDetailResponseDTO;
+import com.mysite.sbb.model.question.entity.Question;
 import com.mysite.sbb.service.impl.AnswerServiceImpl;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;
-import com.mysite.sbb.domain.SiteUser;
+import com.mysite.sbb.model.user.entity.SiteUser;
 import com.mysite.sbb.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -34,23 +32,25 @@ public class AnswerController {
     // 인증된 사용자만 접근 가능
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
-    public String createAnswer(Model model, @PathVariable Integer id,
-                               @Valid AnswerForm answerForm, BindingResult bindingResult, Principal principal) {
-        // 1. 질문 ID를 사용하여 질문 객체 조회
-        Question question = questionServiceImpl.getQuestion(id);
-        // 2. 현재 로그인된 사용자 정보 조회
-        SiteUser siteUser = userServiceImpl.getUser(principal.getName());
+    public String createAnswer(Model model,
+                               @PathVariable Integer id,
+                               @RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "sortKeyword", defaultValue = "createDate") String sortKeyword,
+                               @Valid AnswerRequestDTO answerRequestDTO,
+                               BindingResult bindingResult,
+                               Principal principal) {
 
-        // 3. 답변 내용에 유효성 검증 오류가 있으면 다시 질문 상세 페이지로 이동
         if(bindingResult.hasErrors()) {
+            QuestionDetailResponseDTO question = questionServiceImpl.getQuestionDetail(id, page, sortKeyword);
             model.addAttribute("question", question);
+            model.addAttribute("sort", sortKeyword);
             return "question_detail";
         }
 
-        // 4. 답변 생성 및 저장
-        Answer answer = this.answerServiceImpl.create(question, answerForm.getContent(), siteUser);
+        Question question = questionServiceImpl.getQuestion(id);
+        SiteUser siteUser = userServiceImpl.getUser(principal.getName());
+        Answer answer = this.answerServiceImpl.create(question, answerRequestDTO.getContent(), siteUser);
 
-        // 5. 질문 상세 페이지로 리다이렉트하며 앵커를 사용해 새로 생성된 답변 위치로 이동
         return String.format("redirect:/question/detail/%s#answer_%s",
                 answer.getQuestion().getId(), answer.getId());
     }
@@ -58,7 +58,7 @@ public class AnswerController {
     // 답변 수정 페이지 요청
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String answerModify(AnswerForm answerForm, @PathVariable("id") Integer id, Principal principal) {
+    public String answerModify(AnswerRequestDTO answerRequestDTO, @PathVariable("id") Integer id, Principal principal) {
         // 1. 수정할 답변 조회
         Answer answer = this.answerServiceImpl.getAnswer(id);
         // 2. 수정 권한 확인: 작성자가 아니면 예외 발생
@@ -66,14 +66,14 @@ public class AnswerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         // 3. 기존 답변 내용을 폼에 세팅
-        answerForm.setContent(answer.getContent());
+        answerRequestDTO.setContent(answer.getContent());
         return "answer_form";
     }
 
     // 수정된 답변 저장
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult,
+    public String answerModify(@Valid AnswerRequestDTO answerRequestDTO, BindingResult bindingResult,
                                @PathVariable("id") Integer id, Principal principal) {
         // 1. 유효성 검증 오류가 있으면 수정 폼으로 이동
         if (bindingResult.hasErrors()) {
@@ -85,7 +85,7 @@ public class AnswerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         // 3. 답변 수정
-        this.answerServiceImpl.modify(answer, answerForm.getContent());
+        this.answerServiceImpl.modify(answer, answerRequestDTO.getContent());
         // 4. 수정된 답변 위치로 이동
         return String.format("redirect:/question/detail/%s#answer_%s",
                 answer.getQuestion().getId(), answer.getId());

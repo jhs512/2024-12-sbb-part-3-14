@@ -1,10 +1,9 @@
 package com.mysite.sbb.service;
 
-import com.mysite.sbb.domain.SiteUser;
-import com.mysite.sbb.domain.Question;
-import com.mysite.sbb.dto.QuestionDetailDTO;
-import com.mysite.sbb.dto.QuestionListDTO;
-import com.mysite.sbb.form.QuestionForm;
+import com.mysite.sbb.model.question.dto.QuestionRequestDTO;
+import com.mysite.sbb.model.question.dto.QuestionListResponseDTO;
+import com.mysite.sbb.model.question.entity.Question;
+import com.mysite.sbb.model.question.dto.QuestionDetailResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -13,22 +12,22 @@ import java.util.List;
 public interface QuestionService {
 
     // 질문 목록 조회
-    List<QuestionListDTO> getAllQuestions();
+    List<QuestionListResponseDTO> getAllQuestions();
 
     // 페이징과 검색 조건을 포함한 질문 목록 조회
-    Page<QuestionListDTO> getList(int page, String kw);
+    Page<QuestionListResponseDTO> getList(int page, String kw);
 
     // 질문 엔티티 조회
     Question getQuestion(Integer id);
 
     // 질문 상세 정보를 위한 DTO 조회
-    QuestionDetailDTO getQuestionDetail(Integer id, int page, String sortKeyword);
+    QuestionDetailResponseDTO getQuestionDetail(Integer id, int page, String sortKeyword);
 
     // 질문 생성
-    void create(QuestionForm questionForm, String userName);
+    void create(QuestionRequestDTO questionRequestDTO, String userName);
 
     // 질문 수정
-    void modify(Integer id, QuestionForm questionForm, String username);
+    void modify(Integer id, QuestionRequestDTO questionRequestDTO, String username);
 
     // 질문 삭제
     void delete(Integer id, String userName);

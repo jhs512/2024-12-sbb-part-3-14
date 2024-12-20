@@ -1,6 +1,6 @@
-package com.mysite.sbb.dto;
+package com.mysite.sbb.model.answer.dto;
 
-import com.mysite.sbb.domain.Answer;
+import com.mysite.sbb.model.answer.entity.Answer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class AnswerDTO {
+public class AnswerResponseDTO {
     private Integer id;
     private String content;
     private LocalDateTime createDate;
@@ -17,7 +17,7 @@ public class AnswerDTO {
     private String authorName;
     private int voterCount;
 
-    public AnswerDTO(Answer answer) {
+    public AnswerResponseDTO(Answer answer) {
         this.id = answer.getId();
         this.content = answer.getContent();
         this.createDate = answer.getCreateDate();

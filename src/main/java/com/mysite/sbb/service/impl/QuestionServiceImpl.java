@@ -1,12 +1,12 @@
 package com.mysite.sbb.service.impl;
 
-import com.mysite.sbb.domain.Answer;
-import com.mysite.sbb.domain.Question;
-import com.mysite.sbb.domain.SiteUser;
-import com.mysite.sbb.dto.QuestionDetailDTO;
-import com.mysite.sbb.dto.QuestionListDTO;
-import com.mysite.sbb.exception.DataNotFoundException;
-import com.mysite.sbb.form.QuestionForm;
+import com.mysite.sbb.model.answer.entity.Answer;
+import com.mysite.sbb.model.question.dto.QuestionRequestDTO;
+import com.mysite.sbb.model.question.dto.QuestionDetailResponseDTO;
+import com.mysite.sbb.model.question.dto.QuestionListResponseDTO;
+import com.mysite.sbb.model.question.entity.Question;
+import com.mysite.sbb.model.user.entity.SiteUser;
+import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.repository.AnswerRepository;
 import com.mysite.sbb.repository.QuestionRepository;
 import com.mysite.sbb.service.QuestionService;
@@ -36,17 +36,17 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerRepository answerRepository;
 
     @Override
-    public List<QuestionListDTO> getAllQuestions() {
+    public List<QuestionListResponseDTO> getAllQuestions() {
 
         List<Question> all = questionRepository.findAll();
 
         return all.stream()
-                .map(QuestionListDTO::new)
+                .map(QuestionListResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Page<QuestionListDTO> getList(int page, String kw) {
+    public Page<QuestionListResponseDTO> getList(int page, String kw) {
         // 1. 정렬 조건 설정
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
 
@@ -55,11 +55,11 @@ public class QuestionServiceImpl implements QuestionService {
 
         // 3. 엔티티 -> DTO 변환
         Page<Question> questions = questionRepository.findAll(spec, pageable);// 검색 및 페이징 결과
-        return questions.map(QuestionListDTO::new);
+        return questions.map(QuestionListResponseDTO::new);
     }
 
     @Override
-    public QuestionDetailDTO getQuestionDetail(Integer id, int page, String sortKeyword) {
+    public QuestionDetailResponseDTO getQuestionDetail(Integer id, int page, String sortKeyword) {
         // 1. 질문 조회
         Question question = questionRepository.findById(id).orElseThrow(() -> new DataNotFoundException("question not found"));
 
@@ -68,7 +68,7 @@ public class QuestionServiceImpl implements QuestionService {
         Page<Answer> answers  = answerRepository.findByQuestion(question, pageable);
 
         // 3. DTO 변환
-        return new QuestionDetailDTO(question, answers);
+        return new QuestionDetailResponseDTO(question, answers);
     }
 
     @Override
@@ -82,25 +82,25 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void create(QuestionForm questionForm, String userName) {
+    public void create(QuestionRequestDTO questionRequestDTO, String userName) {
         SiteUser user = userServiceImpl.getUser(userName);
         Question question = new Question();
-        question.setSubject(questionForm.getSubject());
-        question.setContent(questionForm.getContent());
+        question.setSubject(questionRequestDTO.getSubject());
+        question.setContent(questionRequestDTO.getContent());
         question.setCreateDate(LocalDateTime.now());
         question.setAuthor(user);
         questionRepository.save(question);
     }
 
     @Override
-    public void modify(Integer id, QuestionForm questionForm, String userName) {
+    public void modify(Integer id, QuestionRequestDTO questionRequestDTO, String userName) {
         Question question = getQuestion(id);
 
         if (!question.getAuthor().getUsername().equals(userName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         }
 
-        question.setSubject(questionForm.getSubject());
+        question.setSubject(questionRequestDTO.getSubject());
         question.setContent(question.getContent());
         question.setModifyDate(LocalDateTime.now());
         questionRepository.save(question);

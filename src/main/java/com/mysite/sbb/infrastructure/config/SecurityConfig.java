@@ -1,4 +1,4 @@
-package com.mysite.sbb.security;
+package com.mysite.sbb.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

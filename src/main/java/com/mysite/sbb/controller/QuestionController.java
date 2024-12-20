@@ -1,12 +1,10 @@
 package com.mysite.sbb.controller;
 
-import com.mysite.sbb.domain.Question;
-import com.mysite.sbb.dto.QuestionDetailDTO;
-import com.mysite.sbb.form.AnswerForm;
-import com.mysite.sbb.form.QuestionForm;
-import com.mysite.sbb.repository.QuestionRepository;
+import com.mysite.sbb.model.answer.dto.AnswerRequestDTO;
+import com.mysite.sbb.model.question.dto.QuestionRequestDTO;
+import com.mysite.sbb.model.question.entity.Question;
+import com.mysite.sbb.model.question.dto.QuestionDetailResponseDTO;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;
-import com.mysite.sbb.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,33 +39,33 @@ public class QuestionController {
                          @RequestParam(value = "page", defaultValue = "0") int page,
                          @RequestParam(value = "sortKeyword", defaultValue = "createDate") String sortKeyword) {
 
-        QuestionDetailDTO question = this.questionServiceImpl.getQuestionDetail(id, page, sortKeyword);
+        QuestionDetailResponseDTO question = this.questionServiceImpl.getQuestionDetail(id, page, sortKeyword);
 
         model.addAttribute("question", question);
         model.addAttribute("sort", sortKeyword); // 선택된 정렬 기준 전달
-        model.addAttribute("answerForm", new AnswerForm()); // Form 초기화
+        model.addAttribute("answerRequestDTO", new AnswerRequestDTO()); // Form 초기화
         return "question_detail";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String questionCreate(@ModelAttribute QuestionForm questionForm) {
+    public String questionCreate(@ModelAttribute QuestionRequestDTO questionRequestDTO) {
         return "question_form";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
+    public String questionCreate(@Valid QuestionRequestDTO questionRequestDTO, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
-        questionServiceImpl.create(questionForm, principal.getName());
+        questionServiceImpl.create(questionRequestDTO, principal.getName());
         return "redirect:/question/list";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal) {
+    public String questionModify(QuestionRequestDTO questionRequestDTO, @PathVariable("id") Integer id, Principal principal) {
 
         Question question = questionServiceImpl.getQuestion(id);
 
@@ -75,19 +73,19 @@ public class QuestionController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
 
-        questionForm.setSubject(question.getSubject());
-        questionForm.setContent(question.getContent());
+        questionRequestDTO.setSubject(question.getSubject());
+        questionRequestDTO.setContent(question.getContent());
         return "question_form";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    public String questionModify(@Valid QuestionForm questionForm, BindingResult bindingResult,
+    public String questionModify(@Valid QuestionRequestDTO questionRequestDTO, BindingResult bindingResult,
                                  Principal principal, @PathVariable("id") Integer id) {
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
-        questionServiceImpl.modify(id, questionForm, principal.getName());
+        questionServiceImpl.modify(id, questionRequestDTO, principal.getName());
         return String.format("redirect:/question/detail/%s", id);
     }
 

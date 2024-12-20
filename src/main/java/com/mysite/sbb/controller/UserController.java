@@ -1,7 +1,7 @@
 package com.mysite.sbb.controller;
 
+import com.mysite.sbb.model.user.dto.UserRequestDTO;
 import com.mysite.sbb.service.impl.UserServiceImpl;
-import com.mysite.sbb.form.UserCreateForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -47,30 +47,30 @@ public class UserController {
     /**
      * 사용자 가입 폼 페이지를 반환.
      *
-     * @param userCreateForm 폼 데이터 객체 (자동 바인딩)
+     * @param userRequestDTO 폼 데이터 객체 (자동 바인딩)
      * @return 가입 폼 템플릿 경로
      */
     @GetMapping("/signup")
-    public String signup(UserCreateForm userCreateForm) {
+    public String signup(UserRequestDTO userRequestDTO) {
         return "signup_form"; // 가입 폼 페이지 반환
     }
 
     /**
      * 사용자 가입 요청 처리.
      *
-     * @param userCreateForm 폼 데이터 객체 (자동 바인딩)
+     * @param userRequestDTO 폼 데이터 객체 (자동 바인딩)
      * @param bindingResult  폼 데이터 검증 결과 객체
      * @return 가입 성공 시 리다이렉트, 실패 시 가입 폼 반환
      */
     @PostMapping("/signup")
-    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
+    public String signup(@Valid UserRequestDTO userRequestDTO, BindingResult bindingResult) {
         // 1. 유효성 검증
         if (bindingResult.hasErrors()) {
             return "signup_form";
         }
 
         // 2. 비밀번호 일치 수동 검증
-        if (!userCreateForm.getPassword1().equals(userCreateForm.getPassword2())) {
+        if (!userRequestDTO.getPassword1().equals(userRequestDTO.getPassword2())) {
             bindingResult.rejectValue("password2", "passwordInCorrect",
                     "2개의 패스워드가 일치하지 않습니다.");
             return "signup_form";
@@ -79,9 +79,9 @@ public class UserController {
         // 3. 사용자 생성
         try {
             userServiceImpl.create(
-                    userCreateForm.getUsername(),
-                    userCreateForm.getEmail(),
-                    userCreateForm.getPassword1());
+                    userRequestDTO.getUsername(),
+                    userRequestDTO.getEmail(),
+                    userRequestDTO.getPassword1());
         } catch (DataIntegrityViolationException e) {
             // 데이터 중복 (예: 동일한 이메일 또는 사용자 이름) 예외 처리
             e.printStackTrace();

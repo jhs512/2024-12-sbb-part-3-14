@@ -1,9 +1,9 @@
 package com.mysite.sbb.service.impl;
 
-import com.mysite.sbb.domain.Answer;
-import com.mysite.sbb.domain.Question;
-import com.mysite.sbb.domain.SiteUser;
-import com.mysite.sbb.exception.DataNotFoundException;
+import com.mysite.sbb.model.answer.entity.Answer;
+import com.mysite.sbb.model.question.entity.Question;
+import com.mysite.sbb.model.user.entity.SiteUser;
+import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.repository.AnswerRepository;
 import com.mysite.sbb.service.AnswerService;
 import lombok.RequiredArgsConstructor;

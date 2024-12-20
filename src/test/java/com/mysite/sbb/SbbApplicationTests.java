@@ -1,8 +1,8 @@
 //package com.mysite.sbb;
 //
-//import com.mysite.sbb.domain.Answer;
+//import com.mysite.sbb.domain.answer.entity.Answer;
 //import com.mysite.sbb.repository.AnswerRepository;
-//import com.mysite.sbb.domain.Question;
+//import com.mysite.sbb.domain.question.entity.Question;
 //import com.mysite.sbb.repository.QuestionRepository;
 //import com.mysite.sbb.service.impl.QuestionServiceImpl;
 //import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.mysite.sbb.form;
+package com.mysite.sbb.model.question.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuestionForm {
+public class QuestionRequestDTO {
     @NotEmpty(message="제목은 필수항목입니다.")
     @Size(max=200)
     private String subject;

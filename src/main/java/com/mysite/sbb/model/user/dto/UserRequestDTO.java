@@ -1,4 +1,4 @@
-package com.mysite.sbb.form;
+package com.mysite.sbb.model.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserCreateForm {
+public class UserRequestDTO {
     @Size(min = 3, max = 25)
     @NotEmpty(message = "사용자 ID는 필수 항목입니다.")
     private String username;
