@@ -72,7 +72,7 @@ public class AnswerService {
         if (answerOrderMethod.startsWith("recommend")) {
             sorts.add(Sort.Order.desc("voter"));
         }
-        else {
+        else if(answerOrderMethod.startsWith("time")){
             sorts.add(Sort.Order.desc("createDate"));
         }
         Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));

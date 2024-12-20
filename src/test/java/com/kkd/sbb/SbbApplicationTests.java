@@ -2,9 +2,13 @@ package com.kkd.sbb;
 
 import com.kkd.sbb.answer.Answer;
 import com.kkd.sbb.answer.AnswerRepository;
+import com.kkd.sbb.answer.AnswerService;
+import com.kkd.sbb.comment.CommentService;
 import com.kkd.sbb.question.Question;
 import com.kkd.sbb.question.QuestionRepository;
 import com.kkd.sbb.question.QuestionService;
+import com.kkd.sbb.user.SiteUser;
+import com.kkd.sbb.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
+
 class SbbApplicationTests {
 
     @Autowired
@@ -28,6 +33,15 @@ class SbbApplicationTests {
 
     @Autowired
     private AnswerRepository answerRepository;
+
+    @Autowired
+    private AnswerService answerService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CommentService commentService;
 
     @Test
     void testJpa1() {
@@ -147,5 +161,15 @@ class SbbApplicationTests {
         }
     }
 
-
+    @Transactional
+    @Test
+    void testJpa13() {
+        List<Question> questionLst = this.questionService.getList();
+        Question question = questionLst.get(questionLst.size() - 1);
+//		SiteUser user = this.userService.create("temp", "temp@temp.com", "1234");
+        SiteUser user = this.userService.getUser("kkd");
+        this.commentService.create("테스트 질문 댓글", question, null, user);
+        Answer answer = this.answerService.create(question, "테스트 답변", user);
+        this.commentService.create("테스트 답변 댓글", question, answer, user);
+    }
 }

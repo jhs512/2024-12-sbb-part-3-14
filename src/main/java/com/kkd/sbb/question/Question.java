@@ -1,6 +1,7 @@
 package com.kkd.sbb.question;
 
 import com.kkd.sbb.answer.Answer;
+import com.kkd.sbb.comment.Comment;
 import com.kkd.sbb.user.SiteUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -42,4 +43,7 @@ public class Question {
     @Column(columnDefinition = "integer default 0")
     @NotNull
     private Integer views = 0;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList;
 }
