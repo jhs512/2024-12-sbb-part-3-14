@@ -1,5 +1,6 @@
 package com.ll.pratice1.domain.answer;
 
+import com.ll.pratice1.domain.comment.Comment;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.user.SiteUser;
 import jakarta.persistence.*;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,6 +32,11 @@ public class Answer {
 
     private LocalDateTime modifyDate;
 
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList;
+
     @ManyToMany
     private Set<SiteUser> voter;
+
+
 }

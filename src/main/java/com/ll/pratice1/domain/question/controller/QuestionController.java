@@ -3,6 +3,8 @@ package com.ll.pratice1.domain.question.controller;
 
 import com.ll.pratice1.domain.answer.Answer;
 import com.ll.pratice1.domain.answer.AnswerForm;
+import com.ll.pratice1.domain.comment.CommentForm;
+import com.ll.pratice1.domain.comment.service.CommentService;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.question.QuestionForm;
 import com.ll.pratice1.domain.question.service.QuestionService;
@@ -28,6 +30,7 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final UserService userService;
+    private final CommentService commentService;
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0")int page,
@@ -40,9 +43,11 @@ public class QuestionController {
 
     @GetMapping("/detail/{id}")
     public String detail(Model model, @RequestParam(value = "page", defaultValue = "0")int page,
-                         @PathVariable("id") Integer id, AnswerForm answerForm){
+                         @PathVariable("id") Integer id, @RequestParam(defaultValue = "latest") String sort,
+                         CommentForm commentForm, AnswerForm answerForm){
         Question question = this.questionService.getQuestion(id);
-        Page<Answer> paging = questionService.getAnswerList(question,page);
+        Page<Answer> paging = this.questionService.getAnswerList(question, page, sort);
+        model.addAttribute("sort", sort);
         model.addAttribute("paging", paging);
         model.addAttribute("question", question);
         return "question_detail";
@@ -106,5 +111,7 @@ public class QuestionController {
         this.questionService.vote(question, siteUser);
         return String.format("redirect:/question/detail/%s", question.getId());
     }
+
+
 
 }

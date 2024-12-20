@@ -38,10 +38,19 @@ public class QuestionService {
         return this.questionRepository.findAll(spec, pageable);
     }
 
-    public Page<Answer> getAnswerList(Question question, int page) {
+    public Page<Answer> getAnswerList(Question question, int page, String sort) {
         List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createDate"));
-        Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        Pageable pageable = null;
+        if (sort.equals("latest")){
+            sorts.add(Sort.Order.desc("createDate"));
+            pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        }else if(sort.equals("vote")) {
+            sorts.add(Sort.Order.desc("voter"));
+            pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        }else{
+            sorts.add(Sort.Order.desc("createDate"));
+            pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        }
         // 페이징된 Answer 리스트 반환
         return answerRepository.findByQuestion(question, pageable);
     }

@@ -1,6 +1,7 @@
 package com.ll.pratice1.domain.question;
 
 import com.ll.pratice1.domain.answer.Answer;
+import com.ll.pratice1.domain.comment.Comment;
 import com.ll.pratice1.domain.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,6 +30,9 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList;
+
     @ManyToOne
     private SiteUser author;
 
@@ -36,4 +40,6 @@ public class Question {
 
     @ManyToMany
     private Set<SiteUser> voter;
+
+
 }
