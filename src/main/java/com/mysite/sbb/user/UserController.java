@@ -50,11 +50,9 @@ public class UserController {
         try {
             userService.create(userCreateForm.getUsername(), userCreateForm.getEmail(), userCreateForm.getPassword1());
         } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
             return "signup_form";
         } catch (Exception e) {
-            e.printStackTrace();
             bindingResult.reject("signupFailed", e.getMessage());
             return "signup_form";
         }
@@ -68,10 +66,10 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public String info(Principal principal, Model model) {
+    public String info(Model model, Principal principal) {
         SiteUser siteUser = userService.getUser(principal.getName());
         List<Question> questionList = questionService.getQuestions(siteUser);
-        List<Answer> answerList = answerService.getAnswersByUser(siteUser);
+        List<Answer> answerList = answerService.getAnswers(siteUser);
         List<Comment> commentList = commentService.getComments(siteUser);
 
         model.addAttribute("user", siteUser);
@@ -88,7 +86,7 @@ public class UserController {
     }
 
     @PostMapping("/login/temp_password")
-    public String tempPassword(String email, Model model) {
+    public String tempPassword(Model model, String email) {
         try {
             SiteUser user = userService.getUserByEmail(email);
             userService.sendTemporaryPassword(user);
@@ -107,9 +105,9 @@ public class UserController {
 
     @PostMapping("/password_change")
     public String passwordChange(
-            @RequestParam("old_password") String oldPassword,
-            @RequestParam("new_password")String newPassword,
             Model model,
+            @RequestParam("old_password") String oldPassword,
+            @RequestParam("new_password") String newPassword,
             Principal principal) {
         try {
             SiteUser user = userService.getUser(principal.getName());

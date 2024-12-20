@@ -14,27 +14,32 @@ import java.util.Optional;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
+    private static final int RECENT_PAGE_COUNT = 5;
 
     public void createComment(String content, Question question, SiteUser user) {
-        Comment c = new Comment();
-        c.setContent(content);
-        c.setAuthor(user);
-        c.setQuestion(question);
-        commentRepository.save(c);
+        Comment comment = Comment.builder()
+                .content(content)
+                .question(question)
+                .author(user)
+                .build();
+
+        commentRepository.save(comment);
     }
 
     public void createComment(String content, Answer answer, SiteUser user) {
-        Comment c = new Comment();
-        c.setContent(content);
-        c.setAuthor(user);
-        c.setAnswer(answer);
-        commentRepository.save(c);
+        Comment comment = Comment.builder()
+                .content(content)
+                .answer(answer)
+                .author(user)
+                .build();
+
+        commentRepository.save(comment);
     }
 
     public Comment getComment(Integer id) {
-        Optional<Comment> commentOptional = commentRepository.findById(id);
-        if (commentOptional.isPresent()) {
-            return commentOptional.get();
+        Optional<Comment> c = commentRepository.findById(id);
+        if (c.isPresent()) {
+            return c.get();
         } else {
             throw new DataNotFoundException("comment not found");
         }
@@ -45,7 +50,7 @@ public class CommentService {
     }
 
     public List<Comment> getRecentComments() {
-        return commentRepository.findAllOrderByCreateDateLimit(10);
+        return commentRepository.findAllOrderByCreateDateLimit(RECENT_PAGE_COUNT);
     }
 
     public void modify(Comment comment, String content) {

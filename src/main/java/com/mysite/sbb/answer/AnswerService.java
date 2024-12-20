@@ -7,11 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +17,17 @@ import java.util.Optional;
 @Service
 public class AnswerService {
     private final AnswerRepository answerRepository;
+    private static final int ANSWER_PAGE_DATA_COUNT = 5;
+    private static final int RECENT_PAGE_COUNT = 10;
 
     public Answer create(Question question, String content, SiteUser author) {
-        Answer answer = new Answer();
-        answer.setContent(content);
-        answer.setCreateDate(LocalDateTime.now());
-        answer.setQuestion(question);
-        answer.setAuthor(author);
+        Answer answer = Answer.builder()
+                .content(content)
+                .createDate(LocalDateTime.now())
+                .question(question)
+                .author(author)
+                .build();
+
         answerRepository.save(answer);
         return answer;
     }
@@ -39,23 +41,23 @@ public class AnswerService {
         }
     }
 
-    public List<Answer> getAnswersByUser(SiteUser user) {
+    public List<Answer> getAnswers(SiteUser user) {
         return answerRepository.findAllByAuthor(user);
     }
 
     public Page<Answer> getAnswers(Question question, Integer page, String columName) {
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, ANSWER_PAGE_DATA_COUNT);
 
         if (columName.equals("createDate")) {
             return answerRepository.findAllByQuestionOrderByCreateDateDesc(question, pageable);
         } else if (columName.equals("voter")) {
             return answerRepository.findAllWithVoterCountDesc(question, pageable);
         }
-        return null;
+        throw new IllegalArgumentException("wrong column name");
     }
 
     public List<Answer> getRecentAnswers() {
-        return answerRepository.findAllOrderByCreateDateLimit(10);
+        return answerRepository.findAllOrderByCreateDateLimit(RECENT_PAGE_COUNT);
     }
 
     public void modify(Answer answer, String content) {

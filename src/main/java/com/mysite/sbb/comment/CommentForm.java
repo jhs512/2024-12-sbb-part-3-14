@@ -1,7 +1,5 @@
 package com.mysite.sbb.comment;
 
-import com.mysite.sbb.answer.Answer;
-import com.mysite.sbb.question.Question;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

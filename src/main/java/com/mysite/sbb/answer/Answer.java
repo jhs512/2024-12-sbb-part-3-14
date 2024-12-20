@@ -4,15 +4,17 @@ import com.mysite.sbb.comment.Comment;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 public class Answer {
     @Id

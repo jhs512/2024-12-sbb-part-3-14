@@ -1,16 +1,13 @@
 package com.mysite.sbb.question;
 
 import com.mysite.sbb.DataNotFoundException;
-import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.category.Category;
 import com.mysite.sbb.user.SiteUser;
-import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,18 +19,17 @@ import java.util.Optional;
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
-
-    public List<Question> getList() {
-        return questionRepository.findAll();
-    }
+    private static final int QUESTION_PAGE_DATA_COUNT = 10;
 
     public Question getQuestion(Integer id) {
-        Optional<Question> question = questionRepository.findById(id);
-        if (question.isPresent()) {
-            Question q = question.get();
-            q.setViewCount(q.getViewCount() + 1);
-            questionRepository.save(q);
-            return q;
+        Optional<Question> q = questionRepository.findById(id);
+
+        if (q.isPresent()) {
+            Question question = q.get();
+            question.setViewCount(question.getViewCount() + 1);
+            questionRepository.save(question);
+
+            return question;
         } else {
             throw new DataNotFoundException("question not found");
         }
@@ -43,24 +39,24 @@ public class QuestionService {
         return questionRepository.findAllByAuthor(user);
     }
 
-    public Page<Question> getList(Category category, int page, String kw) {
+    public Page<Question> getQuestions(Category category, int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        Specification<Question> spec = search(kw);
+        Pageable pageable = PageRequest.of(page, QUESTION_PAGE_DATA_COUNT, Sort.by(sorts));
 
-        //return questionRepository.findAll(spec, pageable);
         return questionRepository.findAllByCategoryAndKeyword(category, kw, pageable);
     }
 
     public void create(Category category, String subject, String content, SiteUser user) {
-        Question q = new Question();
-        q.setCategory(category);
-        q.setSubject(subject);
-        q.setContent(content);
-        q.setCreateDate(LocalDateTime.now());
-        q.setAuthor(user);
-        questionRepository.save(q);
+        Question question = Question.builder()
+                .category(category)
+                .createDate(LocalDateTime.now())
+                .subject(subject)
+                .content(content)
+                .author(user)
+                .build();
+
+        questionRepository.save(question);
     }
 
     public void modify(Question question, String subject, String content) {
@@ -77,26 +73,5 @@ public class QuestionService {
     public void vote(Question question, SiteUser siteUser) {
         question.getVoter().add(siteUser);
         questionRepository.save(question);
-    }
-
-    private Specification<Question> search(String kw) {
-        return new Specification<>() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public Predicate toPredicate(Root<Question> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                query.distinct(true);
-                Join<Question, SiteUser> u1 = root.join("author", JoinType.LEFT);
-                Join<Question, Answer> a = root.join("answerList", JoinType.LEFT);
-                Join<Answer, SiteUser> u2 = a.join("author", JoinType.LEFT);
-
-                return criteriaBuilder.or(
-                        criteriaBuilder.like(root.get("subject"), "%" + kw + "%"),
-                        criteriaBuilder.like(root.get("content"), "%" + kw + "%"),
-                        criteriaBuilder.like(u1.get("username"), "%" + kw + "%"),
-                        criteriaBuilder.like(a.get("content"), "%" + kw + "%"),
-                        criteriaBuilder.like(u2.get("username"), "%" + kw + "%")
-                );
-            }
-        };
     }
 }

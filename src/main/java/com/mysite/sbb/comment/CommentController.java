@@ -1,7 +1,6 @@
 package com.mysite.sbb.comment;
 
 import com.mysite.sbb.answer.Answer;
-import com.mysite.sbb.answer.AnswerForm;
 import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.question.QuestionService;
@@ -60,50 +59,55 @@ public class CommentController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    public String modifyComment(@Valid CommentForm commentForm, BindingResult bindingResult, @PathVariable("id") Integer id, Principal principal) {
+    public String modify(@Valid CommentForm commentForm, BindingResult bindingResult, @PathVariable("id") Integer id, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "comment_form";
         }
+
         Comment comment = commentService.getComment(id);
         if (!comment.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
+
         commentService.modify(comment, commentForm.getContent());
         return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String modifyComment(CommentForm commentForm, @PathVariable("id") Integer id, Principal principal) {
+    public String modify(CommentForm commentForm, @PathVariable("id") Integer id, Principal principal) {
         Comment comment = commentService.getComment(id);
+
         if (!comment.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
+
         commentForm.setContent(comment.getContent());
         return "comment_form";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
-    public String deleteComment(@PathVariable Integer id, Principal principal, HttpServletRequest request) {
+    public String delete(@PathVariable Integer id, Principal principal, HttpServletRequest request) {
         Comment comment = commentService.getComment(id);
+
         if (!comment.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
         commentService.delete(comment);
 
         String referer = request.getHeader("Referer");
-
         if (referer != null && !referer.isEmpty()) {
             return "redirect:" + referer;
         }
+
         return "redirect:/";
     }
 
     @GetMapping("/recent")
     public String recent(Model model) {
-        List<Comment> commentList = commentService.getRecentComments();
-        model.addAttribute("comment_list", commentList);
+        List<Comment> comments = commentService.getRecentComments();
+        model.addAttribute("comment_list", comments);
 
         return "comment_recent";
     }

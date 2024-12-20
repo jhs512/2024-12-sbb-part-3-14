@@ -4,7 +4,6 @@ import com.mysite.sbb.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static int PASSWORD_LENGTH = 8;
 
     public SiteUser create(String username, String email, String password) {
         SiteUser user = new SiteUser();
@@ -34,7 +36,7 @@ public class UserService {
         if (siteUser.isPresent()) {
             return siteUser.get();
         } else {
-            throw new DataNotFoundException("siteuser not found");
+            throw new DataNotFoundException("user not found");
         }
     }
 
@@ -43,48 +45,44 @@ public class UserService {
         if (siteUser.isPresent()) {
             return siteUser.get();
         } else {
-            throw new DataNotFoundException("siteuser not found");
+            throw new DataNotFoundException("user not found");
         }
     }
 
-    public void sendTemporaryPassword(SiteUser user) {
+    public void sendTemporaryPassword(SiteUser siteUser) {
         SimpleMailMessage message = new SimpleMailMessage();
         String randomPassword = getRandomPassword();
-        message.setTo(user.getEmail());
+        message.setTo(siteUser.getEmail());
         message.setSubject("임시 비밀번호 발송");
         message.setText("""
                 임시 비밀번호입니다. 로그인 후 즉시 비밀번호를 변경해주세요.
                 %s
                 """.formatted(randomPassword)
         );
-        setTemporaryPassword(user, randomPassword);
+        setTemporaryPassword(siteUser, randomPassword);
         mailSender.send(message);
     }
 
-    public void changePassword(SiteUser user, String oldPassword, String newPassword) {
-        if (checkPassword(user, oldPassword)) {
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
+    public void changePassword(SiteUser siteUser, String oldPassword, String newPassword) {
+        if (checkPassword(siteUser, oldPassword)) {
+            siteUser.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(siteUser);
         } else {
             throw new InputMismatchException();
         }
     }
 
-    private boolean checkPassword(SiteUser user, String oldPassword) {
-        String currentPassword = user.getPassword();
+    private void setTemporaryPassword(SiteUser siteUser, String temporaryPassword) {
+        siteUser.setPassword(passwordEncoder.encode(temporaryPassword));
+        userRepository.save(siteUser);
+    }
 
+    private boolean checkPassword(SiteUser siteUser, String oldPassword) {
+        String currentPassword = siteUser.getPassword();
         return passwordEncoder.matches(oldPassword, currentPassword);
     }
 
-    private void setTemporaryPassword(SiteUser user, String temporaryPassword) {
-        user.setPassword(passwordEncoder.encode(temporaryPassword));
-        userRepository.save(user);
-    }
-
     private String getRandomPassword() {
-        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        int PASSWORD_LENGTH = 8;
-
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder();
 

@@ -4,15 +4,17 @@ import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Comment {

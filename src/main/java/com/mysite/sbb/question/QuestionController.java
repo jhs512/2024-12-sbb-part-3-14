@@ -42,20 +42,22 @@ public class QuestionController {
     ) {
         List<Category> categoryList = categoryService.getAllCategories();
         Category category = categoryService.getCategory(categoryId);
-        Page<Question> paging = questionService.getList(category, page, kw);
+        Page<Question> paging = questionService.getQuestions(category, page, kw);
+
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
         model.addAttribute("category_id", categoryId);
         model.addAttribute("categoryList", categoryList);
+
         return "question_list";
     }
 
     @GetMapping("/detail/{id}")
     public String detail(
             Model model,
-            @PathVariable("id") Integer id,
             AnswerForm answerForm,
             CommentForm commentForm,
+            @PathVariable("id") Integer id,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "order", defaultValue = "createDate") String order
     ) {
@@ -65,24 +67,26 @@ public class QuestionController {
         model.addAttribute("question", question);
         model.addAttribute("answerList", paging);
         model.addAttribute("order", order);
-        //model.addAttribute("commentList", commentList);
+
         return "question_detail";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String questionCreate(QuestionForm questionForm, @RequestParam ("category_id") Integer categoryId) {
+    public String create(QuestionForm questionForm, @RequestParam ("category_id") Integer categoryId) {
         Category category = categoryService.getCategory(categoryId);
         questionForm.setCategory(category);
+
         return "question_form";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
+    public String create(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
+
         SiteUser siteUser = userService.getUser(principal.getName());
         questionService.create(questionForm.getCategory(), questionForm.getSubject(), questionForm.getContent(), siteUser);
         return "redirect:/question/list?category_id=%s".formatted(questionForm.getCategory().getId());
@@ -90,11 +94,12 @@ public class QuestionController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal) {
+    public String modify(QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal) {
         Question question = questionService.getQuestion(id);
         if(!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
+
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
         return "question_form";
@@ -102,35 +107,39 @@ public class QuestionController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    public String questionModify(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Integer id) {
+    public String modify(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Integer id) {
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
+
         Question question = questionService.getQuestion(id);
         if (!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
+
         questionService.modify(question, questionForm.getSubject(), questionForm.getContent());
         return String.format("redirect:/question/detail/%s", id);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
-    public String questionDelete(Principal principal, @PathVariable("id") Integer id) {
+    public String delete(Principal principal, @PathVariable("id") Integer id) {
         Question question = questionService.getQuestion(id);
         if(!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
+
         questionService.delete(question);
         return "redirect:/";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("vote/{id}")
-    public String questionVote(Principal principal, @PathVariable("id") Integer id) {
+    public String vote(Principal principal, @PathVariable("id") Integer id) {
         Question question = questionService.getQuestion(id);
         SiteUser siteUser = userService.getUser(principal.getName());
         questionService.vote(question, siteUser);
+
         return String.format("redirect:/question/detail/%s", id);
     }
 }
