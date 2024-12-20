@@ -20,13 +20,16 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private static final int QUESTION_PAGE_DATA_COUNT = 10;
 
+    public void viewQuestion(Question question) {
+        question.setViewCount(question.getViewCount() + 1);
+        questionRepository.save(question);
+    }
+
     public Question getQuestion(Integer id) {
         Optional<Question> q = questionRepository.findById(id);
 
         if (q.isPresent()) {
             Question question = q.get();
-            question.setViewCount(question.getViewCount() + 1);
-            questionRepository.save(question);
 
             return question;
         } else {

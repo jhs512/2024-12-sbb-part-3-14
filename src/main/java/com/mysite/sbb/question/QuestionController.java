@@ -9,6 +9,8 @@ import com.mysite.sbb.comment.CommentForm;
 import com.mysite.sbb.comment.CommentService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -63,9 +65,16 @@ public class QuestionController {
             @PathVariable("id") Integer id,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "order", defaultValue = "createDate") String order,
-            Principal principal
+            Principal principal,
+            HttpServletRequest request
     ) {
         Question question = questionService.getQuestion(id);
+
+        String referer = request.getHeader("Referer");
+        if (referer.contains("list")) {
+            questionService.viewQuestion(question);
+        }
+
         Page<Answer> paging = answerService.getAnswers(question, page, order);
 
         model.addAttribute("question", question);
