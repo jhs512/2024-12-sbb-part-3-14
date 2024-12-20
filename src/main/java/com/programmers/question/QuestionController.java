@@ -3,10 +3,13 @@ package com.programmers.question;
 import com.programmers.answer.Answer;
 import com.programmers.answer.AnswerService;
 import com.programmers.page.dto.PageRequestDto;
+import com.programmers.question.dto.QuestionModifyRequestDto;
 import com.programmers.question.dto.QuestionRegisterRequestDto;
+import com.programmers.user.SiteUser;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("questions")
@@ -30,6 +34,7 @@ public class QuestionController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public String exceptionHandle(Model model, MethodArgumentNotValidException e) {
+        log.error(e.getMessage());
         return "redirect:/questions/all";
     }
 
@@ -69,5 +74,33 @@ public class QuestionController {
         model.addAttribute("question", question);
         model.addAttribute("answerPage", answerPage);
         return "question_detail";
+    }
+
+
+    @GetMapping("/{questionId}/modify")
+    public String modifyForm(
+            @PathVariable Long questionId,
+            Principal principal,
+            Model model
+    ){
+        questionService.siteUserCheck(questionId, principal.getName());
+        Question question = questionService.findQuestionById(questionId);
+
+        QuestionRegisterRequestDto requestDto = QuestionRegisterRequestDto.builder()
+                .subject(question.getSubject())
+                .content(question.getContent())
+                .build();
+        model.addAttribute("questionRegisterRequestDto", requestDto);
+        return "register";
+    }
+
+    @PostMapping("/{questionId}/modify")
+    public String modifyQuestion(
+            @PathVariable Long questionId,
+            Principal principal,
+            @Valid @ModelAttribute QuestionModifyRequestDto requestDto
+    ){
+        questionService.modifyQuestion(questionId, principal.getName(), requestDto);
+        return "redirect:/questions/" + questionId;
     }
 }

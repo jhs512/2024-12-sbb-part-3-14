@@ -1,5 +1,7 @@
+<!doctype html>
+<html lang="ko" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
-<div class="container my-3">
+<div layout:fragment="content" class="container my-3">
     <!-- 질문 -->
     <h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
     <div class="card my-3">
@@ -25,6 +27,11 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="my-3">
+        <a th:href="@{|/questions/${question.id}/modify|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+           th:if="${question.siteUser != null and #authentication.getPrincipal().getUsername() == question.siteUser.username}"
+           th:text="수정"></a>
     </div>
     <!-- 답변 반복 끝  -->
     <!-- 답변 작성 -->
