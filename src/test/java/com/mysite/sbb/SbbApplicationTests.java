@@ -4,6 +4,8 @@ import com.mysite.sbb.answer.repository.AnswerRepository;
 import com.mysite.sbb.entity.Answer;
 import com.mysite.sbb.entity.Question;
 import com.mysite.sbb.question.repository.QuestionRepository;
+import com.mysite.sbb.question.service.QuestionService;
+import com.mysite.sbb.entity.SiteUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class SbbApplicationTests {
 
     @Autowired
+    private QuestionService questionService;
+
+    @Autowired
     private QuestionRepository questionRepository;
 
     @Autowired
@@ -29,6 +34,7 @@ class SbbApplicationTests {
     void CreateTable (){
         Question question = new Question();
         Answer answer = new Answer();
+        //SiteUser siteUser = new SiteUser();
     }
 
     @Test
@@ -77,5 +83,16 @@ class SbbApplicationTests {
         a.setQuestion(q);  // 어떤 질문의 답변인지 알기위해서 Question 객체가 필요하다.
         a.setCreateDate(LocalDateTime.now());
         this.answerRepository.save(a);
+    }
+
+    @Test
+    @DisplayName("페이징용 테스트 데이터 생성")
+    void testJPA() {
+        for (int i = 0; i < 300; i++) {
+            String s = String.format("테스트 데이터 : [%03d]",i+1);
+            String c = "no contents";
+
+            this.questionService.create(s,c,null);
+        }
     }
 }
