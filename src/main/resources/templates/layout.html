@@ -8,12 +8,16 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
 	<!-- sbb CSS -->
 	<link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+	<!-- SimpleMDE 스타일시트 -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 	<title>Hello, sbb!</title>
 </head>
 <body>
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
 <th:block layout:fragment="content"></th:block>
 <!-- 기본 템플릿 안에 삽입될 내용 End -->
+<!-- SimpleMDE 스크립트 -->
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 <!-- 자바스크립트 Start -->
 <th:block layout:fragment="script"></th:block>
 <!-- 자바스크립트 End -->
