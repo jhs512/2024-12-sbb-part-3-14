@@ -1,8 +1,7 @@
 package baekgwa.sbb.domain.question.form;
 
-import baekgwa.sbb.global.annotation.question.QuestionContent;
-import baekgwa.sbb.global.annotation.question.QuestionSubject;
-import jakarta.validation.constraints.NotEmpty;
+import baekgwa.sbb.global.annotation.validation.question.QuestionContent;
+import baekgwa.sbb.global.annotation.validation.question.QuestionSubject;
 import lombok.Getter;
 import lombok.Setter;
 

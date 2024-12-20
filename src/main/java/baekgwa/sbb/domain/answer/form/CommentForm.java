@@ -1,13 +1,13 @@
 package baekgwa.sbb.domain.answer.form;
 
-import baekgwa.sbb.global.annotation.validation.answer.AnswerContent;
+import baekgwa.sbb.global.annotation.validation.comment.CommentContent;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AnswerForm {
+public class CommentForm {
 
-    @AnswerContent
+    @CommentContent
     private String content;
 }

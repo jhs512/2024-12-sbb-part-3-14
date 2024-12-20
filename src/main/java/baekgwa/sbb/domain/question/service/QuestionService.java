@@ -20,4 +20,6 @@ public interface QuestionService {
     void vote(Integer questionId, String loginUsername);
 
     void voteCancel(Integer questionId, String loginUsername);
+
+    void createComment(String content, String loginUsername, Integer questionId);
 }

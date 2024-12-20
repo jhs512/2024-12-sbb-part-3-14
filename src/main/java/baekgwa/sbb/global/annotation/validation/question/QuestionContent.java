@@ -1,4 +1,4 @@
-package baekgwa.sbb.global.annotation.question;
+package baekgwa.sbb.global.annotation.validation.question;
 
 
 import jakarta.validation.Constraint;

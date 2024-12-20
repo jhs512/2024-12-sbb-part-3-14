@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/question/modify/**").authenticated()
                         .requestMatchers("/question/delete/**").authenticated()
                         .requestMatchers("/question/vote/**").authenticated()
+                        .requestMatchers("/question/comment/**").authenticated()
 
                         .requestMatchers("/answer/create/**").authenticated()
                         .requestMatchers("/answer/modify/**").authenticated()

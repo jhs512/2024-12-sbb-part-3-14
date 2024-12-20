@@ -1,12 +1,12 @@
 package baekgwa.sbb.domain.question.controller;
 
 import baekgwa.sbb.domain.answer.form.AnswerForm;
+import baekgwa.sbb.domain.answer.form.CommentForm;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.domain.question.service.QuestionService;
 import jakarta.validation.Valid;
 import java.security.Principal;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -33,11 +33,13 @@ public class QuestionController {
     @GetMapping("/detail/{id}")
     public String detail(
             Model model,
+            Principal principal,
             @PathVariable("id") Integer id,
             @ModelAttribute(name = "answerForm") AnswerForm answerForm,
+            @ModelAttribute(name = "commentForm") CommentForm commentForm,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
-            Principal principal) {
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
         String username = principal == null ? null : principal.getName();
         QuestionDto.DetailInfo question = questionService.getQuestion(id, username, page, size);
         model.addAttribute("question", question);
@@ -80,7 +82,8 @@ public class QuestionController {
             QuestionForm questionForm,
             @PathVariable("id") Integer id,
             Principal principal) {
-        QuestionDto.DetailInfo question = questionService.getQuestion(id, principal.getName(), 0, 0);
+        QuestionDto.DetailInfo question = questionService.getQuestion(id, principal.getName(), 0,
+                0);
         if (!question.getAuthor().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
@@ -119,5 +122,15 @@ public class QuestionController {
             @PathVariable("id") Integer id) {
         questionService.voteCancel(id, principal.getName());
         return String.format("redirect:/question/detail/%s", id);
+    }
+
+    @PostMapping("/comment/{questionId}")
+    public String createQuestionComment(
+            @PathVariable("questionId") Integer questionId,
+            @RequestParam("content") String content,
+            Principal principal
+    ) {
+        questionService.createComment(content, principal.getName(), questionId);
+        return String.format("redirect:/question/detail/%s", questionId);
     }
 }

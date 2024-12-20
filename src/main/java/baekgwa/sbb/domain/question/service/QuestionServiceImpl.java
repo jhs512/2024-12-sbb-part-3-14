@@ -6,10 +6,13 @@ import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.answer.persistence.AnswerRepository;
+import baekgwa.sbb.model.comment.entity.Comment;
+import baekgwa.sbb.model.comment.persistence.CommentRepository;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -36,6 +40,8 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findByIdWithSiteUserAndVoter(id)
                 .orElseThrow(
                         () -> new DataNotFoundException("question not found"));
+
+        List<Comment> questionCommentList = commentRepository.findByQuestion(question);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
         Page<Answer> answer = answerRepository.findByQuestionIdOrderByVoterCountDesc(id, pageable);
@@ -62,8 +68,16 @@ public class QuestionServiceImpl implements QuestionService {
                                         .voteCount(data.getVoter().stream().count())
                                         .userVote(data.getVoter().stream().anyMatch(
                                                 voter -> voter.getUsername().equals(loginUsername)))
-                                        .build())
-                )
+                                        .build()))
+                .questionCommentList(
+                        questionCommentList.stream().map(
+                                comment -> QuestionDto.QuestionCommentInfo
+                                        .builder()
+                                        .id(comment.getId())
+                                        .author(comment.getSiteUser().getUsername())
+                                        .content(comment.getContent())
+                                        .createDate(comment.getCreateDate())
+                                        .build()).toList())
                 .build();
     }
 
@@ -151,5 +165,23 @@ public class QuestionServiceImpl implements QuestionService {
                 () -> new DataNotFoundException("user not found"));
 
         question.getVoter().remove(siteUser);
+    }
+
+    @Transactional
+    @Override
+    public void createComment(String content, String loginUsername, Integer questionId) {
+        Question question = questionRepository.findById(questionId).orElseThrow(
+                () -> new DataNotFoundException("question not found"));
+        SiteUser author = userRepository.findByUsername(loginUsername).orElseThrow(
+                () -> new DataNotFoundException("user not found"));
+
+        Comment newComment = Comment
+                .builder()
+                .question(question)
+                .content(content)
+                .siteUser(author)
+                .build();
+
+        commentRepository.save(newComment);
     }
 }

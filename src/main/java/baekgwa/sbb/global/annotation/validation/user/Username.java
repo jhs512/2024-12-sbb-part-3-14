@@ -1,4 +1,4 @@
-package baekgwa.sbb.global.annotation.user;
+package baekgwa.sbb.global.annotation.validation.user;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

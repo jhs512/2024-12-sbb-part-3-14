@@ -1,6 +1,8 @@
 package baekgwa.sbb.domain.question.dto;
 
 import baekgwa.sbb.domain.answer.dto.AnswerDto;
+import baekgwa.sbb.domain.answer.dto.AnswerDto.AnswerDetailInfo;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -19,11 +21,13 @@ public class QuestionDto {
         private final Long voterCount;
         private final Page<AnswerDto.AnswerDetailInfo> answerList;
         private final boolean userVote;
+        private final List<QuestionDto.QuestionCommentInfo> questionCommentList;
 
         @Builder
         private DetailInfo(Integer id, String subject, String content, LocalDateTime createDate,
                 LocalDateTime modifyDate, String author, Long voterCount,
-                Page<AnswerDto.AnswerDetailInfo> answerList, boolean userVote) {
+                Page<AnswerDetailInfo> answerList, boolean userVote,
+                List<QuestionCommentInfo> questionCommentList) {
             this.id = id;
             this.subject = subject;
             this.content = content;
@@ -33,6 +37,7 @@ public class QuestionDto {
             this.voterCount = voterCount;
             this.answerList = answerList;
             this.userVote = userVote;
+            this.questionCommentList = questionCommentList;
         }
     }
 
@@ -52,6 +57,23 @@ public class QuestionDto {
             this.createDate = createDate;
             this.answerCount = answerCount;
             this.author = author;
+        }
+    }
+
+    @Getter
+    public static class QuestionCommentInfo {
+        private final Integer id;
+        private final String content;
+        private final String author;
+        private final LocalDateTime createDate;
+
+        @Builder
+        private QuestionCommentInfo(Integer id, String content, String author,
+                LocalDateTime createDate) {
+            this.id = id;
+            this.content = content;
+            this.author = author;
+            this.createDate = createDate;
         }
     }
 }

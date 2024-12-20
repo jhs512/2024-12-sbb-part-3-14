@@ -1,4 +1,4 @@
-package baekgwa.sbb.global.annotation.answer;
+package baekgwa.sbb.global.annotation.validation.comment;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {})
 @Retention(RetentionPolicy.RUNTIME)
 @NotEmpty(message = "내용은 필수항목입니다.")
-public @interface AnswerContent {
+public @interface CommentContent {
 
     String message() default "";
 
