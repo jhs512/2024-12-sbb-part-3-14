@@ -15,12 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -102,5 +97,13 @@ public class QuestionController {
     ){
         questionService.modifyQuestion(questionId, principal.getName(), requestDto);
         return "redirect:/questions/" + questionId;
+    }
+
+    @GetMapping("/{questionId}/delete")
+    public String deleteQuestion(
+            @PathVariable Long questionId,
+            Principal principal) {
+        questionService.deleteQuestion(questionId, principal.getName());
+        return "redirect:/questions/all";
     }
 }

@@ -75,4 +75,10 @@ public class QuestionService {
         question.setContent(requestDto.content());
         questionRepository.save(question);
     }
+
+    public void deleteQuestion(Long questionId, String username) {
+        siteUserCheck(questionId, username);
+        Question question = findQuestionById(questionId);
+        questionRepository.delete(question);
+    }
 }

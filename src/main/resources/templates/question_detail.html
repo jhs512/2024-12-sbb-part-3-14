@@ -40,4 +40,19 @@
         <input type="hidden" id="questionId" th:value="${question.id}">
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
+    <a href="javascript:void(0);" th:data-uri="@{|/questions/${question.id}/delete|}"
+       class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+       th:if="${question.siteUser != null and #authentication.getPrincipal().getUsername() == question.siteUser.username}"
+       th:text="삭제"></a>
 </div>
+<script layout:fragment="script" type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if(confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            };
+        });
+    });
+</script>
+</html>
