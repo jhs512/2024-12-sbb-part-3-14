@@ -70,7 +70,6 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
-        System.out.println(username + " " + password);
         return "login_form";
     }
 
@@ -100,7 +99,6 @@ public class UserController {
 
         // 임시 비밀번호 생성
         String tempPassword = PasswordUtil.createTempPassword(10);
-        System.out.println(tempPassword + " !!");
         // 이메일로 임시 비밀번호 전송
         Email email = new Email(user.getEmail(), "임시 비밀번호입니다" , String.format("임시 비밀번호 : %s", tempPassword));
         emailService.sendEmail(email);
