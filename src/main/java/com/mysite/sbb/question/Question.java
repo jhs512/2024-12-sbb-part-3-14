@@ -53,5 +53,6 @@ public class Question {
     @ManyToOne
     private Category category;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
     private Long viewCount = 0L;
 }

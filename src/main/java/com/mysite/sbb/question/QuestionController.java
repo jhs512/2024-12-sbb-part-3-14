@@ -14,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,8 +41,8 @@ public class QuestionController {
             Model model,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "kw", defaultValue = "") String kw,
-            @RequestParam(value = "category_id", defaultValue = "1") Integer categoryId
-    ) {
+            @RequestParam(value = "category_id", defaultValue = "1") Integer categoryId,
+            Principal principal) {
         List<Category> categoryList = categoryService.getAllCategories();
         Category category = categoryService.getCategory(categoryId);
         Page<Question> paging = questionService.getQuestions(category, page, kw);
@@ -58,7 +62,8 @@ public class QuestionController {
             CommentForm commentForm,
             @PathVariable("id") Integer id,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "order", defaultValue = "createDate") String order
+            @RequestParam(value = "order", defaultValue = "createDate") String order,
+            Principal principal
     ) {
         Question question = questionService.getQuestion(id);
         Page<Answer> paging = answerService.getAnswers(question, page, order);
@@ -66,6 +71,20 @@ public class QuestionController {
         model.addAttribute("question", question);
         model.addAttribute("answerList", paging);
         model.addAttribute("order", order);
+
+        if (principal instanceof OAuth2AuthenticationToken) {
+            OAuth2AuthenticationToken oAuth2User = (OAuth2AuthenticationToken) principal;
+            model.addAttribute("username", oAuth2User.getName());
+        }
+        else if (principal instanceof UsernamePasswordAuthenticationToken) {
+            UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken) principal;
+
+            Object principalDetails = authToken.getPrincipal();
+            if (principalDetails instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) principalDetails;
+                model.addAttribute("username", userDetails.getUsername());
+            }
+        }
 
         return "question_detail";
     }

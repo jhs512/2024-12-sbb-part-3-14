@@ -23,11 +23,11 @@
                 </a>
                 <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+                   th:if="${question.author != null and question.author.username.equals(username)}"
                    th:text="수정"></a>
                 <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}" class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+                   th:if="${question.author != null and question.author.username.equals(username)}"
                    th:text="삭제"></a>
             </div>
             <hr>
@@ -37,11 +37,11 @@
                 , <span th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></span>
                 <a th:href="@{|/comment/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.username}"
+                   th:if="${comment.author != null and comment.author.username.equals(username)}"
                    th:text="수정"></a>
                 <a href="javascript:void(0);" th:data-uri="@{|/comment/delete/${comment.id}|}" class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.username}"
+                   th:if="${comment.author != null and comment.author.username.equals(username)}"
                    th:text="삭제"></a>
                 <hr>
             </div>
@@ -86,11 +86,11 @@
                 </a>
                 <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                   th:if="${answer.author != null and answer.author.username.equals(username)}"
                    th:text="수정"></a>
                 <a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.id}|}" class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                   th:if="${answer.author != null and answer.author.username.equals(username)}"
                    th:text="삭제"></a>
             </div>
             <div th:each="comment : ${answer.commentList}">
@@ -99,11 +99,11 @@
                 , <span th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></span>
                 <a th:href="@{|/comment/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.username}"
+                   th:if="${comment.author != null and comment.author.username.equals(username)}"
                    th:text="수정"></a>
                 <a href="javascript:void(0);" th:data-uri="@{|/comment/delete/${comment.id}|}" class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.username}"
+                   th:if="${comment.author != null and comment.author.username.equals(username)}"
                    th:text="삭제"></a>
                 <hr>
             </div>

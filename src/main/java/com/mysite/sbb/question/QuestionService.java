@@ -52,6 +52,7 @@ public class QuestionService {
                 .subject(subject)
                 .content(content)
                 .author(user)
+                .viewCount(0L)
                 .build();
 
         questionRepository.save(question);
