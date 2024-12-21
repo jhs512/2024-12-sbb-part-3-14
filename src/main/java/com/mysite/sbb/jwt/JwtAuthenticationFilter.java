@@ -6,6 +6,7 @@ import com.mysite.sbb.user.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,9 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
-            String token = resolveToken(request);
+            // String token = resolveToken(request);
+            String token = JwtUtil.extractTokenFromCookie(request, "ACCESS_TOKEN");
 
             if (token != null && jwtTokenProvider.validateToken(token)) {
+
                 String email = jwtTokenProvider.getEmailFromToken(token);
 
                 SiteUser user = userRepository.findByEmail(email)
@@ -47,21 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-            filterChain.doFilter(request, response);
         }
         catch (ExpiredJwtException e) {
-            // 시간 만료가 발생하면 401 반환
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid credentials");
+            // 시간 만료가 발생하면 refresh
+            response.sendRedirect("/api/auth/refresh");
         }
-    }
-
-    private String resolveToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-
-        if(header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
-        }
-        return null;
+        filterChain.doFilter(request, response);
     }
 }

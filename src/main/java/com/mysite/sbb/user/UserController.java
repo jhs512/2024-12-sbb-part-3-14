@@ -40,9 +40,6 @@ public class UserController {
     private final QuestionService questionService;
     private final AnswerService answerService;
 
-
-
-
     @Value("${spring.mail.username}")
     private String username;
 

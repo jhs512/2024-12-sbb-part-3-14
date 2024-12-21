@@ -1,7 +1,9 @@
 package com.mysite.sbb.oauth2;
 
 import com.mysite.sbb.jwt.JwtTokenProvider;
+import com.mysite.sbb.jwt.JwtUtil;
 import com.mysite.sbb.user.UserRole;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +39,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 .set("RT:"+email, refreshToken,
                         JwtTokenProvider.REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
 
-        response.addHeader("Authorization", "Bearer " + accessToken);
-        response.addHeader("Refresh-Token", refreshToken);
+        // 쿠키에 담기 (HttpOnly 설정)
+        Cookie accessCookie = JwtUtil.convertAccessTokenToCookie(accessToken);
+        Cookie refreshCookie = JwtUtil.convertRefreshTokenToCookie(refreshToken);
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
 
         response.sendRedirect("/");
     }
