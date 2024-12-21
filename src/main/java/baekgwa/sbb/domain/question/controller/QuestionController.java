@@ -5,8 +5,11 @@ import baekgwa.sbb.domain.answer.form.CommentForm;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
 import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.domain.question.service.QuestionService;
+import baekgwa.sbb.global.util.ControllerUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.security.Principal;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -22,13 +25,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/question")
+@RequiredArgsConstructor
 public class QuestionController {
 
-    public QuestionController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
-
     private final QuestionService questionService;
+    private final ControllerUtils controllerUtils;
 
     @GetMapping("/detail/{id}")
     public String detail(
@@ -38,8 +39,10 @@ public class QuestionController {
             @ModelAttribute(name = "answerForm") AnswerForm answerForm,
             @ModelAttribute(name = "commentForm") CommentForm commentForm,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            HttpServletRequest request
     ) {
+        controllerUtils.restoreBindingResultFlashAttributesToModel(request, model, "answerForm");
         String username = principal == null ? null : principal.getName();
         QuestionDto.DetailInfo question = questionService.getQuestion(id, username, page, size);
         model.addAttribute("question", question);

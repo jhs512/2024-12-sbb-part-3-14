@@ -2,6 +2,7 @@ package baekgwa.sbb.domain.answer.service;
 
 import baekgwa.sbb.domain.answer.dto.AnswerDto;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
+import baekgwa.sbb.domain.question.service.QuestionService;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.answer.persistence.AnswerRepository;
@@ -9,12 +10,7 @@ import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
-import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,43 +41,6 @@ public class AnswerServiceImpl implements AnswerService {
                 .build());
 
         return saveAnswer.getId();
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id, String loginUsername, Integer page, Integer size) {
-        Question question = questionRepository.findByIdWithSiteUserAndVoter(id)
-                .orElseThrow(
-                        () -> new DataNotFoundException("question not found"));
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
-        Page<Answer> answer = answerRepository.findByQuestionIdOrderByVoterCountDesc(id, pageable);
-
-        return QuestionDto.DetailInfo
-                .builder()
-                .id(question.getId())
-                .subject(question.getSubject())
-                .content(question.getContent())
-                .createDate(question.getCreateDate())
-                .modifyDate(question.getModifyDate())
-                .author(question.getSiteUser().getUsername())
-                .voterCount(question.getVoter().stream().count())
-                .userVote(question.getVoter().stream()
-                        .anyMatch(vote -> vote.getUsername().equals(loginUsername)))
-                .answerList(
-                        answer.map(data -> AnswerDto.AnswerDetailInfo
-                                .builder()
-                                .id(data.getId())
-                                .content(data.getContent())
-                                .modifyDate(data.getModifyDate())
-                                .createDate(data.getCreateDate())
-                                .author(data.getSiteUser().getUsername())
-                                .voteCount(data.getVoter().stream().count())
-                                .userVote(data.getVoter().stream().anyMatch(
-                                        voter -> voter.getUsername().equals(loginUsername)))
-                                .build())
-                )
-                .build();
     }
 
     @Transactional(readOnly = true)

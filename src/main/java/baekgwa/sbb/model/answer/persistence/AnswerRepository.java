@@ -27,9 +27,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     @Query("SELECT a FROM Answer a WHERE a.id = :id")
     Optional<Answer> findByIdWithVoterAndQuestion(@Param("id") Integer id);
 
-    @Query("SELECT a FROM Answer a LEFT JOIN a.voter v WHERE a.question.id = :questionId " +
-            "GROUP BY a.id, a.createDate ORDER BY COUNT(v) DESC, a.createDate DESC")
+    @Query("SELECT a FROM Answer a LEFT JOIN FETCH a.voter v WHERE a.question.id = :questionId " +
+            "GROUP BY a.id, a.createDate, v.id ORDER BY COUNT(v) DESC, a.createDate DESC")
     Page<Answer> findByQuestionIdOrderByVoterCountDesc(@Param("questionId") Integer questionId, Pageable pageable);
-
-
 }

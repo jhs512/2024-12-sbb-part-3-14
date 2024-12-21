@@ -2,6 +2,7 @@ package baekgwa.sbb.model.question.entity;
 
 import baekgwa.sbb.model.BaseEntity;
 import baekgwa.sbb.model.answer.entity.Answer;
+import baekgwa.sbb.model.category.entity.Category;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,6 +11,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -47,14 +49,20 @@ public class Question extends BaseEntity {
     @ManyToMany
     private Set<SiteUser> voter;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
     @Builder
-    public Question(Integer id, String subject, String content, Set<Answer> answerList,
-            SiteUser siteUser) {
+    private Question(Integer id, String subject, String content, Set<Answer> answerList,
+            SiteUser siteUser, Set<SiteUser> voter, Category category) {
         this.id = id;
         this.subject = subject;
         this.content = content;
         this.answerList = answerList;
         this.siteUser = siteUser;
+        this.voter = voter;
+        this.category = category;
     }
 
     public static Question modifyQuestion(Question oldQuestion, String subject, String content) {

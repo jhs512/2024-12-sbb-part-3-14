@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("/answer")
 @RequiredArgsConstructor
@@ -27,18 +27,16 @@ public class AnswerController {
 
     @PostMapping("/create/{id}")
     public String createAnswer(
-            Model model,
             @PathVariable("id") Integer id,
             @Valid AnswerForm answerForm,
             BindingResult bindingResult,
             Principal principal,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            RedirectAttributes redirectAttributes
+    ) {
         if (bindingResult.hasErrors()) {
-            String loginUsername = principal == null ? null : principal.getName();
-            QuestionDto.DetailInfo question = answerService.getQuestionByIdAndAnswers(id, loginUsername, page, size);
-            model.addAttribute("question", question);
-            return "question_detail";
+            redirectAttributes.addFlashAttribute("answerForm", answerForm);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.answerForm", bindingResult);
+            return String.format("redirect:/question/detail/%s#answer", id);
         }
         Integer answerId = answerService.create(id, answerForm.getContent(), principal.getName());
         return String.format("redirect:/question/detail/%s#answer_%s", id, answerId);

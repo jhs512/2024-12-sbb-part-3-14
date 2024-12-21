@@ -6,8 +6,6 @@ import baekgwa.sbb.domain.question.dto.QuestionDto;
 public interface AnswerService {
     Integer create(Integer id, String content, String username);
 
-    QuestionDto.DetailInfo getQuestionByIdAndAnswers(Integer id, String loginUsername, Integer page, Integer size);
-
     AnswerDto.AnswerInfo getAnswer(Integer answerId);
 
     Integer modifyAnswer(Integer answerId, String loginUsername, String newContent);
