@@ -34,7 +34,7 @@ public class JwtController {
 
     // 로그인 성공 시, jwt Token 발급
     @PostMapping("/user/login")
-    public ResponseEntity<String> generateJwtToken(@RequestParam("username") String username,
+    public void generateJwtToken(@RequestParam("username") String username,
                                                    @RequestParam("password") String password,
                                                    HttpServletResponse response) throws IOException {
         try {
@@ -57,16 +57,13 @@ public class JwtController {
             Cookie accessCookie = JwtUtil.convertAccessTokenToCookie(accessToken);
             Cookie refreshCookie = JwtUtil.convertRefreshTokenToCookie(refreshToken);
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                    .body("로그인 성공");
+            response.addCookie(accessCookie);
+            response.addCookie(refreshCookie);
+            response.sendRedirect("/");
 
         } catch (AuthenticationException e) {
             // 클라이언트에게 401 상태 코드와 오류 메시지 반환
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body("로그인 실패");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "로그인 실패");
         }
     }
 
@@ -130,6 +127,6 @@ public class JwtController {
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION, "/")
-                .body("Redirecting to /");
+                .body("로그아웃 성공");
     }
 }
