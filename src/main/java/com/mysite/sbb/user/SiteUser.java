@@ -22,6 +22,9 @@ public class SiteUser {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @Column(unique = true)
     private String email;
 }

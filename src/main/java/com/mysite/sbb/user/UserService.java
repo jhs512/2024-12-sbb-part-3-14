@@ -32,6 +32,15 @@ public class UserService {
         }
     }
 
+    public SiteUser getUserByEmail(String email) {
+        Optional<SiteUser> siteUser = this.userRepository.findByEmail(email);
+        if(siteUser.isPresent()){
+            return siteUser.get();
+        } else {
+            throw new DataNotFoundException("user not found");
+        }
+    }
+
     public boolean existsUser(String username) {
         return userRepository.existsByUsername(username);
     }

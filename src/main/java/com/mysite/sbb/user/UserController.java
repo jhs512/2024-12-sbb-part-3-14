@@ -1,20 +1,34 @@
 package com.mysite.sbb.user;
 
+import com.mysite.sbb.jwt.JwtTokenProvider;
 import com.mysite.sbb.util.PasswordUtil;
 import com.mysite.sbb.answer.AnswerService;
 import com.mysite.sbb.email.Email;
 import com.mysite.sbb.email.EmailService;
 import com.mysite.sbb.question.QuestionService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.security.Security;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Controller
@@ -25,6 +39,9 @@ public class UserController {
     private final EmailService emailService;
     private final QuestionService questionService;
     private final AnswerService answerService;
+
+
+
 
     @Value("${spring.mail.username}")
     private String username;
