@@ -11,7 +11,7 @@ public interface QuestionService {
 
     void create(String subject, String content, String username);
 
-    Page<QuestionDto.MainInfo> getList(int page, int size, String keyword);
+    Page<QuestionDto.MainInfo> getList(int page, int size, String keyword, String categoryType);
 
     void modifyQuestion(Integer questionId, String loginUsername, QuestionForm questionForm);
 
@@ -22,4 +22,6 @@ public interface QuestionService {
     void voteCancel(Integer questionId, String loginUsername);
 
     void createComment(String content, String loginUsername, Integer questionId);
+
+    List<QuestionDto.CategoryInfo> getCategory();
 }

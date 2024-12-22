@@ -3,12 +3,15 @@ package baekgwa.sbb.domain.question.controller;
 import baekgwa.sbb.domain.answer.form.AnswerForm;
 import baekgwa.sbb.domain.answer.form.CommentForm;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
+import baekgwa.sbb.domain.question.dto.QuestionDto.CategoryInfo;
 import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.domain.question.service.QuestionService;
 import baekgwa.sbb.global.util.ControllerUtils;
+import baekgwa.sbb.model.category.entity.CategoryType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -73,10 +76,13 @@ public class QuestionController {
             Model model,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "keyword", defaultValue = "") String keyword) {
-        Page<QuestionDto.MainInfo> paging = questionService.getList(page, size, keyword);
+            @RequestParam(value = "keyword", defaultValue = "") String keyword,
+            @RequestParam(value = "categoryType", defaultValue = "QUESTION") String categoryType) {
+        Page<QuestionDto.MainInfo> paging = questionService.getList(page, size, keyword, categoryType);
+        List<QuestionDto.CategoryInfo> category = questionService.getCategory();
         model.addAttribute("paging", paging);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
         return "question_list";
     }
 

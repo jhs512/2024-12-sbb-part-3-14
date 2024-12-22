@@ -76,4 +76,14 @@ public class QuestionDto {
             this.createDate = createDate;
         }
     }
+
+    @Getter
+    public static class CategoryInfo {
+        private final String categoryType;
+
+        @Builder
+        private CategoryInfo(String categoryType) {
+            this.categoryType = categoryType;
+        }
+    }
 }

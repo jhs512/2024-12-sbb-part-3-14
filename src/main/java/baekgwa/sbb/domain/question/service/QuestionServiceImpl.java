@@ -6,6 +6,8 @@ import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.answer.persistence.AnswerRepository;
+import baekgwa.sbb.model.category.entity.Category;
+import baekgwa.sbb.model.category.persistence.CategoryRepository;
 import baekgwa.sbb.model.comment.entity.Comment;
 import baekgwa.sbb.model.comment.persistence.CommentRepository;
 import baekgwa.sbb.model.question.entity.Question;
@@ -32,6 +34,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -97,9 +100,9 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<QuestionDto.MainInfo> getList(int page, int size, String keyword) {
+    public Page<QuestionDto.MainInfo> getList(int page, int size, String keyword, String categoryType) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
-        Specification<Question> spec = QuestionSpecificationBuilder.INSTANCE.searchByKeyword(keyword);
+        Specification<Question> spec = QuestionSpecificationBuilder.INSTANCE.searchByKeywordAndCategoryType(keyword, categoryType);
 
         return questionRepository.findAll(spec, pageable)
                 .map(
@@ -183,5 +186,17 @@ public class QuestionServiceImpl implements QuestionService {
                 .build();
 
         commentRepository.save(newComment);
+    }
+
+    @Override
+    public List<QuestionDto.CategoryInfo> getCategory() {
+        List<Category> findList = categoryRepository.findAll();
+
+        return findList.stream().map(
+                c -> QuestionDto.CategoryInfo
+                        .builder()
+                        .categoryType(c.getCategoryType().name())
+                        .build()
+        ).toList();
     }
 }
