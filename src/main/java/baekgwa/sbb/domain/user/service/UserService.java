@@ -10,4 +10,6 @@ public interface UserService {
     MypageInfo getUserInfo(String loginUsername, Integer page, Integer size);
 
     void temporaryPassword(String email) throws MessagingException;
+
+    void modifyPassword(String password, String name);
 }

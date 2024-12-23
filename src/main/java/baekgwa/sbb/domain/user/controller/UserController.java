@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -93,7 +92,32 @@ public class UserController {
             return "login_form";
         }
 
-        model.addAttribute("message", "1회용 임시 비밀번호가 발급되었습니다. 이메일을 확인해주세요.");
+        model.addAttribute("message", "5분간 유효한, 1회용 임시 비밀번호가 발급되었습니다. 이메일을 확인해주세요.");
         return "login_form";
+    }
+
+    @GetMapping("/password/modify")
+    public String modifyPasswordForm(
+            UserForm.PasswordChange passwordChange,
+            BindingResult bindingResult
+    ) {
+        return "password_modify_form";
+    }
+
+    @PostMapping("/password/modify")
+    public String modifyPassword(
+            UserForm.PasswordChange passwordChange,
+            Principal principal,
+            BindingResult bindingResult
+    ) {
+
+        if (!passwordChange.getPassword1().equals(passwordChange.getPassword2())) {
+            bindingResult.rejectValue("password2", "passwordInCorrect",
+                    "2개의 패스워드가 일치하지 않습니다.");
+            return "password_modify_form";
+        }
+
+        userService.modifyPassword(passwordChange.getPassword1(), principal.getName());
+        return "redirect:/user/logout";
     }
 }

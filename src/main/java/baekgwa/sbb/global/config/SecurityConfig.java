@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/answer/vote/**").authenticated()
 
                         .requestMatchers("/user/my-page/**").authenticated()
+                        .requestMatchers("/user/password/modify/**").authenticated()
                         .anyRequest().permitAll()
                 )
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))

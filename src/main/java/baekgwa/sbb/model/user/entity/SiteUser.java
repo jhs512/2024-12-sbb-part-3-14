@@ -29,9 +29,14 @@ public class SiteUser {
     private String email;
 
     @Builder
-    private SiteUser(String username, String password, String email) {
+    private SiteUser(Long id, String username, String password, String email) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public void updateUserPassword(String password) {
+        this.password = password;
     }
 }

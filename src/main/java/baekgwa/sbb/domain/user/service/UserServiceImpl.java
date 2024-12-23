@@ -94,6 +94,14 @@ public class UserServiceImpl implements UserService {
         saveTemporaryPassword(siteUser.getUsername(), passwordEncoder.encode(temporaryPassword));
     }
 
+    @Transactional
+    @Override
+    public void modifyPassword(String password, String name) {
+        SiteUser findData = userRepository.findByUsername(name).orElseThrow(
+                () -> new DataNotFoundException("user data not found"));
+        findData.updateUserPassword(passwordEncoder.encode(password));
+    }
+
     private void saveTemporaryPassword(String username, String tempPassword) {
         //todo : Magic Number 수정 필요.
         redisRepository.save(username, tempPassword, 5L, TimeUnit.MINUTES);

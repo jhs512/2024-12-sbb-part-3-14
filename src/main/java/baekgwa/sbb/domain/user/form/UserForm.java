@@ -16,4 +16,11 @@ public class UserForm {
         @Password private String password2;
         @Email private String email;
     }
+
+    @Getter
+    @Setter
+    public static class PasswordChange {
+        @Password private String password1;
+        @Password private String password2;
+    }
 }

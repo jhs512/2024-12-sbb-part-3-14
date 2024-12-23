@@ -1,4 +1,4 @@
-package baekgwa.sbb.global.security.siteuser;
+package baekgwa.sbb.global.security.userservice;
 
 import baekgwa.sbb.model.redis.RedisRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
@@ -30,7 +30,10 @@ public class UserSecurityService implements UserDetailsService {
                 () -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         List<GrantedAuthority> authorities = new ArrayList<>();
-        if("admin".equals(username)) {
+        if(temporaryPassword != null) {
+            authorities.add(new SimpleGrantedAuthority(UserRole.TEMPORARY.getValue()));
+        }
+        else if("admin".equals(username)) {
             authorities.add(new SimpleGrantedAuthority(UserRole.ADMIN.getValue()));
         } else {
             authorities.add(new SimpleGrantedAuthority(UserRole.USER.getValue()));
