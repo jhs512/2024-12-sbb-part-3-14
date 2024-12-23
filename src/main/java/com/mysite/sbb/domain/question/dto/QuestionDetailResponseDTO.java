@@ -4,11 +4,13 @@ import com.mysite.sbb.domain.answer.entity.Answer;
 import com.mysite.sbb.domain.answer.dto.AnswerResponseDTO;
 import com.mysite.sbb.domain.question.entity.Question;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class QuestionDetailResponseDTO extends QuestionBaseDTO {
     private int voterCount;              // 추천 수
     private Page<AnswerResponseDTO> answers;        // 답변 리스트

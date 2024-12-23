@@ -1,51 +1,60 @@
 package com.mysite.sbb.controller.view;
 
-
+import com.mysite.sbb.controller.view.util.QuestionTestFixture;
+import com.mysite.sbb.controller.view.util.ViewTestUtil;
 import com.mysite.sbb.domain.question.dto.QuestionListResponseDTO;
 import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
+import com.mysite.sbb.global.util.CommonUtil;
 import com.mysite.sbb.service.impl.AnswerServiceImpl;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;
 import com.mysite.sbb.service.impl.UserServiceImpl;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * ViewController의 테스트 클래스
- * <p>
- * &#064;WebMvcTest:  웹 계층 관련 빈만 로드하여 테스트 (전체 애플리케이션 컨텍스트를 로드하지 않음)
- * &#064;ExtendWith:  Mockito 확장 기능을 사용하여 목 객체 생성 및 주입
  */
-@WebMvcTest(ViewController.class)  // ViewController만 테스트하도록 설정
-@ExtendWith(MockitoExtension.class)  // Mockito 확장 기능 사용
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(controllers = ViewController.class)
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 class ViewControllerTest {
 
     // MockMvc: 실제 서버 없이 스프링 MVC 동작을 재현하는 테스트 프레임워크
@@ -62,6 +71,12 @@ class ViewControllerTest {
     @MockitoBean
     private UserServiceImpl userService;             // 사용자 서비스 모킹
 
+    @BeforeEach
+    void setUp() {
+        // 각 테스트 전에 목 객체 초기화
+        reset(questionService, answerService, userService);
+    }
+
     /**
      * Spring Security 테스트 설정
      * - 인증이 필요한 URL과 허용된 URL을 구분하여 설정
@@ -69,16 +84,23 @@ class ViewControllerTest {
      * - CSRF 보호 설정
      */
     @TestConfiguration
-    static class SecurityConfig {
+    @AutoConfigureBefore(SecurityAutoConfiguration.class)
+    static class TestConfig {
+        @Bean
+        public CommonUtil commonUtil() {
+            return new CommonUtil();
+        }
+
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             http
                     .authorizeHttpRequests(auth -> auth
                             // 인증이 필요한 URL 설정
-                            .requestMatchers("/question/create",
-                                             "/question/modify/**",
-                                             "/question/delete/**",
-                                             "/answer/**").authenticated()
+                            .requestMatchers(
+                                    "/question/create/**",
+                                    "/question/modify/**",
+                                    "/question/delete/**",
+                                    "/answer/**").authenticated()
                             // 나머지 요청은 모두 허용
                             .anyRequest().permitAll()
                     )
@@ -92,150 +114,185 @@ class ViewControllerTest {
                             .logoutSuccessUrl("/")
                             .invalidateHttpSession(true)
                     )
-                    .csrf(csrf -> csrf
-                            .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))
-                    );
+                    .csrf(csrf -> csrf.disable());
 
 
             return http.build();
         }
-    }
 
-    /**
-     * 루트 경로 접속 시 질문 목록 페이지로 리다이렉트되는지 테스트
-     * <p>
-     * 검증 내용:
-     * * 1. HTTP 상태 코드가 리다이렉션(3xx)인지 확인
-     * * 2. 리다이렉트 URL이 "/question/list"인지 확인
-     */
-    @Test
-    @DisplayName("1 - 루트 경로 접속 테스트")
-    void rootPage_RedirectToQuestionList() throws Exception {
-        // when: 루트 경로로 GET 요청
-        // then: 리다이렉션 검증
-        mockMvc.perform(get("/"))
-                .andExpect(status().is3xxRedirection())     // 리다이렉션 상태 코드 확인
-                .andExpect(redirectedUrl("/question/list")) // 리다이렉트 URL 확인
-                .andDo(print())    // 테스트 결과 출력
-                .andDo(this::printHTTP);
-    }
-
-    @Test
-    @DisplayName("2 - 질문 목록 페이지 접속 테스트")
-    void questionList_ReturnListPage() throws Exception {
-        // given ( 준비 )
-        List<QuestionListResponseDTO> questionDTOs = new ArrayList<>();
-        Page<QuestionListResponseDTO> questionDTOPage = new PageImpl<>(
-                questionDTOs,
-                PageRequest.of(0, 10),
-                0
-        );
-
-        // questionService.getList() 메서드의 동작을 모킹
-        given(questionService.getList(anyInt(), anyString())).willReturn(questionDTOPage);
-
-        // when & then (실행 및 검증)
-        mockMvc.perform(get("/question/list")  // GET 요청 실행
-                        .param("page", "0")           // 페이지 파라미터 추가
-                        .param("kw", ""))             // 검색어 파라미터 추가
-                .andExpect(status().isOk())       // HTTP 200 상태 코드 검증
-                .andExpect(view().name("question_list"))  // 뷰 이름 검증
-                .andExpect(model().attributeExists("paging"))  // 모델 속성 존재 검증
-                .andDo(print())  // 테스트 결과 출력
-                .andDo(result -> {
-                    printHTTP(result);
-                    printModelAndView(result);
-                });
-    }
-
-    @Test
-    @DisplayName("3 - 회원가입 페이지 접속 테스트")
-    void testSignupPage() throws Exception {
-        mockMvc.perform(get("/users/signup"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("signup_form"))
-                .andDo(print())
-                .andDo(this::printModelAndView);
-    }
-
-    @Test
-    @DisplayName("4 - 로그인 페이지 접속 테스트")
-    void testLoginPage() throws Exception {
-        mockMvc.perform(get("/users/login"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("login_form"))
-                .andDo(print())
-                .andDo(this::printModelAndView);
-    }
-
-    @Test
-    @DisplayName("5 - 인증되지 않는 사용자의 질문 생성 페이지 접속 테스트")
-    void testQuestionCreatePageWithoutAuth() throws Exception {
-        mockMvc.perform(get("/question/create"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login"))
-                .andDo(print())
-                .andDo(result -> {
-                    printHTTP(result);
-                    printModelAndView(result);
-                });
-    }
-
-    @Test
-    @WithMockUser
-    @DisplayName("6 - 인증된 사용자의 질문 생성 페이지 접속 테스트")
-    void testQuestionCreatePageWithAuth() throws Exception {
-        // QuestionRequestDTO를 모델에 추가
-        QuestionRequestDTO questionRequestDTO = new QuestionRequestDTO();
-
-        mockMvc.perform(get("/question/create")
-                        .with(csrf())
-                .flashAttr("questionRequestDTO", questionRequestDTO))
-                .andExpect(status().isOk())
-                .andExpect(view().name("question_form"))
-                .andExpect(model().attributeExists("questionRequestDTO"))
-                .andDo(print())
-                .andDo(result -> {
-                    printHTTP(result);
-                    printModelAndView(result);
-                });
-    }
-
-    @Test
-    @DisplayName("7 - 질문 목록 페이징 테스트")
-    void testQuestionList_WithPaging() throws Exception {
-
-    }
-
-    @Test
-    @DisplayName("8 - 질문 목록 페이징 테스트")
-    void testQuestionList_WithPaging2() throws Exception {
-
-    }
-
-    @Test
-    @DisplayName("9 - 질문 상세 페이지 테스트")
-    void testQuestionDetail() throws Exception {
-
-    }
-
-    @SneakyThrows
-    private void printHTTP(MvcResult result) {
-        System.out.println("\n=== HTTP 응답 정보 ===");
-        System.out.println("Status: " + result.getResponse().getStatus());
-        System.out.println("Headers: " + result.getResponse().getHeaderNames());
-        System.out.println("Content: " + result.getResponse().getContentAsString());
-        System.out.println("URL: " + result.getResponse().getRedirectedUrl());
-    }
-
-    private void printModelAndView(MvcResult result) {
-        System.out.println("\n=== 모델 정보 ===");
-        ModelAndView mav = result.getModelAndView();
-        if (mav != null) {
-            System.out.println("View: " + mav.getViewName());
-            System.out.println("Model: " + mav.getModel());
+        @Bean
+        public WebSecurityCustomizer webSecurityCustomizer() {
+            return (web) -> web.ignoring()
+                    .requestMatchers("/h2-console/**");
         }
     }
 
+
+    @Nested
+    @DisplayName("기본 페이지 접근 테스트")
+    class BasicPageAccessTest {
+        @Test
+        @DisplayName("루트 페이지 접속시 질문 목록으로 리다이렉트")
+        void rootPage_RedirectToQuestionList() throws Exception {
+            mockMvc.perform(get("/"))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrl("/question/list"))
+                    .andDo(ViewTestUtil::printHTTP);
+        }
+
+        @Test
+        @DisplayName("회원가입 페이지 접속")
+        void signupPage_ShouldReturnSignupForm() throws Exception {
+            mockMvc.perform(get("/users/signup"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("signup_form"))
+                    .andDo(ViewTestUtil::printModelAndView);
+        }
+
+        @Test
+        @DisplayName("로그인 페이지 접속")
+        void loginPage_ShouldReturnLoginForm() throws Exception {
+            mockMvc.perform(get("/users/login"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("login_form"))
+                    .andDo(ViewTestUtil::printModelAndView);
+        }
+    }
+
+    @Nested
+    @DisplayName("질문 목록 페이징 테스트")
+    class QuestionListPagingTest {
+
+        @Test
+        @DisplayName("기본 페이징 - 첫 페이지 조회")
+        void questionList_DefaultPaging() throws Exception {
+            // given
+            Page<QuestionListResponseDTO> questionPage = QuestionTestFixture.builder()
+                    .withTotalCount(15)
+                    .withPageSize(10)
+                    .withCurrentPage(0)
+                    .build();
+
+            given(questionService.getList(anyInt(), anyString()))
+                    .willReturn(questionPage);
+
+            // when & then
+            mockMvc.perform(get("/question/list")
+                            .param("page", "0")
+                            .param("kw", ""))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("question_list"))
+                    .andExpect(model().attributeExists("paging"))
+                    .andExpect(model().attribute("paging",
+                            allOf(
+                                    hasProperty("totalElements", equalTo(15L)),
+                                    hasProperty("totalPages", equalTo(2)),
+                                    hasProperty("size", equalTo(10))
+                            )))
+                    .andDo(ViewTestUtil::printTestResults);
+        }
+
+        @Test
+        @DisplayName("검색 조건이 있는 페이징")
+        void questionList_WithSearchKeyword() throws Exception {
+            // given
+            Page<QuestionListResponseDTO> questionPage = QuestionTestFixture.builder()
+                    .withTotalCount(30)
+                    .withPageSize(10)
+                    .withCurrentPage(0)
+                    .withSearchKeyword("작성자2")
+                    .build();
+
+            given(questionService.getList(0, "작성자2"))
+                    .willReturn(questionPage);
+
+            // when & then
+            mockMvc.perform(get("/question/list")
+                            .param("page", "0")
+                            .param("kw", "작성자2"))
+                    .andExpect(status().isOk())
+                    .andExpect(model().attributeExists("paging"))
+                    .andExpect(model().attribute("paging",
+                            allOf(
+                                    hasProperty("totalElements", equalTo(10L)),
+                                    hasProperty("totalPages", equalTo(1)),
+                                    hasProperty("size", equalTo(10))
+                            )))
+                    .andDo(ViewTestUtil::printTestResults);
+
+            verify(questionService).getList(0, "작성자2");
+        }
+    }
+
+    @Nested
+    @DisplayName("질문 생성 페이지 접근 테스트")
+    class QuestionCreatePageTest {
+
+        @Test
+        @DisplayName("미인증 사용자 접근시 로그인 페이지로 리다이렉트")
+        void questionCreatePage_WithoutAuth_ShouldRedirectToLogin() throws Exception {
+            mockMvc.perform(get("/question/create"))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrlPattern("**/login"))
+                    .andDo(ViewTestUtil::printTestResults);
+        }
+
+        @Test
+        @WithMockUser
+        @DisplayName("인증된 사용자는 질문 생성 페이지 접근 가능")
+        void questionCreatePage_WithAuth_ShouldReturnCreateForm() throws Exception {
+            QuestionRequestDTO questionRequestDTO = new QuestionRequestDTO();
+
+            mockMvc.perform(get("/question/create")
+                            .with(csrf())
+                            .flashAttr("questionRequestDTO", questionRequestDTO))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("question_form"))
+                    .andExpect(model().attributeExists("questionRequestDTO"))
+                    .andDo(ViewTestUtil::printTestResults);
+        }
+    }
+
+    @Nested
+    @DisplayName("질문 상세 페이지 접근 테스트 (TODO)")
+    class QuestionDetailPageTest {
+        @Test
+        @DisplayName("질문 상세 페이지 테스트 (마크다운 포함)")
+        void testQuestionDetail() throws Exception {
+            // TODO
+        }
+
+        @Test
+        @DisplayName("답변 정렬 기능 테스트")
+        void testAnswerSorting() throws Exception {
+            // TODO
+        }
+
+        @Test
+        @WithMockUser
+        @DisplayName("로그인 사용자의 답변 작성 폼 접근 테스트")
+        void testAnswerFormForAuthenticatedUser() throws Exception {
+            // TODO
+        }
+    }
+
+
+    /**
+     * 테스트용 질문 목록 생성
+     */
+    private List<QuestionListResponseDTO> createTestQuestions(int count) {
+        List<QuestionListResponseDTO> questions = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            QuestionListResponseDTO dto = new QuestionListResponseDTO();
+            dto.setId(i + 1);
+            dto.setSubject("테스트 질문 " + (i + 1));
+            dto.setContent("테스트 내용 " + (i + 1));
+            dto.setCreateDate(LocalDateTime.now().minusDays(i));
+            dto.setAuthorName("테스트 작성자" + i % 3);
+            dto.setAnswerCount(i % 3); // 0~2개의 답변
+            questions.add(dto);
+        }
+        return questions;
+    }
 
 }

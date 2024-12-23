@@ -2,12 +2,14 @@ package com.mysite.sbb.domain.answer.dto;
 
 import com.mysite.sbb.domain.answer.entity.Answer;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class AnswerResponseDTO {
     private Integer id;
     private String content;

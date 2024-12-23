@@ -2,14 +2,16 @@ package com.mysite.sbb.domain.question.dto;
 
 import com.mysite.sbb.domain.question.entity.Question;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class QuestionBaseDTO {
-    private int id;                         // ID
+    private long id;                         // ID
     private String subject;                 // 제목
     private String content;                 // 내용
     private String authorName;              // 작성자
