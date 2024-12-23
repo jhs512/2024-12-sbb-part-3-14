@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.answer.service.AnswerService;
 import org.example.jtsb02.common.security.SecurityConfig;
@@ -24,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -43,8 +46,17 @@ class AnswerControllerTest {
     @MockitoBean
     private QuestionService questionService;
 
-    @MockitoBean
-    private CommonUtil commonUtil;
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Test
+    @DisplayName("빈 이름 출력")
+    void printBeanNames() {
+        String[] beanNames = applicationContext.getBeanDefinitionNames();
+        Arrays.stream(beanNames)
+            .sorted() // 정렬해서 보기 쉽게 출력
+            .forEach(System.out::println);
+    }
 
     @Test
     @DisplayName("POST /answer/create/{questionId} - Answer 생성 성공")
@@ -72,7 +84,6 @@ class AnswerControllerTest {
         String url = "/answer/create/1";
         Question question = createQuestion(1L);
         when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question));
-//        when(commonUtil.markdown(any())).thenReturn("mocked markdown content");
 
         //when
         ResultActions result = mockMvc.perform(post(url)
@@ -85,7 +96,6 @@ class AnswerControllerTest {
         result.andExpect(status().isOk())
             .andExpect(view().name("question/detail"))
             .andExpect(model().attributeExists("answerForm"));
-
     }
 
     private Question createQuestion(Long id) {
@@ -95,6 +105,7 @@ class AnswerControllerTest {
             .content("test content")
             .createdAt(LocalDateTime.now())
             .hits(1)
+            .answers(new ArrayList<>())
             .build();
     }
 }
