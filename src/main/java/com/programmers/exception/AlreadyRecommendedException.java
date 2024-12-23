@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class DuplicateUsernameException extends RuntimeException {
-    public DuplicateUsernameException(String username) {
-        super("Username " + username + " already exists");
+public class AlreadyRecommendedException extends RuntimeException {
+    public AlreadyRecommendedException() {
+        super("Already Recommended");
     }
 }

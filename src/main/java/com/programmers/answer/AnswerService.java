@@ -8,15 +8,16 @@ import com.programmers.question.Question;
 import com.programmers.question.QuestionRepository;
 import com.programmers.user.SiteUser;
 import com.programmers.user.SiteUserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
@@ -25,11 +26,11 @@ public class AnswerService {
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final String DEFAULT_SORT_FILED = "id";
 
-    public Answer createAnswer(AnswerRegisterRequestDto requestDto, Principal principal) {
+    public void createAnswer(AnswerRegisterRequestDto requestDto, String username) {
         Question question = questionRepository.findById(requestDto.questionId()).orElseThrow(() -> new NotFoundDataException("Question not found"));
-        SiteUser siteUser = siteUserRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundDataException("User not found"));
+        SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
 
-        return answerRepository.save(Answer.builder()
+        answerRepository.save(Answer.builder()
                 .siteUser(siteUser)
                 .question(question)
                 .content(requestDto.content())

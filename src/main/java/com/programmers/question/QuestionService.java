@@ -1,7 +1,6 @@
 package com.programmers.question;
 
 
-import com.programmers.answer.Answer;
 import com.programmers.answer.AnswerRepository;
 import com.programmers.exception.NotFoundDataException;
 import com.programmers.page.PageableUtils;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
 
 @Slf4j
 @Service

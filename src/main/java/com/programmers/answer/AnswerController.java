@@ -23,7 +23,7 @@ public class AnswerController {
         if(questionId != requestDto.questionId()) {
             throw new IdMismatchException("question");
         }
-        answerService.createAnswer(requestDto, principal);
+        answerService.createAnswer(requestDto, principal.getName());
         return "redirect:/questions/" + questionId;
     }
 }
