@@ -46,7 +46,7 @@ public class QuestionController {
         if (bindingResult.hasErrors()) {
             return "register";
         }
-        Question question = questionService.createQuestion(requestDto, principal);
+        Question question = questionService.createQuestion(requestDto, principal.getName());
         return "redirect:/questions/" + question.getId();
     }
 

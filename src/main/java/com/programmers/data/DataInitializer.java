@@ -36,7 +36,7 @@ public class DataInitializer implements ApplicationRunner {
         for (int i = 1; i <= 60; i++) {
             String subject = String.format("테스트 데이터입니다:[%03d]", i);
             String content = "내용무";
-            questionService.createQuestion(new QuestionRegisterRequestDto(subject, content), principal);
+            questionService.createQuestion(new QuestionRegisterRequestDto(subject, content), principal.getName());
         }
     }
 }

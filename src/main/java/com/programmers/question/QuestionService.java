@@ -41,8 +41,8 @@ public class QuestionService {
         }
     }
 
-    public Question createQuestion(QuestionRegisterRequestDto requestDto, Principal principal) {
-        SiteUser siteUser = siteUserRepository.findByUsername(principal.getName()).orElseThrow(() -> new NotFoundDataException("User not found"));
+    public Question createQuestion(QuestionRegisterRequestDto requestDto, String username) {
+        SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
         return questionRepository.save(
                 Question.builder()
                         .siteUser(siteUser)
