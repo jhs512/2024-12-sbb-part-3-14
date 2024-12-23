@@ -21,6 +21,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                         .requestMatchers(new AntPathRequestMatcher("/login", "POST")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/questions/**", "POST")).authenticated()
+                        .requestMatchers(new AntPathRequestMatcher("/questions/**/recommend", "GET")).authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/questions/create", "GET")).authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .csrf((csrf) -> csrf
