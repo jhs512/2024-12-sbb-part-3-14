@@ -43,7 +43,7 @@
                    th:text="삭제"></a>
             </div>
 
-            <div class="comments-section border-top mt-3 pt-3">
+<!--            <div class="comments-section border-top mt-3 pt-3">-->
                 <!--                <div class="d-flex justify-content-between align-items-center mb-2">-->
                 <!--                    &lt;!&ndash;                    <span class="text-muted small">댓글 <span th:text="${question.commentCount ?: 0}">0</span>개</span>&ndash;&gt;-->
                 <!--                    <span class="text-muted small">댓글 <span>0</span>개</span>-->
@@ -68,23 +68,21 @@
                 <!--                </div>-->
 
                 <!-- 댓글 작성 폼 -->
-                <!--                <form th:action="@{|/comment/create/question/${question.id}|}" method="post"-->
-                <form method="post"
-                      class="mt-2" sec:authorize="isAuthenticated()">
-                    <div class="input-group input-group-sm">
-                        <!-- 익명 사용자일 경우 -->
-                        <!--                        <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control" rows="10"></textarea>-->
-                        <input sec:authorize="isAnonymous()" type="text" name="content" class="form-control" disabled>
+                <!-- 질문 댓글 작성 폼 -->
+<!--                <form th:action="@{/comment/create}" method="post"-->
+            <!--                      th:object="${commentRequestDTO}" class="mt-2" sec:authorize="isAuthenticated()">-->
 
-                        <!-- 인증된 사용자일 경우 -->
-                        <input sec:authorize="isAuthenticated()" type="text" name="content" class="form-control"
-                               placeholder="댓글을 입력하세요">
-                        <!--                        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" placeholder="답변을 등록하세요" class="form-control" rows="10"></textarea>-->
+            <!--                    &lt;!&ndash; 질문이라는 타겟 정보 전달 &ndash;&gt;-->
+            <!--                    <input type="hidden" th:field="*{targetType}" value="question"/>-->
+            <!--                    <input type="hidden" th:field="*{targetId}" th:value="${question.id}"/>-->
+            <!--                    <input type="hidden" th:field="*{parentId}" value=""/>-->
 
-                        <button class="btn btn-outline-secondary" type="submit">등록</button>
-                    </div>
-                </form>
-            </div>
+            <!--                    <div class="input-group input-group-sm">-->
+            <!--                        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" placeholder="댓글을 입력하세요"></textarea>-->
+            <!--                        <button class="btn btn-outline-secondary" type="submit">등록</button>-->
+            <!--                    </div>-->
+            <!--                </form>-->
+            <!--            </div>-->
         </div>
     </div>
     <!--  질문 끝 -->
@@ -141,7 +139,7 @@
             </div>
 
             <!-- 답변 댓글 영역 -->
-            <div class="comments-section border-top mt-3 pt-3">
+<!--            <div class="comments-section border-top mt-3 pt-3">-->
                 <!--                <div class="d-flex justify-content-between align-items-center mb-2">-->
                 <!--                    <span class="text-muted small">댓글 <span th:text="${answer.commentCount ?: 0}">0</span>개</span>-->
                 <!--                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"-->
@@ -165,14 +163,14 @@
 
                 <!-- 댓글 작성 폼 -->
                 <!--                                <form th:action="@{|/comment/create/answer/${answer.id}|}" method="post"-->
-                <form method="post"
-                      class="mt-2" sec:authorize="isAuthenticated()">
-                    <div class="input-group input-group-sm">
-                        <input type="text" name="content" class="form-control" placeholder="댓글을 입력하세요">
-                        <button class="btn btn-outline-secondary" type="submit">등록</button>
-                    </div>
-                </form>
-            </div>
+<!--                <form method="post"-->
+            <!--                      class="mt-2" sec:authorize="isAuthenticated()">-->
+            <!--                    <div class="input-group input-group-sm">-->
+            <!--                        <input type="text" name="content" class="form-control" placeholder="댓글을 입력하세요">-->
+            <!--                        <button class="btn btn-outline-secondary" type="submit">등록</button>-->
+            <!--                    </div>-->
+            <!--                </form>-->
+            <!--            </div>-->
         </div>
     </div>
     <!-- 답변 반복 끝-->
@@ -226,6 +224,14 @@
         </ul>
     </div>
 
+    <!-- 댓글에 대한 폼-->
+<!--    <form th:action="@{/comment/create}" method="post" th:object="${commentRequestDTO}">-->
+<!--        <input type="hidden" name="targetType" value="question"/> &lt;!&ndash; or 'answer' &ndash;&gt;-->
+<!--        <input type="hidden" name="targetId" th:value="${question.id}"/>-->
+<!--        <input type="hidden" name="parentId" th:value="${parentComment.id}"/>-->
+<!--        <input type="text" th:field="*{content}" placeholder="댓글을 입력하세요"/>-->
+<!--        <button type="submit">등록</button>-->
+<!--    </form>-->
 
     <!-- 검색 및 페이징 폼 -->
     <form th:action="@{|/question/detail/${question.id}|}" method="get" id="pagingForm">

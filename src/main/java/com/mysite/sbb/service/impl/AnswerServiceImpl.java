@@ -1,10 +1,10 @@
 package com.mysite.sbb.service.impl;
 
-import com.mysite.sbb.model.answer.entity.Answer;
-import com.mysite.sbb.model.question.entity.Question;
-import com.mysite.sbb.model.user.entity.SiteUser;
+import com.mysite.sbb.domain.answer.entity.Answer;
+import com.mysite.sbb.domain.question.entity.Question;
+import com.mysite.sbb.domain.user.entity.SiteUser;
 import com.mysite.sbb.global.exception.DataNotFoundException;
-import com.mysite.sbb.repository.AnswerRepository;
+import com.mysite.sbb.domain.answer.repository.AnswerRepository;
 import com.mysite.sbb.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

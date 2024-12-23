@@ -1,16 +1,14 @@
 package com.mysite.sbb.controller;
 
-import com.mysite.sbb.model.question.entity.Question;
-import com.mysite.sbb.model.user.entity.SiteUser;
-import com.mysite.sbb.model.comment.dto.CommentRequestDTO;
-import com.mysite.sbb.service.impl.QuestionServiceImpl;
-import com.mysite.sbb.service.impl.UserServiceImpl;
+import com.mysite.sbb.domain.comment.dto.CommentRequestDTO;
+import com.mysite.sbb.service.impl.CommentServiceImpl;
+import com.mysite.sbb.service.QuestionService;
+import com.mysite.sbb.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,34 +20,30 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class CommentController {
 
-
-    private QuestionServiceImpl questionService;
-    private UserServiceImpl userService;
+    private CommentServiceImpl commentServiceImpl;
+    private QuestionService questionService;
+    private UserService userService;
 
     // 질문에 댓글 생성
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/question/{id}")
+    @PostMapping("/create")
     public String createCommentForQuestion(Model model,
-                                           @PathVariable Integer id,
                                            @Valid CommentRequestDTO commentRequestDTO,
                                            BindingResult bindingResult,
                                            Principal principal) {
 
-        Question question = questionService.getQuestion(id);
-        SiteUser siteUser = userService.getUser(principal.getName());
-
         if (bindingResult.hasErrors()) {
-            model.addAttribute("question", question);
-            model.addAttribute("commentForm", commentRequestDTO); // 에러 메시지를 표시하기 위해 다시 전달
-            return "question_detail";
+            // 에러 발생 시 question_detail 또는 answer_detail 로 리턴
+            // targetType에 따라 다른 뷰로 리다이렉트 가능
+            return "redirect:/question/detail/" + commentRequestDTO.getTargetId();
         }
 
         // 댓글 생성 및 저장
-        // commentService.createCommentForQuestion(question, commentForm.getContent(), siteUser);
+        // commentServiceImpl.createComment(question, commentRequestDTO.getContent(), principal.getName());
+        commentServiceImpl.createComment(commentRequestDTO, principal.getName());
 
         // 댓글 작성 후 리다이렉트
-        return String.format("redirect:/question/detail/%s", id);
-
+        return String.format("redirect:/question/detail/%s", commentRequestDTO.getTargetId());
     }
 
 }

@@ -1,14 +1,14 @@
 package com.mysite.sbb.service.impl;
 
-import com.mysite.sbb.model.answer.entity.Answer;
-import com.mysite.sbb.model.question.dto.QuestionRequestDTO;
-import com.mysite.sbb.model.question.dto.QuestionDetailResponseDTO;
-import com.mysite.sbb.model.question.dto.QuestionListResponseDTO;
-import com.mysite.sbb.model.question.entity.Question;
-import com.mysite.sbb.model.user.entity.SiteUser;
+import com.mysite.sbb.domain.answer.entity.Answer;
+import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
+import com.mysite.sbb.domain.question.dto.QuestionDetailResponseDTO;
+import com.mysite.sbb.domain.question.dto.QuestionListResponseDTO;
+import com.mysite.sbb.domain.question.entity.Question;
+import com.mysite.sbb.domain.user.entity.SiteUser;
 import com.mysite.sbb.global.exception.DataNotFoundException;
-import com.mysite.sbb.repository.AnswerRepository;
-import com.mysite.sbb.repository.QuestionRepository;
+import com.mysite.sbb.domain.answer.repository.AnswerRepository;
+import com.mysite.sbb.domain.question.repository.QuestionRepository;
 import com.mysite.sbb.service.QuestionService;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -73,12 +72,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question getQuestion(Integer id) {
-        Optional<Question> question = questionRepository.findById(id);
-        if (question.isPresent()) {
-            return question.get();
-        } else {
-            throw new DataNotFoundException("question not found");
-        }
+        return questionRepository.findById(id).orElseThrow(() -> new DataNotFoundException("question not found"));
     }
 
     @Override

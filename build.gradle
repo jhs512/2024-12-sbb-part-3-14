@@ -20,38 +20,42 @@ repositories {
 dependencies {
 	// Lombok
 	implementation 'org.projectlombok:lombok:1.18.32'
-	annotationProcessor 'org.projectlombok:lombok:1.18.32' // Lombok 애너테이션 처리
-	testImplementation 'org.projectlombok:lombok:1.18.32' // Lombok 테스트 지원
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.32' // Lombok 테스트 애너테이션 처리
+	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+	testImplementation 'org.projectlombok:lombok:1.18.32'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 
-	// Spring Boot Starters
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	// Spring Boot Core
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	// Thymeleaf Layout
+	// Database
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'com.h2database:h2:2.2.220'
+
+	// Template Engine
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
-	// H2 Database
-	implementation 'com.h2database:h2:2.2.220'
-	runtimeOnly 'com.h2database:h2'
-
-	// Markdown
+	// Utilities
 	implementation 'org.commonmark:commonmark:0.21.0'
 
-	// Development Tools
+	// Development
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	// Testing
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// Testing - Core
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 	testImplementation 'org.junit.jupiter:junit-jupiter'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
 
+	// Testing - Security & Mocking
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.mockito:mockito-core'
+	testImplementation 'org.mockito:mockito-junit-jupiter'
+}
 
 tasks.named('test') {
     useJUnitPlatform()

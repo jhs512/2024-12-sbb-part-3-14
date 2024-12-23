@@ -1,8 +1,8 @@
 package com.mysite.sbb.service;
 
-import com.mysite.sbb.model.answer.entity.Answer;
-import com.mysite.sbb.model.question.entity.Question;
-import com.mysite.sbb.model.user.entity.SiteUser;
+import com.mysite.sbb.domain.answer.entity.Answer;
+import com.mysite.sbb.domain.question.entity.Question;
+import com.mysite.sbb.domain.user.entity.SiteUser;
 
 public interface AnswerService {
     void create(Question question, String content);
