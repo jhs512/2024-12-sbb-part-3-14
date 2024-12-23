@@ -35,8 +35,8 @@ public class JwtController {
     // 로그인 성공 시, jwt Token 발급
     @PostMapping("/user/login")
     public void generateJwtToken(@RequestParam("username") String username,
-                                                   @RequestParam("password") String password,
-                                                   HttpServletResponse response) throws IOException {
+                                 @RequestParam("password") String password,
+                                 HttpServletResponse response) throws IOException {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
@@ -118,7 +118,7 @@ public class JwtController {
         accessCookie.setMaxAge(0);
         accessCookie.setPath("/");
 
-        Cookie refreshCookie = new Cookie("ACCESS_TOKEN", null);
+        Cookie refreshCookie = new Cookie("REFRESH_TOKEN", null);
         refreshCookie.setMaxAge(0);
         refreshCookie.setPath("/");
 

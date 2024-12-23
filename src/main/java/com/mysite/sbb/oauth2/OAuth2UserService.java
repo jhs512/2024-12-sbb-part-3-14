@@ -38,7 +38,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         SiteUser user = saveOrUpdate(userInfo);
 
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                Collections.singleton(new SimpleGrantedAuthority(user.getRole().getValue())),
                 oAuth2User.getAttributes(),
                 userNameAttributeName);
     }
