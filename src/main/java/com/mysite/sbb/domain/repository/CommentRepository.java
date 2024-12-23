@@ -1,6 +1,6 @@
-package com.mysite.sbb.domain.comment.repository;
+package com.mysite.sbb.domain.repository;
 
-import com.mysite.sbb.domain.comment.entity.Comment;
+import com.mysite.sbb.domain.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {

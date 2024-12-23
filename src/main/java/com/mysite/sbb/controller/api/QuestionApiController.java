@@ -1,7 +1,8 @@
 package com.mysite.sbb.controller.api;
 
-import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
+import com.mysite.sbb.domain.dto.QuestionRequestDTO;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+@Tag(name = "Question Controller", description = "질문 컨트롤러")
 @RequestMapping("/api/v1/question")
 @RequiredArgsConstructor
 @RestController

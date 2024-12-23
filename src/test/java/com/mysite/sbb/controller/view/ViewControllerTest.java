@@ -2,8 +2,8 @@ package com.mysite.sbb.controller.view;
 
 import com.mysite.sbb.controller.util.QuestionTestFixture;
 import com.mysite.sbb.controller.util.TestUtil;
-import com.mysite.sbb.domain.question.dto.QuestionListResponseDTO;
-import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
+import com.mysite.sbb.domain.dto.QuestionListResponseDTO;
+import com.mysite.sbb.domain.dto.QuestionRequestDTO;
 import com.mysite.sbb.global.util.CommonUtil;
 import com.mysite.sbb.service.impl.AnswerServiceImpl;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;

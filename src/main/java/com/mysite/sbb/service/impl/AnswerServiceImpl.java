@@ -1,10 +1,11 @@
 package com.mysite.sbb.service.impl;
 
-import com.mysite.sbb.domain.answer.entity.Answer;
-import com.mysite.sbb.domain.question.entity.Question;
-import com.mysite.sbb.domain.user.entity.SiteUser;
+
+import com.mysite.sbb.domain.entity.Answer;
+import com.mysite.sbb.domain.entity.Question;
+import com.mysite.sbb.domain.entity.SiteUser;
+import com.mysite.sbb.domain.repository.AnswerRepository;
 import com.mysite.sbb.global.exception.DataNotFoundException;
-import com.mysite.sbb.domain.answer.repository.AnswerRepository;
 import com.mysite.sbb.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class AnswerServiceImpl implements AnswerService {
     public Answer getAnswer(Integer id) {
         Optional<Answer> answer = this.answerRepository.findById(id);
 
-        if(answer.isPresent()) {
+        if (answer.isPresent()) {
             return answer.get();
         } else {
             throw new DataNotFoundException("answer not found");

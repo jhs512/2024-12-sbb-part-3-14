@@ -1,8 +1,9 @@
 package com.mysite.sbb.service.impl;
 
-import com.mysite.sbb.domain.comment.dto.CommentRequestDTO;
-import com.mysite.sbb.domain.comment.entity.Comment;
-import com.mysite.sbb.domain.comment.repository.CommentRepository;
+
+import com.mysite.sbb.domain.dto.CommentRequestDTO;
+import com.mysite.sbb.domain.entity.Comment;
+import com.mysite.sbb.domain.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,7 @@ public class CommentServiceImpl {
     private CommentRepository commentRepository;
 
     @Transactional
-    public void createComment(CommentRequestDTO dto, String authorName){
+    public void createComment(CommentRequestDTO dto, String authorName) {
         Comment comment = new Comment();
         comment.setContent(dto.getContent());
         comment.setAuthor(authorName);

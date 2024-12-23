@@ -1,6 +1,6 @@
-package com.mysite.sbb.domain.answer.dto;
+package com.mysite.sbb.domain.dto;
 
-import com.mysite.sbb.domain.answer.entity.Answer;
+import com.mysite.sbb.domain.entity.Answer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

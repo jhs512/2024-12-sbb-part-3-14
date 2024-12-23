@@ -1,8 +1,7 @@
-package com.mysite.sbb.domain.question.dto;
+package com.mysite.sbb.domain.dto;
 
-import com.mysite.sbb.domain.answer.entity.Answer;
-import com.mysite.sbb.domain.answer.dto.AnswerResponseDTO;
-import com.mysite.sbb.domain.question.entity.Question;
+import com.mysite.sbb.domain.entity.Answer;
+import com.mysite.sbb.domain.entity.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

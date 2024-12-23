@@ -1,14 +1,15 @@
 package com.mysite.sbb.service.impl;
 
-import com.mysite.sbb.domain.answer.entity.Answer;
-import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
-import com.mysite.sbb.domain.question.dto.QuestionDetailResponseDTO;
-import com.mysite.sbb.domain.question.dto.QuestionListResponseDTO;
-import com.mysite.sbb.domain.question.entity.Question;
-import com.mysite.sbb.domain.user.entity.SiteUser;
+
+import com.mysite.sbb.domain.dto.QuestionDetailResponseDTO;
+import com.mysite.sbb.domain.dto.QuestionListResponseDTO;
+import com.mysite.sbb.domain.dto.QuestionRequestDTO;
+import com.mysite.sbb.domain.entity.Answer;
+import com.mysite.sbb.domain.entity.Question;
+import com.mysite.sbb.domain.entity.SiteUser;
+import com.mysite.sbb.domain.repository.AnswerRepository;
+import com.mysite.sbb.domain.repository.QuestionRepository;
 import com.mysite.sbb.global.exception.DataNotFoundException;
-import com.mysite.sbb.domain.answer.repository.AnswerRepository;
-import com.mysite.sbb.domain.question.repository.QuestionRepository;
 import com.mysite.sbb.service.QuestionService;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -63,8 +64,8 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(id).orElseThrow(() -> new DataNotFoundException("question not found"));
 
         // 2. 답변 페이징
-        Pageable pageable = PageRequest.of(page, 5,  Sort.by(Sort.Order.desc(sortKeyword)));
-        Page<Answer> answers  = answerRepository.findByQuestion(question, pageable);
+        Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc(sortKeyword)));
+        Page<Answer> answers = answerRepository.findByQuestion(question, pageable);
 
         // 3. DTO 변환
         return new QuestionDetailResponseDTO(question, answers);

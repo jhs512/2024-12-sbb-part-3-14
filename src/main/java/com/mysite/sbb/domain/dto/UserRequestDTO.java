@@ -1,4 +1,4 @@
-package com.mysite.sbb.domain.user.dto;
+package com.mysite.sbb.domain.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

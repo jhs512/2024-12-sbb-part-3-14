@@ -1,9 +1,10 @@
-package com.mysite.sbb.controller;
+package com.mysite.sbb.controller.api;
 
-import com.mysite.sbb.domain.comment.dto.CommentRequestDTO;
+import com.mysite.sbb.domain.dto.CommentRequestDTO;
 import com.mysite.sbb.service.impl.CommentServiceImpl;
 import com.mysite.sbb.service.QuestionService;
 import com.mysite.sbb.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
+@Tag(name = "Comment Controller", description = "댓글 컨트롤러")
 @RestController
 @RequestMapping("/comment")
 @RequiredArgsConstructor
-public class CommentController {
+public class CommentApiController {
 
     private CommentServiceImpl commentServiceImpl;
     private QuestionService questionService;

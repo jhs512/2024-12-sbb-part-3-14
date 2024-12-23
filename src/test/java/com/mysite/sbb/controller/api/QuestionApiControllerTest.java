@@ -2,7 +2,7 @@ package com.mysite.sbb.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysite.sbb.controller.util.TestUtil;
-import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
+import com.mysite.sbb.domain.dto.QuestionRequestDTO;
 import com.mysite.sbb.global.exception.AccessDeniedException;
 import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;

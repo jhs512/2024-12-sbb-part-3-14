@@ -1,4 +1,4 @@
-package com.mysite.sbb.domain.comment.dto;
+package com.mysite.sbb.domain.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;

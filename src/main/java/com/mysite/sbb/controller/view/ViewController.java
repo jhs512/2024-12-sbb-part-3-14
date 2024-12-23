@@ -1,14 +1,15 @@
 package com.mysite.sbb.controller.view;
 
-import com.mysite.sbb.domain.answer.dto.AnswerRequestDTO;
-import com.mysite.sbb.domain.answer.entity.Answer;
-import com.mysite.sbb.domain.question.dto.QuestionDetailResponseDTO;
-import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
-import com.mysite.sbb.domain.question.entity.Question;
-import com.mysite.sbb.domain.user.dto.UserRequestDTO;
+import com.mysite.sbb.domain.dto.AnswerRequestDTO;
+import com.mysite.sbb.domain.entity.Answer;
+import com.mysite.sbb.domain.dto.QuestionDetailResponseDTO;
+import com.mysite.sbb.domain.dto.QuestionRequestDTO;
+import com.mysite.sbb.domain.entity.Question;
+import com.mysite.sbb.domain.dto.UserRequestDTO;
 import com.mysite.sbb.service.impl.AnswerServiceImpl;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;
 import com.mysite.sbb.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

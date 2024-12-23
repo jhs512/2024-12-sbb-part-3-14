@@ -1,7 +1,8 @@
 package com.mysite.sbb.controller.api;
 
-import com.mysite.sbb.domain.user.dto.UserRequestDTO;
+import com.mysite.sbb.domain.dto.UserRequestDTO;
 import com.mysite.sbb.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Auth Controller", description = "유저 권한 컨트롤러")
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 @RestController

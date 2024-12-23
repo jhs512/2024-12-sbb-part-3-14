@@ -1,12 +1,13 @@
 package com.mysite.sbb.controller.api;
 
-import com.mysite.sbb.domain.answer.dto.AnswerRequestDTO;
-import com.mysite.sbb.domain.answer.entity.Answer;
-import com.mysite.sbb.domain.question.entity.Question;
-import com.mysite.sbb.domain.user.entity.SiteUser;
+import com.mysite.sbb.domain.dto.AnswerRequestDTO;
+import com.mysite.sbb.domain.entity.Answer;
+import com.mysite.sbb.domain.entity.Question;
+import com.mysite.sbb.domain.entity.SiteUser;
 import com.mysite.sbb.service.impl.AnswerServiceImpl;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;
 import com.mysite.sbb.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+@Tag(name = "Answer Controller", description = "답변 컨트롤러")
 @RestController
 @RequestMapping("/api/v1/answer")
 @RequiredArgsConstructor

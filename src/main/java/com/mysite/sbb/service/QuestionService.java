@@ -1,9 +1,9 @@
 package com.mysite.sbb.service;
 
-import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
-import com.mysite.sbb.domain.question.dto.QuestionListResponseDTO;
-import com.mysite.sbb.domain.question.entity.Question;
-import com.mysite.sbb.domain.question.dto.QuestionDetailResponseDTO;
+import com.mysite.sbb.domain.dto.QuestionRequestDTO;
+import com.mysite.sbb.domain.dto.QuestionListResponseDTO;
+import com.mysite.sbb.domain.entity.Question;
+import com.mysite.sbb.domain.dto.QuestionDetailResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 
