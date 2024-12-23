@@ -1,5 +1,7 @@
 package com.ll.pratice1.domain.comment.controller;
 
+import com.ll.pratice1.domain.answer.Answer;
+import com.ll.pratice1.domain.answer.service.AnswerService;
 import com.ll.pratice1.domain.comment.CommentForm;
 import com.ll.pratice1.domain.comment.service.CommentService;
 import com.ll.pratice1.domain.question.Question;
@@ -24,12 +26,13 @@ import java.security.Principal;
 public class CommentController {
 
     private final QuestionService questionService;
+    private final AnswerService answerService;
     private final UserService userService;
     private final CommentService commentService;
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/question/{id}")
-    public String commentCreate(Model model, Principal principal, @PathVariable("id") Integer id,
+    public String questionCommentCreate(Model model, Principal principal, @PathVariable("id") Integer id,
                                 @Valid CommentForm commentForm, BindingResult bindingResult){
         Question question = this.questionService.getQuestion(id);
         if(bindingResult.hasErrors()){
@@ -39,6 +42,20 @@ public class CommentController {
         SiteUser siteUser = this.userService.getUser(principal.getName());
         this.commentService.create(question, commentForm.getContent(), siteUser);
         return String.format("redirect:/question/detail/%s", question.getId());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/answer/{id}")
+    public String answerCommentCreate(Model model, Principal principal, @PathVariable("id") Integer id,
+                                @Valid CommentForm commentForm, BindingResult bindingResult){
+        Answer answer = this.answerService.getAnswer(id);
+        if(bindingResult.hasErrors()){
+            model.addAttribute("answer", answer);
+            return "question_detail";
+        }
+        SiteUser siteUser = this.userService.getUser(principal.getName());
+        this.commentService.create(answer, commentForm.getContent(), siteUser);
+        return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }
 
 }

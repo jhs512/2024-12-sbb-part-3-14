@@ -1,5 +1,6 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3">
+
     <!-- 질문 -->
     <h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
     <div class="card my-3">
@@ -98,6 +99,24 @@
                    class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
                    th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
                    th:text="삭제"></a>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form th:action="@{|/comment/answer/${answer.id}|}" th:object="${commentForm}" method="post" style="display: flex; gap: 10px; align-items: center;">
+                <div class="form-group" style="flex: 1;">
+                    <input sec:authorize="isAnonymous()" th:field="*{content}" disabled class="form-control" placeholder="로그인 하세요" required style="height: 30px; font-size: 14px;">
+                    <input sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" placeholder="댓글을 입력하세요" required style="height: 30px; font-size: 14px;" th:if="${#authorization.expression('isAuthenticated')}">
+                </div>
+                <button type="submit" class="btn btn-primary" style="height: 30px; font-size: 14px; padding: 0 10px;">작성</button>
+            </form>
+            <div class="comments mt-3">
+                <!-- 댓글 리스트 렌더링 -->
+                <div class="card-body" th:each="comment : ${answer.commentList}">
+                    <p class="card-text" th:if="${comment.comment != null}" th:text="${comment.comment}"></p>
+                    <p class="card-text card-text text-muted mb-0" th:if="${comment.siteUser.username != null}" th:text="${comment.siteUser.username}"></p>
+                    <p ><small class="text-muted mb-0"th:if="${comment.createDate != null}" th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></small></p>
+                    <div class="border-bottom mb-2"></div>
+                </div>
             </div>
         </div>
     </div>

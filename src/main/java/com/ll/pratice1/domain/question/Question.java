@@ -1,6 +1,7 @@
 package com.ll.pratice1.domain.question;
 
 import com.ll.pratice1.domain.answer.Answer;
+import com.ll.pratice1.domain.category.Category;
 import com.ll.pratice1.domain.comment.Comment;
 import com.ll.pratice1.domain.user.SiteUser;
 import jakarta.persistence.*;
@@ -40,6 +41,9 @@ public class Question {
 
     @ManyToMany
     private Set<SiteUser> voter;
+
+    @ManyToOne
+    private Category category;
 
 
 }
