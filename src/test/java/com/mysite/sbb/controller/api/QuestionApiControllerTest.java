@@ -161,9 +161,9 @@ class QuestionApiControllerTest {
         @DisplayName("존재하지 않는 질문 수정 요청 - 404 응답")
         void updateQuestion_NotFound() throws Exception {
             mockMvc.perform(put("/api/v1/question/{id}", INVALID_QUESTION_ID)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(validUpdateRequest))
-                    .with(csrf()))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(validUpdateRequest))
+                            .with(csrf()))
                     .andExpect(status().isNotFound())
                     .andDo(TestUtil::printHTTP);
         }
@@ -242,8 +242,8 @@ class QuestionApiControllerTest {
         @DisplayName("인증되지 않은 사용자의 질문 삭제 요청 - 401 응답")
         void deleteQuestion_Unauthorized() throws Exception {
             mockMvc.perform(delete("/api/v1/question/{id}", VALID_QUESTION_ID)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .with(csrf()))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(csrf()))
                     .andExpect(status().isUnauthorized())
                     .andDo(TestUtil::printHTTP);
         }
@@ -294,36 +294,79 @@ class QuestionApiControllerTest {
     @Nested
     @DisplayName("질문 추천 API 테스트")
     class VoteQuestionTest {
+        private final Integer VALID_QUESTION_ID = 1;    // 실제 존재하는 질문 ID
+        private final Integer INVALID_QUESTION_ID = 999; // 존재하지 않는 질문 ID
+
+        @BeforeEach
+        void setUp() {
+            // 케이스 1: admin 사용자의 정상 추천
+            doNothing().when(questionService)
+                    .vote(eq(VALID_QUESTION_ID), eq("admin"));
+
+            // 케이스 2: 존재하지 않는 질문 추천
+            doThrow(new DataNotFoundException("Question not found"))
+                    .when(questionService)
+                    .vote(eq(INVALID_QUESTION_ID), any());
+
+            // 케이스 3: 이미 추천한 질문 재추천
+            doThrow(new IllegalStateException("Already voted"))
+                    .when(questionService)
+                    .vote(eq(VALID_QUESTION_ID), eq("votedUser"));
+        }
 
         @Test
         @DisplayName("인증되지 않은 사용자의 질문 추천 요청 - 401 응답")
         void voteQuestion_Unauthorized() throws Exception {
-
+            // 인증되지 않은 상태로 추천 요청
+            mockMvc.perform(post("/api/v1/question/{id}/vote", VALID_QUESTION_ID)
+                            .with(csrf()))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(TestUtil::printHTTP);
         }
 
         @Test
         @WithMockUser(username = "admin")
         @DisplayName("존재하지 않는 질문 추천 요청 - 404 응답")
         void voteQuestion_NotFound() throws Exception {
+            // 존재하지 않는 ID로 추천 요청
+            mockMvc.perform(post("/api/v1/question/{id}/vote", INVALID_QUESTION_ID)
+                            .with(csrf()))
+                    .andExpect(status().isNotFound())
+                    .andDo(TestUtil::printHTTP);
 
+            // 서비스 메서드 호출 확인
+            verify(questionService).vote(eq(INVALID_QUESTION_ID), eq("admin"));
         }
 
         @Test
         @WithMockUser(username = "admin")
         @DisplayName("유효한 질문 추천 요청 - 303 응답")
         void voteQuestion_Success() throws Exception {
+            // 정상적인 추천 요청
+            mockMvc.perform(post("/api/v1/question/{id}/vote", VALID_QUESTION_ID)
+                            .with(csrf()))
+                    .andExpect(status().isSeeOther())
+                    .andExpect(header().string("Location", "/"))
+                    .andDo(TestUtil::printHTTP);
 
+            // 서비스 메서드 호출 확인
+            verify(questionService).vote(eq(VALID_QUESTION_ID), eq("admin"));
         }
 
         @Test
-        @WithMockUser(username = "admin")
+        @WithMockUser(username = "votedUser")
         @DisplayName("이미 추천한 질문 재추천 요청 - 400 응답")
         void voteQuestion_AlreadyVoted() throws Exception {
+            // 이미 추천한 사용자가 재추천 요청
+            mockMvc.perform(post("/api/v1/question/{id}/vote", VALID_QUESTION_ID)
+                            .with(csrf()))
+                    .andExpect(status().isBadRequest())
+                    .andDo(TestUtil::printHTTP);
 
+            // 서비스 메서드 호출 확인
+            verify(questionService).vote(eq(VALID_QUESTION_ID), eq("votedUser"));
         }
-
     }
-
 
 
     private QuestionRequestDTO createValidQuestionRequest() {
