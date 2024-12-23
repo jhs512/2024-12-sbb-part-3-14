@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +13,10 @@
             <h4>회원가입</h4>
         </div>
     </div>
-    <form th:action="@{/user/signup}" th:object="${userRequestDTO}" method="post">
+    <form id="signupForm" th:object="${userRequestDTO}" method="post" onsubmit="submitForm(event)">
         <!-- 에러 메시지 -->
-        <div th:replace="form_error :: formErrorsFragment"></div>
+        <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
+<!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
 
         <!-- 사용자ID -->
         <div class="mb-3">
@@ -43,6 +45,47 @@
         <!-- 제출 버튼 -->
         <button type="submit" class="btn btn-primary">회원가입</button>
     </form>
+</div>
+
+<div layout:fragment="script">
+    <script type="application/javascript">
+        async  function submitForm(event) {
+            event.preventDefault();
+            const errorDiv = document.getElementById('errorMessages');
+
+            const formData = {
+                username: document.getElementById('username').value,
+                password1: document.getElementById('password1').value,
+                password2: document.getElementById('password2').value,
+                email: document.getElementById('email').value
+            };
+
+            try {
+                const response = await fetch('/api/v1/user/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password1: document.getElementById('password1').value,
+                        password2: document.getElementById('password2').value,
+                        email: document.getElementById('email').value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = '/';
+                } else {
+                    errorDiv.textContent = data.message;
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = "서버 오류가 발생했습니다.";
+                errorDiv.style.display = 'block';
+            }
+        }
+    </script>
 </div>
 </body>
 </html>

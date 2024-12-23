@@ -62,7 +62,9 @@ public class SecurityConfig {
 
                 // 2. CSRF 보호 설정
                 .csrf((csrf) -> csrf
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")) // H2 데이터베이스 콘솔 경로에 대해 CSRF 보호를 비활성화
+                        // H2 데이터베이스 콘솔 경로에 대해 CSRF 보호를 비활성화
+                        // Spring Security는 CSRF 토큰을 요구
+                        .ignoringRequestMatchers(String.valueOf(new AntPathRequestMatcher("/h2-console/**")), "/api/**")
                 )
 
                 // 3. X-Frame-Options 헤더 설정

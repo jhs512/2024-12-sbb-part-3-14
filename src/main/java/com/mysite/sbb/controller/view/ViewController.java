@@ -1,15 +1,14 @@
 package com.mysite.sbb.controller.view;
 
 import com.mysite.sbb.domain.dto.AnswerRequestDTO;
-import com.mysite.sbb.domain.entity.Answer;
 import com.mysite.sbb.domain.dto.QuestionDetailResponseDTO;
 import com.mysite.sbb.domain.dto.QuestionRequestDTO;
-import com.mysite.sbb.domain.entity.Question;
 import com.mysite.sbb.domain.dto.UserRequestDTO;
+import com.mysite.sbb.domain.entity.Answer;
+import com.mysite.sbb.domain.entity.Question;
 import com.mysite.sbb.service.impl.AnswerServiceImpl;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;
 import com.mysite.sbb.service.impl.UserServiceImpl;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +30,13 @@ public class ViewController {
     private final AnswerServiceImpl answerService;
     private final UserServiceImpl userService;
 
+    private static final String QUESTION_LIST_VIEW = "question_list";
+    private static final String QUESTION_DETAIL_VIEW = "question_detail";
+    private static final String QUESTION_FORM_VIEW = "question_form";
+    private static final String ANSWER_FORM_VIEW = "answer_form";
+    private static final String SIGNUP_FORM_VIEW = "signup_form";
+    private static final String LOGIN_FORM_VIEW = "login_form";
+
     @GetMapping("/")
     public String root() {
         return "redirect:/question/list";
@@ -42,7 +48,7 @@ public class ViewController {
                                    @RequestParam(value = "kw", defaultValue = "") String kw) {
         model.addAttribute("paging", questionService.getList(page, kw));
         model.addAttribute("kw", kw);
-        return "question_list";
+        return QUESTION_LIST_VIEW;
     }
 
     @GetMapping(value = "/question/detail/{id}")
@@ -55,54 +61,49 @@ public class ViewController {
         model.addAttribute("question", question);
         model.addAttribute("sort", sortKeyword); // 선택된 정렬 기준 전달
         model.addAttribute("answerRequestDTO", new AnswerRequestDTO()); // Form 초기화
-        return "question_detail";
+        return QUESTION_DETAIL_VIEW;
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/question/create")
     public String showQuestionForm(@ModelAttribute QuestionRequestDTO questionRequestDTO) {
-        return "question_form";
+        return QUESTION_FORM_VIEW;
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/question/modify/{id}")
     public String showQuestionModifyForm(QuestionRequestDTO questionRequestDTO, @PathVariable("id") Integer id, Principal principal) {
-
         Question question = questionService.getQuestion(id);
-
-        if (!question.getAuthor().getUsername().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
-        }
-
+        validateAuth(principal.getName(), question.getAuthor().getUsername());
         questionRequestDTO.setSubject(question.getSubject());
         questionRequestDTO.setContent(question.getContent());
-        return "question_form";
+        return QUESTION_FORM_VIEW;
     }
 
     // 답변 수정 페이지 요청
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/answer/modify/{id}")
     public String showAnswerModifyForm(AnswerRequestDTO answerRequestDTO, @PathVariable("id") Integer id, Principal principal) {
-        // 1. 수정할 답변 조회
         Answer answer = answerService.getAnswer(id);
-
-        // 2. 수정 권한 확인: 작성자가 아니면 예외 발생
-        if (!answer.getAuthor().getUsername().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
-        }
-        // 3. 기존 답변 내용을 폼에 세팅
+        validateAuth(principal.getName(), answer.getAuthor().getUsername());
         answerRequestDTO.setContent(answer.getContent());
-        return "answer_form";
+        return ANSWER_FORM_VIEW;
     }
 
     // 사용자 관련 뷰
-    @GetMapping("/users/signup")
+    @GetMapping("/user/signup")
     public String showSignupForm(UserRequestDTO userRequestDTO) {
-        return "signup_form";
+        return SIGNUP_FORM_VIEW;
     }
 
-    @GetMapping("/users/login")
+    @GetMapping("/user/login")
     public String showLoginForm() {
-        return "login_form";
+        return LOGIN_FORM_VIEW;
+    }
+
+    private void validateAuth(String currentUsername, String authorUsername) {
+        if (!currentUsername.equals(authorUsername)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
     }
 }
