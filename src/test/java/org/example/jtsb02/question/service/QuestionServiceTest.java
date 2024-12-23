@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.example.jtsb02.common.exception.DataNotFoundException;
@@ -157,6 +158,7 @@ class QuestionServiceTest {
             .content(questionForm.getContent())
             .createdAt(LocalDateTime.now())
             .hits(0)
+            .answers(new ArrayList<>())
             .build();
     }
 }
