@@ -78,7 +78,7 @@ class AnswerControllerTest {
     }
 
     @Test
-    @DisplayName("POST /answer/create/{questionId} - Answer 생성 실패 - 유효성 검증")
+    @DisplayName("POST /answer/create/{questionId} - Answer 생성 실패 - 내용이 비었을 경우")
     void createAnswerEmptyContent() throws Exception {
         //given
         String url = "/answer/create/1";
@@ -98,6 +98,27 @@ class AnswerControllerTest {
             .andExpect(model().attributeExists("answerForm"));
     }
 
+    @Test
+    @DisplayName("POST /answer/create/{questionId} - Answer 생성 실패 - 내용이 2000자 이상일 경우")
+    void createAnswerLongContent() throws Exception {
+        //given
+        String url = "/answer/create/1";
+        Question question = createQuestion(1L);
+        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question));
+
+        //when
+        ResultActions result = mockMvc.perform(post(url)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(csrf())
+            .param("id", "1")
+            .param("content", generateStringOfLength(2001)));
+
+        //then
+        result.andExpect(status().isOk())
+            .andExpect(view().name("question/detail"))
+            .andExpect(model().attributeExists("answerForm"));
+    }
+
     private Question createQuestion(Long id) {
         return Question.builder()
             .id(id)
@@ -107,5 +128,9 @@ class AnswerControllerTest {
             .hits(1)
             .answers(new ArrayList<>())
             .build();
+    }
+
+    private String generateStringOfLength(int length) {
+        return "a".repeat(length);
     }
 }
