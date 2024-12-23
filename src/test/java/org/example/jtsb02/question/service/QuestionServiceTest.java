@@ -82,7 +82,7 @@ class QuestionServiceTest {
             invocation -> invocation.getArgument(0));
 
         //when
-        QuestionDto result = questionService.getQuestion(1L);
+        QuestionDto result = questionService.getQuestionWithHitsCount(1L);
 
         //then
         assertThat(result).isNotNull();
