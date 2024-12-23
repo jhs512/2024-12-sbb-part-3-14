@@ -2,6 +2,7 @@ package baekgwa.sbb.global.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
+import org.springframework.boot.Banner.Mode;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.support.RequestContextUtils;

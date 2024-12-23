@@ -11,9 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,11 +46,11 @@ public class UserController {
         try {
             userService.create(signup.getUsername(),
                     signup.getEmail(), signup.getPassword1());
-        }catch(DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
             return "signup_form";
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", e.getMessage());
             return "signup_form";
@@ -72,5 +74,27 @@ public class UserController {
         MypageInfo mypageInfo = userService.getUserInfo(principal.getName(), page, size);
         model.addAttribute("mypageInfo", mypageInfo);
         return "my_page";
+    }
+
+    @GetMapping("/password/temporary")
+    public String passwordTemporary() {
+        return "temporary_password_form";
+    }
+
+    @PostMapping("/password/temporary")
+    public String sendTemporaryPassword(
+            @RequestParam("email") String email,
+            Model model
+    ) {
+        try {
+            userService.temporaryPassword(email);
+        } catch (Exception e) {
+            model.addAttribute("error", "메일 전송에 실패하였습니다. 잠시 후 다시 시도해 주세요.");
+            return "login_form";
+        }
+
+        // 임시 비밀번호 발급 성공 시 성공 메시지 설정
+        model.addAttribute("message", "임시 비밀번호가 발급되었습니다. 이메일을 확인해주세요.");
+        return "login_form";
     }
 }
