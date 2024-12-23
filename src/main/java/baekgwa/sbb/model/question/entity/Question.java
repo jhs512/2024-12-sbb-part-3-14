@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -53,9 +54,11 @@ public class Question extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    private int viewCount;
+
     @Builder
     private Question(Integer id, String subject, String content, Set<Answer> answerList,
-            SiteUser siteUser, Set<SiteUser> voter, Category category) {
+            SiteUser siteUser, Set<SiteUser> voter, Category category, int viewCount) {
         this.id = id;
         this.subject = subject;
         this.content = content;
@@ -63,16 +66,11 @@ public class Question extends BaseEntity {
         this.siteUser = siteUser;
         this.voter = voter;
         this.category = category;
+        this.viewCount = viewCount;
     }
 
-    public static Question modifyQuestion(Question oldQuestion, String subject, String content) {
-        return Question
-                .builder()
-                .id(oldQuestion.getId())
-                .subject(subject)
-                .content(content)
-                .answerList(oldQuestion.getAnswerList())
-                .siteUser(oldQuestion.getSiteUser())
-                .build();
+    public void modifyQuestion(String subject, String content) {
+        this.subject = subject;
+        this.content = content;
     }
 }

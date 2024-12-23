@@ -19,6 +19,9 @@
                     <div class="mb-2">
                         <span th:text="'작성자 : ' + ${question.author}"></span>
                     </div>
+                    <div class="mb-2">
+                        <span th:text="'조회수 : ' + ${question.viewCount}"></span>
+                    </div>
                     <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
             </div>

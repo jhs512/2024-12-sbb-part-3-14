@@ -22,12 +22,14 @@ public class QuestionDto {
         private final Page<AnswerDto.AnswerDetailInfo> answerList;
         private final boolean userVote;
         private final List<QuestionDto.QuestionCommentInfo> questionCommentList;
+        private final Integer viewCount;
 
         @Builder
         private DetailInfo(Integer id, String subject, String content, LocalDateTime createDate,
                 LocalDateTime modifyDate, String author, Long voterCount,
-                Page<AnswerDetailInfo> answerList, boolean userVote,
-                List<QuestionCommentInfo> questionCommentList) {
+                Page<AnswerDetailInfo> answerList,
+                boolean userVote, List<QuestionCommentInfo> questionCommentList,
+                Integer viewCount) {
             this.id = id;
             this.subject = subject;
             this.content = content;
@@ -38,6 +40,7 @@ public class QuestionDto {
             this.answerList = answerList;
             this.userVote = userVote;
             this.questionCommentList = questionCommentList;
+            this.viewCount = viewCount;
         }
     }
 

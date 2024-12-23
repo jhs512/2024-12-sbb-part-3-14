@@ -36,7 +36,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final CommentRepository commentRepository;
     private final CategoryRepository categoryRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public QuestionDto.DetailInfo getQuestion(Integer id, String loginUsername, Integer page,
             Integer size) {
@@ -48,6 +48,8 @@ public class QuestionServiceImpl implements QuestionService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
         Page<Answer> answer = answerRepository.findByQuestionIdOrderByVoterCountDesc(id, pageable);
+
+        incrementViewCount(question.getId());
 
         return QuestionDto.DetailInfo
                 .builder()
@@ -81,6 +83,7 @@ public class QuestionServiceImpl implements QuestionService {
                                         .content(comment.getContent())
                                         .createDate(comment.getCreateDate())
                                         .build()).toList())
+                .viewCount(question.getViewCount())
                 .build();
     }
 
@@ -125,10 +128,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(
                         () -> new DataNotFoundException("question not found"));
 
-        questionRepository.save(
-                Question.modifyQuestion(
-                        findData, questionForm.getSubject(), questionForm.getContent()
-                ));
+        findData.modifyQuestion(questionForm.getSubject(), questionForm.getContent());
     }
 
     @Transactional
@@ -198,5 +198,12 @@ public class QuestionServiceImpl implements QuestionService {
                         .categoryType(c.getCategoryType().name())
                         .build()
         ).toList();
+    }
+
+    private void incrementViewCount(Integer questionId) {
+        //todo : 동시성 문제 test 코드 작성
+        //todo : 새로고침 시, 무한정 늘어나도록 설정되어있는 것, 처리 필요.
+        //todo : 유튜브 처럼, 수십만의 조회수가 몰리면, 이렇게 처리 보다는, 벌크성 쿼리 혹은 batch 작업 필요.
+        questionRepository.incrementViewCount(questionId);
     }
 }

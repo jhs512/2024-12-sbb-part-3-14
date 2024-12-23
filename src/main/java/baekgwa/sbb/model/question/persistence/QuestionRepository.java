@@ -37,4 +37,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 
     Page<Question> findAllBySiteUser(SiteUser siteUser, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Question q SET q.viewCount = q.viewCount + 1 WHERE q.id = :questionId")
+    void incrementViewCount(@Param("questionId") Integer questionId);
 }
