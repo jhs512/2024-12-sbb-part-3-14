@@ -93,8 +93,7 @@ public class UserController {
             return "login_form";
         }
 
-        // 임시 비밀번호 발급 성공 시 성공 메시지 설정
-        model.addAttribute("message", "임시 비밀번호가 발급되었습니다. 이메일을 확인해주세요.");
+        model.addAttribute("message", "1회용 임시 비밀번호가 발급되었습니다. 이메일을 확인해주세요.");
         return "login_form";
     }
 }

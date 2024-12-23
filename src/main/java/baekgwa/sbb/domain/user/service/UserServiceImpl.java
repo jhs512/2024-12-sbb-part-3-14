@@ -6,10 +6,12 @@ import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.global.util.EMailSender;
 import baekgwa.sbb.model.question.entity.Question;
 import baekgwa.sbb.model.question.persistence.QuestionRepository;
+import baekgwa.sbb.model.redis.RedisRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
 import jakarta.mail.MessagingException;
 import java.security.SecureRandom;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final QuestionRepository questionRepository;
     private final PasswordEncoder passwordEncoder;
     private final EMailSender eMailSender;
+    private final RedisRepository redisRepository;
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -76,8 +79,9 @@ public class UserServiceImpl implements UserService {
     @Retryable(maxAttempts = 3, value = MailException.class, backoff = @Backoff(delay = 2000))
     @Override
     public void temporaryPassword(String email) throws MessagingException {
+        SiteUser siteUser = userRepository.findByEmail(email).orElseThrow(
+                () -> new DataNotFoundException("user not found"));
         String temporaryPassword = generateTemporaryPassword();
-
         String subject = "임시 비밀번호 안내";
         String content = "귀하의 임시 비밀번호는: " + temporaryPassword + "입니다. 로그인 후 비밀번호를 변경해주세요.";
 
@@ -86,9 +90,16 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw e;
         }
+
+        saveTemporaryPassword(siteUser.getUsername(), passwordEncoder.encode(temporaryPassword));
     }
 
-    public String generateTemporaryPassword() {
+    private void saveTemporaryPassword(String username, String tempPassword) {
+        //todo : Magic Number 수정 필요.
+        redisRepository.save(username, tempPassword, 5L, TimeUnit.MINUTES);
+    }
+
+    private String generateTemporaryPassword() {
         StringBuilder password = new StringBuilder(6);
 
         for (int i = 0; i < 6; i++) {
