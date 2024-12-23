@@ -39,12 +39,12 @@
                         질문 제목
                     </a>
                     <p class="card-text text-truncate" th:text="${paging.content}">질문 내용</p>
-                    <p class="card-text text-end" th:text="${#temporals.format(paging.createDate, 'yyyy-mm-dd')}">생성일</p>
+                    <p class="card-text text-end" th:text="${#temporals.format(paging.createDate, 'yyyy-MM-dd')}">생성일</p>
                 </div>
                 <div class="card-footer">
                     <small class="text-body-secondary">
                         최근 수정일<br>
-                        <span th:text="${#temporals.format(paging.modifyDate, 'yyyy-MM-dd HH:mm')}">2024-12-18 15:30</span>
+                        <span th:text="${#temporals.format(paging.modifyDate, 'yyyy-MM-dd HH:mm')}">최근 수정일</span>
                     </small>
                 </div>
             </div>
