@@ -88,6 +88,19 @@ public class QuestionServiceImpl implements QuestionService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public QuestionDto.ModifyInfo getQuestion(Integer id) {
+        Question question = questionRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("site user not found"));
+
+        return QuestionDto.ModifyInfo
+                .builder()
+                .subject(question.getSubject())
+                .content(question.getContent())
+                .build();
+    }
+
     @Transactional
     @Override
     public void create(String subject, String content, String username) {

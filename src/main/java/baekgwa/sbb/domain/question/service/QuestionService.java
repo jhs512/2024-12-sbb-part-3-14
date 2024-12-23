@@ -9,6 +9,8 @@ public interface QuestionService {
 
     QuestionDto.DetailInfo getQuestion(Integer id, String loginUsername, Integer page, Integer size);
 
+    QuestionDto.ModifyInfo getQuestion(Integer id);
+
     void create(String subject, String content, String username);
 
     Page<QuestionDto.MainInfo> getList(int page, int size, String keyword, String categoryType);

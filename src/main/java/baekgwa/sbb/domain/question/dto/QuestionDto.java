@@ -89,4 +89,16 @@ public class QuestionDto {
             this.categoryType = categoryType;
         }
     }
+
+    @Getter
+    public static class ModifyInfo {
+        private final String subject;
+        private final String content;
+
+        @Builder
+        private ModifyInfo(String subject, String content) {
+            this.subject = subject;
+            this.content = content;
+        }
+    }
 }

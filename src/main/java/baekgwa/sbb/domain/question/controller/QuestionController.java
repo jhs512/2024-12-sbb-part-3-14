@@ -77,8 +77,10 @@ public class QuestionController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "keyword", defaultValue = "") String keyword,
-            @RequestParam(value = "categoryType", defaultValue = "QUESTION") String categoryType) {
-        Page<QuestionDto.MainInfo> paging = questionService.getList(page, size, keyword, categoryType);
+            @RequestParam(value = "categoryType", defaultValue = "QUESTION") String categoryType
+    ) {
+        Page<QuestionDto.MainInfo> paging = questionService.getList(page, size, keyword,
+                categoryType);
         List<QuestionDto.CategoryInfo> category = questionService.getCategory();
         model.addAttribute("paging", paging);
         model.addAttribute("keyword", keyword);
@@ -88,14 +90,11 @@ public class QuestionController {
 
     @GetMapping("/modify/{id}")
     public String questionModify(
-            QuestionForm questionForm,
+            @ModelAttribute(name = "questionForm") QuestionForm questionForm,
             @PathVariable("id") Integer id,
-            Principal principal) {
-        QuestionDto.DetailInfo question = questionService.getQuestion(id, principal.getName(), 0,
-                0);
-        if (!question.getAuthor().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
-        }
+            Principal principal
+    ) {
+        QuestionDto.ModifyInfo question = questionService.getQuestion(id);
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
         return "question_form";
