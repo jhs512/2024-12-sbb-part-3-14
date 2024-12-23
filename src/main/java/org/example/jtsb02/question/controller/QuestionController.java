@@ -1,7 +1,6 @@
 package org.example.jtsb02.question.controller;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.question.dto.QuestionDto;
