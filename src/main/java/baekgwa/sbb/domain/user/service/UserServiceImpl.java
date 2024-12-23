@@ -9,7 +9,6 @@ import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.redis.RedisRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
-import jakarta.mail.MessagingException;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.mail.MailException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,20 +72,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @Retryable(maxAttempts = 3, value = MailException.class, backoff = @Backoff(delay = 2000))
     @Override
-    public void temporaryPassword(String email) throws MessagingException {
+    public void temporaryPassword(String email) {
         SiteUser siteUser = userRepository.findByEmail(email).orElseThrow(
                 () -> new DataNotFoundException("user not found"));
+
         String temporaryPassword = generateTemporaryPassword();
         String subject = "임시 비밀번호 안내";
         String content = "귀하의 임시 비밀번호는: " + temporaryPassword + "입니다. 로그인 후 비밀번호를 변경해주세요.";
 
-        try {
-            eMailSender.sendEmail(email, subject, content);
-        } catch (Exception e) {
-            throw e;
-        }
+        eMailSender.sendEmailAsync(email, subject, content);
 
         saveTemporaryPassword(siteUser.getUsername(), passwordEncoder.encode(temporaryPassword));
     }
