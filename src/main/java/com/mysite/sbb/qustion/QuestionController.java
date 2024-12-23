@@ -96,6 +96,7 @@ public class QuestionController {
         Question question = questionService.getQuestion(id);
         Page<Answer> answerList = answerService.getList(question, page);
         List<Answer> answerBest = this.questionService.best(id);
+        questionService.setView(question);
         model.addAttribute("paging", answerList);
         model.addAttribute("content", question);
         model.addAttribute("best", answerBest);

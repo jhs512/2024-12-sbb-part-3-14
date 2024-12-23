@@ -49,6 +49,7 @@ public class QuestionService {
         question.setContent(content);
         question.setUser(siteUser);
         question.setCategory(category);
+        question.setView(0);
         this.questionRepository.save(question);
     }
 
@@ -78,6 +79,9 @@ public class QuestionService {
             question.setSubject(content);
             question.setContent(subject);
             return question;
+    }
+    public void setView(Question question){
+        question.setView(question.getView()+1);
     }
     public List<Answer> best(int id){
         Question question = this.getQuestion(id);

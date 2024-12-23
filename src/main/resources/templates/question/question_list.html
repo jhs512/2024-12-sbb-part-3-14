@@ -9,6 +9,7 @@
             <th>글쓴이</th>
             <th>추천수</th>
             <th>작성일시</th>
+            <th>조회수</th>
         </tr>
         </thead>
         <tbody>
@@ -24,6 +25,7 @@
             <td th:text="${question.user.username}">
             <td th:text="${#lists.size(question.voterSet)}">
             <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${question.view}"></td>
         </tr>
         </tbody>
     </table>
