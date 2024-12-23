@@ -33,8 +33,8 @@ public class SiteUser {
     private LocalDateTime createDate;
 
     private boolean isAdmin;
-    @OneToMany( cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Question> questionList;
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 }

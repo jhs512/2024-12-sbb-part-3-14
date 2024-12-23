@@ -25,9 +25,9 @@ public class GlobalController {
     @Autowired
     AnswerService answerService;
 
+
     @ModelAttribute
-    public void handleRequest(HttpServletRequest request, Model model) {
-        String requestURI = request.getRequestURI();
+    public void handleRequest(Model model) {
         List<Category> category = categoryService.getCategorys();
         Answer currentAnswer = answerService.getCurrentAnswer();
         Question currentQuestion = questionService.getCurrentQuestion();
@@ -36,4 +36,18 @@ public class GlobalController {
         model.addAttribute("currentQuestion", currentQuestion);
 
     }
+    /*
+    @ModelAttribute("categorys")
+    public List<Category>  handleRequest2() {
+        return categoryService.getCategorys();
+    }
+    @ModelAttribute("currentAnswer")
+    public Answer  handleRequest3() {
+
+        return answerService.getCurrentAnswer();
+    }
+    @ModelAttribute("categorys")
+    public Question   handleRequest4() {
+        return questionService.getCurrentQuestion();
+    }*/
 }

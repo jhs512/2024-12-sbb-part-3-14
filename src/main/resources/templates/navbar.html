@@ -16,32 +16,41 @@
                     <a class="nav-link" href="/user/signup">회원가입</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/user/user_profile">프로필</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/category/insert">게시판 추가</a>
                 </li>
                 <li class="nav-item">
                     <div class="nav-link">게시판:</div>
                 </li>
+
                 <div th:each="category :${categorys}">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{|/question/list/${category.id}|}" th:text="${category.name}"></a>
+                        <a class="nav-link" th:href="@{|/question/list/${category.id}|}"
+                           th:text="${category.name}"></a>
                     </li>
                 </div>
-                <li class="nav-item">
-                    <div class="nav-link">최근 게시글:</div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link"
-                         th:href="@{|/question/detail/${currentQuestion.id}|}"
-                         th:text="${currentQuestion.content}"></a>
-                </li>
-                <li class="nav-item">
-                    <div class="nav-link">최근 댓글:</div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link"
-                         th:href="@{|/question/detail/${currentAnswer.question.id}|}"
-                       th:text="${currentAnswer.content}"></a>
-                </li>
+                <span th:if="${currentQuestion != null}">
+                    <li class="nav-item">
+                        <div class="nav-link">최근 게시글:</div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{|/question/detail/${currentQuestion.id}|}"
+                           th:text="${currentQuestion.content}"></a>
+                    </li>
+                </span>
+                <span th:if="${currentAnswer != null}">
+                    <li class="nav-item">
+                        <div class="nav-link">최근 댓글:</div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{|/question/detail/${currentAnswer.question.id}|}"
+                           th:text="${currentAnswer.content}"></a>
+                    </li>
+                </div>
             </ul>
 
 

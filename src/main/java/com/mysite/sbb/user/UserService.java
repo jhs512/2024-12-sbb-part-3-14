@@ -27,13 +27,21 @@ public class UserService {
         this.userRepository.save(user);
         return user;
     }
-
-public SiteUser getSiteUser(String username){
-    Optional<SiteUser> _siteUser = this.userRepository.findByUsername(username);
-    if (_siteUser.isEmpty()) {
-        throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
+    public void changePassword(String password,SiteUser user){
+        user.setPassword(passwordEncoder.encode(password));
+        this.userRepository.save(user);
     }
-    return _siteUser.get();
-}
+
+    public boolean checkPassword(String password, SiteUser user) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    public SiteUser getSiteUser(String username) {
+        Optional<SiteUser> _siteUser = this.userRepository.findByUsername(username);
+        if (_siteUser.isEmpty()) {
+            throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
+        }
+        return _siteUser.get();
+    }
 
 }

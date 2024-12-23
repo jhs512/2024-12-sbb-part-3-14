@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -28,7 +29,34 @@ public class UserController {
     public String signupUser(UserForm userForm) {
         return "/user/user_signup";
     }
-
+    @GetMapping("/user_profile")
+    public String profile(Model model,UserPasswordForm userPasswordForm,Principal principal){
+        SiteUser siteUser = userService.getSiteUser(principal.getName());
+        model.addAttribute("user", siteUser );
+        return "/user/user_profile";
+    }
+    @PostMapping("/change_password")
+    public String changePassword(Model model, @Valid UserPasswordForm userPasswordForm, BindingResult bindingResult,Principal principal){
+        SiteUser siteUser = userService.getSiteUser(principal.getName());
+        model.addAttribute("user", siteUser );
+        if (bindingResult.hasErrors()) {
+            return "/user/user_profile";
+        }
+        if (!userService.checkPassword(userPasswordForm.getPassword(),siteUser)) {
+            bindingResult.rejectValue("password", "passwordInCorrect",
+                    "패스워드가 일치하지 않습니다.");
+            return "/user/user_profile";
+        }
+        if (!userPasswordForm.getNewpassword().equals(userPasswordForm.getNewpasswordcheck())) {
+            bindingResult.rejectValue("newpassword", "passwordInCorrect",
+                    "2개의 패스워드가 일치하지 않습니다.");
+            return "/user/user_profile";
+        }
+        bindingResult.rejectValue("newpasswordcheck","passwordCorrect",
+                "비밀번호 변경 완료");
+        userService.changePassword(userPasswordForm.getNewpassword(),siteUser);
+        return "/user/user_profile";
+    }
     @PostMapping("/create")
     public String createUser(@Valid UserForm userForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

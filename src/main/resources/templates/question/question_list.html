@@ -1,7 +1,6 @@
 <html layout:decorate="~{layout}">
-
-<div layout:fragment="content" class="container my-3">
-    <h2 th:text="${category.name}"></h2>
+<div layout:fragment="content" class="container my-3" th:if="${skip == 0}">
+        <h2 th:text="${category.name}"></h2>
     <table class="table">
         <thead class="table-dark">
         <tr>
