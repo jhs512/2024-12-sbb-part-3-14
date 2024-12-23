@@ -1,4 +1,4 @@
-package baekgwa.sbb.global.config;
+package baekgwa.sbb.global.util;
 
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;

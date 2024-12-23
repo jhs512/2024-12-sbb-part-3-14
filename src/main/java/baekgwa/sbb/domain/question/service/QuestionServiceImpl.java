@@ -7,6 +7,7 @@ import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.answer.persistence.AnswerRepository;
 import baekgwa.sbb.model.category.entity.Category;
+import baekgwa.sbb.model.category.entity.CategoryType;
 import baekgwa.sbb.model.category.persistence.CategoryRepository;
 import baekgwa.sbb.model.comment.entity.Comment;
 import baekgwa.sbb.model.comment.persistence.CommentRepository;
@@ -93,11 +94,16 @@ public class QuestionServiceImpl implements QuestionService {
         SiteUser siteUser = userRepository.findByUsername(username).orElseThrow(
                 () -> new DataNotFoundException("site user not found"));
 
+        Category category = categoryRepository.findByCategoryType(CategoryType.QUESTION)
+                .orElseThrow(
+                        () -> new DataNotFoundException("Question Category not found"));
+
         questionRepository.save(
                 Question.builder()
                         .subject(subject)
                         .content(content)
                         .siteUser(siteUser)
+                        .category(category)
                         .build());
     }
 
