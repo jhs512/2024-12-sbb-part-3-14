@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.question.entity.Question;
 
 @Entity
@@ -41,6 +42,16 @@ public class Answer {
             .content(content)
             .createdAt(LocalDateTime.now())
             .question(question)
+            .build();
+    }
+
+    public static Answer fromAnswerDto(AnswerDto answerDto) {
+        return Answer.builder()
+            .id(answerDto.getId())
+            .content(answerDto.getContent())
+            .createdAt(answerDto.getCreatedAt())
+            .modifiedAt(answerDto.getModifiedAt())
+            .question(Question.OnlyIdFromQuestionDto(answerDto.getQuestion()))
             .build();
     }
 }

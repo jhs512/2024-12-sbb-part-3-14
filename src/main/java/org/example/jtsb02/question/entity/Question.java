@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.jtsb02.answer.entity.Answer;
+import org.example.jtsb02.question.dto.QuestionDto;
 
 @Entity
 @Getter
@@ -51,5 +52,9 @@ public class Question {
             .hits(0)
             .answers(new ArrayList<>())
             .build();
+    }
+
+    public static Question OnlyIdFromQuestionDto(QuestionDto questionDto) {
+        return Question.builder().id(questionDto.getId()).build();
     }
 }

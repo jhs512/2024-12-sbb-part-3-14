@@ -37,4 +37,8 @@ public class AnswerService {
             .modifiedAt(LocalDateTime.now())
             .build());
     }
+
+    public void deleteAnswer(AnswerDto answerDto) {
+        answerRepository.delete(Answer.fromAnswerDto(answerDto));
+    }
 }

@@ -36,7 +36,8 @@ public class AnswerController {
     }
 
     @GetMapping("/modify/{id}")
-    public String modifyAnswer(@PathVariable("id") Long answerId, AnswerForm answerForm, Model model) {
+    public String modifyAnswer(@PathVariable("id") Long answerId, AnswerForm answerForm,
+        Model model) {
         AnswerDto answer = answerService.getAnswer(answerId);
         answerForm.setContent(answer.getContent());
         model.addAttribute("answerForm", answerForm);
@@ -51,6 +52,13 @@ public class AnswerController {
         }
         AnswerDto answer = answerService.getAnswer(answerId);
         answerService.modifyAnswer(answerId, answerForm);
+        return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteAnswer(@PathVariable("id") Long answerId) {
+        AnswerDto answer = answerService.getAnswer(answerId);
+        answerService.deleteAnswer(answer);
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }
 }
