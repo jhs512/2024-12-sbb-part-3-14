@@ -2,7 +2,9 @@ package org.example.jtsb02.answer.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import org.example.jtsb02.answer.entity.Answer;
+import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.repository.QuestionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -32,8 +34,46 @@ class AnswerRepositoryTest {
 
         //then
         assertThat(save).isNotNull();
-        assertThat(save.getId()).isEqualTo(1L);
+        assertThat(save.getId()).isEqualTo(answer.getId());
         assertThat(save.getContent()).isEqualTo(answer.getContent());
         assertThat(save.getQuestion()).isEqualTo(question);
+    }
+
+    @Test
+    @DisplayName("답변 수정")
+    void modify() {
+        //given
+        Question question = questionRepository.save(
+            Question.of("question subject", "question content"));
+        Answer answer = answerRepository.save(Answer.of("answer content", question));
+
+        //when
+        Answer result = answerRepository.findById(answer.getId()).map(a -> a.toBuilder()
+                .content("수정한 내용")
+                .modifiedAt(LocalDateTime.now())
+                .build())
+            .orElseThrow(() -> new DataNotFoundException("Answer not found"));
+
+        //then
+        assertThat(result.getId()).isEqualTo(answer.getId());
+        assertThat(result.getContent()).isEqualTo("수정한 내용");
+        assertThat(result.getModifiedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("답변 삭제")
+    void delete() {
+        //given
+        Question question = questionRepository.save(
+            Question.of("question subject", "question content"));
+        Answer answer = answerRepository.save(Answer.of("answer content", question));
+
+        //when
+        answerRepository.findById(answer.getId()).ifPresent(a -> answerRepository.delete(a));
+
+        //then
+        assertThatThrownBy(() -> answerRepository.findById(answer.getId())
+            .orElseThrow(() -> new DataNotFoundException("Answer not found")))
+            .isInstanceOf(DataNotFoundException.class).hasMessageContaining("Answer not found");
     }
 }
