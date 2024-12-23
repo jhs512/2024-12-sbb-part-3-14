@@ -1,4 +1,4 @@
-package com.mysite.sbb.controller.view.util;
+package com.mysite.sbb.controller.util;
 
 import com.mysite.sbb.domain.question.dto.QuestionListResponseDTO;
 import org.springframework.data.domain.Page;

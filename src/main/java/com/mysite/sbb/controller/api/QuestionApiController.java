@@ -23,7 +23,7 @@ public class QuestionApiController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<?> createNewQuestion(
-            @Valid QuestionRequestDTO questionRequestDTO,
+            @Valid @RequestBody QuestionRequestDTO questionRequestDTO,
             BindingResult bindingResult,
             Principal principal) {
 
@@ -42,7 +42,7 @@ public class QuestionApiController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateQuestion(
-            @Valid QuestionRequestDTO questionRequestDTO,
+            @Valid @RequestBody QuestionRequestDTO questionRequestDTO,
             BindingResult bindingResult,
             Principal principal,
             @PathVariable("id") Integer id) {

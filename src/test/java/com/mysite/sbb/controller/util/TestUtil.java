@@ -1,4 +1,4 @@
-package com.mysite.sbb.controller.view.util;
+package com.mysite.sbb.controller.util;
 
 import com.mysite.sbb.domain.question.dto.QuestionListResponseDTO;
 import lombok.SneakyThrows;
@@ -6,13 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.ModelAndView;
 
-public class ViewTestUtil {
+public class TestUtil {
     @SneakyThrows
     public static void printHTTP(MvcResult result) {
         System.out.println("\n=== HTTP 응답 정보 ===");
         System.out.println("Status: " + result.getResponse().getStatus());
         System.out.println("Headers: " + result.getResponse().getHeaderNames());
-        System.out.println("URL: " + result.getResponse().getRedirectedUrl());
+
+        String redirectedUrl = result.getResponse().getRedirectedUrl();
+        if (redirectedUrl != null) {
+            System.out.println("Redirected URL: " + redirectedUrl);
+        }
     }
 
     public static void printModelAndView(MvcResult result) {

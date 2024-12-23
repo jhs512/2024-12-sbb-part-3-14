@@ -1,14 +1,13 @@
 package com.mysite.sbb.controller.view;
 
-import com.mysite.sbb.controller.view.util.QuestionTestFixture;
-import com.mysite.sbb.controller.view.util.ViewTestUtil;
+import com.mysite.sbb.controller.util.QuestionTestFixture;
+import com.mysite.sbb.controller.util.TestUtil;
 import com.mysite.sbb.domain.question.dto.QuestionListResponseDTO;
 import com.mysite.sbb.domain.question.dto.QuestionRequestDTO;
 import com.mysite.sbb.global.util.CommonUtil;
 import com.mysite.sbb.service.impl.AnswerServiceImpl;
 import com.mysite.sbb.service.impl.QuestionServiceImpl;
 import com.mysite.sbb.service.impl.UserServiceImpl;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,8 +30,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -137,7 +134,7 @@ class ViewControllerTest {
             mockMvc.perform(get("/"))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(redirectedUrl("/question/list"))
-                    .andDo(ViewTestUtil::printHTTP);
+                    .andDo(TestUtil::printHTTP);
         }
 
         @Test
@@ -146,7 +143,7 @@ class ViewControllerTest {
             mockMvc.perform(get("/users/signup"))
                     .andExpect(status().isOk())
                     .andExpect(view().name("signup_form"))
-                    .andDo(ViewTestUtil::printModelAndView);
+                    .andDo(TestUtil::printModelAndView);
         }
 
         @Test
@@ -155,7 +152,7 @@ class ViewControllerTest {
             mockMvc.perform(get("/users/login"))
                     .andExpect(status().isOk())
                     .andExpect(view().name("login_form"))
-                    .andDo(ViewTestUtil::printModelAndView);
+                    .andDo(TestUtil::printModelAndView);
         }
     }
 
@@ -189,7 +186,7 @@ class ViewControllerTest {
                                     hasProperty("totalPages", equalTo(2)),
                                     hasProperty("size", equalTo(10))
                             )))
-                    .andDo(ViewTestUtil::printTestResults);
+                    .andDo(TestUtil::printTestResults);
         }
 
         @Test
@@ -218,7 +215,7 @@ class ViewControllerTest {
                                     hasProperty("totalPages", equalTo(1)),
                                     hasProperty("size", equalTo(10))
                             )))
-                    .andDo(ViewTestUtil::printTestResults);
+                    .andDo(TestUtil::printTestResults);
 
             verify(questionService).getList(0, "작성자2");
         }
@@ -234,7 +231,7 @@ class ViewControllerTest {
             mockMvc.perform(get("/question/create"))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(redirectedUrlPattern("**/login"))
-                    .andDo(ViewTestUtil::printTestResults);
+                    .andDo(TestUtil::printTestResults);
         }
 
         @Test
@@ -249,7 +246,7 @@ class ViewControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(view().name("question_form"))
                     .andExpect(model().attributeExists("questionRequestDTO"))
-                    .andDo(ViewTestUtil::printTestResults);
+                    .andDo(TestUtil::printTestResults);
         }
     }
 
