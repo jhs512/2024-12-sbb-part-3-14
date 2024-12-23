@@ -1,5 +1,6 @@
 package com.programmers.user;
 
+import com.programmers.exception.DuplicateUsernameException;
 import com.programmers.user.dto.SignupDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +14,7 @@ public class SiteUserService {
 
     public SiteUser save(SignupDto signupDto) {
         if(siteUserRepository.existsByUsername(signupDto.userName())){
-
+            throw new DuplicateUsernameException(signupDto.userName());
         }
         return siteUserRepository.save(SiteUser.builder()
                         .username(signupDto.userName())
