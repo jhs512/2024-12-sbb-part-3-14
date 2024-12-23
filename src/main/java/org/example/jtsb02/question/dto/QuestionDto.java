@@ -1,8 +1,10 @@
 package org.example.jtsb02.question.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.question.entity.Question;
 
 @Getter
@@ -15,6 +17,7 @@ public class QuestionDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private int hits;
+    private List<AnswerDto> answers;
 
     public static QuestionDto fromQuestion(Question question) {
         return QuestionDto.builder()
@@ -24,6 +27,11 @@ public class QuestionDto {
             .createdAt(question.getCreatedAt())
             .modifiedAt(question.getModifiedAt())
             .hits(question.getHits())
+            .answers(question.getAnswers().stream().map(AnswerDto::fromAnswer).toList())
             .build();
+    }
+
+    public static QuestionDto OnlyIdFromQuestion(Question question) {
+        return QuestionDto.builder().id(question.getId()).build();
     }
 }

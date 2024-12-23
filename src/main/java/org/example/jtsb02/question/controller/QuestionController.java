@@ -3,6 +3,7 @@ package org.example.jtsb02.question.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.form.QuestionForm;
 import org.example.jtsb02.question.service.QuestionService;
@@ -44,9 +45,10 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{id}")
-    public String getQuestion(@PathVariable("id") Long id, Model model) {
+    public String getQuestion(@PathVariable("id") Long id, AnswerForm answerForm, Model model) {
         QuestionDto question = questionService.getQuestionWithHitsCount(id);
         model.addAttribute("question", question);
+        model.addAttribute("answerForm", answerForm);
         return "question/detail";
     }
 
