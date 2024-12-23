@@ -21,8 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -135,12 +134,12 @@ class QuestionApiControllerTest {
             doNothing().when(questionService)
                     .modify(eq(VALID_QUESTION_ID), any(QuestionRequestDTO.class), eq("admin"));
 
-            // 케이스 2: 존재하지 않는 질문
+            // 케이스 2: 존재하지 않는 질문 수정
             doThrow(new DataNotFoundException("Question not found"))
                     .when(questionService)
                     .modify(eq(INVALID_QUESTION_ID), any(QuestionRequestDTO.class), any());
 
-            // 케이스 3: 권한 없는 사용자
+            // 케이스 3: 권한 없는 사용자 수정
             doThrow(new AccessDeniedException("Not authorized"))
                     .when(questionService)
                     .modify(eq(VALID_QUESTION_ID), any(QuestionRequestDTO.class), eq("hacker"));
@@ -191,8 +190,7 @@ class QuestionApiControllerTest {
         @WithMockUser(username = "admin")
         @DisplayName("유효한 질문 수정 요청 - 303 응답")
         void updateQuestion_Success() throws Exception {
-            mockMvc.perform(put("/api/v1/question/{id}", VALID_QUESTION_ID)
-                            .contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put("/api/v1/question/{id}", VALID_QUESTION_ID).contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(validUpdateRequest))
                             .with(csrf()))
                     .andExpect(status().isSeeOther())
@@ -222,33 +220,74 @@ class QuestionApiControllerTest {
         private final Integer VALID_QUESTION_ID = 1;    // 실제 존재하는 질문 ID
         private final Integer INVALID_QUESTION_ID = 999; // 존재하지 않는 질문 ID
 
+        @BeforeEach
+        void setUp() {
+            // 케이스 1: admin 사용자의 정상 삭제
+            doNothing().when(questionService)
+                    .delete(eq(VALID_QUESTION_ID), eq("admin"));
+
+            // 케이스 2: 존재하지 않는 질문 삭제
+            doThrow(new DataNotFoundException("Question not found"))
+                    .when(questionService)
+                    .delete(eq(INVALID_QUESTION_ID), any());
+
+            // 케이스 3: 권한 없는 사용자 삭제
+            doThrow(new AccessDeniedException("Not authorized"))
+                    .when(questionService)
+                    .delete(eq(VALID_QUESTION_ID), eq("hacker"));
+        }
 
 
         @Test
         @DisplayName("인증되지 않은 사용자의 질문 삭제 요청 - 401 응답")
         void deleteQuestion_Unauthorized() throws Exception {
-
+            mockMvc.perform(delete("/api/v1/question/{id}", VALID_QUESTION_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(csrf()))
+                    .andExpect(status().isUnauthorized())
+                    .andDo(TestUtil::printHTTP);
         }
 
         @Test
         @WithMockUser(username = "admin")
         @DisplayName("존재하지 않는 질문 삭제 요청 - 404 응답")
         void deleteQuestion_NotFound() throws Exception {
+            mockMvc.perform(delete("/api/v1/question/{id}", INVALID_QUESTION_ID)
+                            .with(csrf()))
+                    .andExpect(status().isNotFound())
+                    .andDo(TestUtil::printHTTP);
 
+            // 서비스 메서드 호출 확인
+            verify(questionService).delete(eq(INVALID_QUESTION_ID), eq("admin"));
         }
 
         @Test
         @WithMockUser(username = "admin")
         @DisplayName("유효한 질문 삭제 요청 - 303 응답")
         void deleteQuestion_Success() throws Exception {
+            // 정상적인 삭제 요청
+            mockMvc.perform(delete("/api/v1/question/{id}", VALID_QUESTION_ID)
+                            .with(csrf()))
+                    .andExpect(status().isSeeOther())
+                    .andExpect(header().string("Location", "/"))
+                    .andDo(TestUtil::printHTTP);
 
+            // 서비스 메서드 호출 확인
+            verify(questionService).delete(eq(VALID_QUESTION_ID), eq("admin"));
         }
 
         @Test
-        @WithMockUser(username = "otherUser")
+        @WithMockUser(username = "hacker")
         @DisplayName("다른 사용자의 질문 삭제 요청 - 403 응답")
         void deleteQuestion_Forbidden() throws Exception {
+            // 권한 없는 사용자로 삭제 요청
+            mockMvc.perform(delete("/api/v1/question/{id}", VALID_QUESTION_ID)
+                            .with(csrf()))
+                    .andExpect(status().isForbidden())
+                    .andDo(TestUtil::printHTTP);
 
+            // 서비스 메서드 호출 확인
+            verify(questionService).delete(eq(VALID_QUESTION_ID), eq("hacker"));
         }
     }
 
