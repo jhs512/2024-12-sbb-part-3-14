@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.answer.repository.AnswerRepository;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,7 +38,7 @@ class AnswerServiceTest {
     @DisplayName("질문 등록")
     void createAnswer() {
         //given
-        Question question = createQuestion(1L);
+        Question question = createQuestion();
         AnswerForm answerForm = createAnswerForm("answer content");
 
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -53,24 +55,82 @@ class AnswerServiceTest {
         assertThat(save.getQuestion().getId()).isEqualTo(1L);
     }
 
+    @Test
+    @DisplayName("질문 조회")
+    void getAnswer() {
+        //given
+        Question question = createQuestion();
+        AnswerForm answerForm = createAnswerForm("answer content");
+        Answer answer = createAnswer(answerForm, question);
+
+        when(answerRepository.findById(1L)).thenReturn(Optional.of(answer));
+
+        //when
+        AnswerDto result = answerService.getAnswer(1L);
+
+        //then
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getContent()).isEqualTo(answerForm.getContent());
+        assertThat(result.getQuestion().getId()).isEqualTo(question.getId());
+    }
+
+    @Test
+    @DisplayName("질문 수정")
+    void modifyAnswer() {
+        //given
+        Question question = createQuestion();
+        AnswerForm answerForm = createAnswerForm("answer content");
+        AnswerForm modifyForm = createAnswerForm("modify content");
+        Answer answer = createAnswer(answerForm, question);
+
+        when(answerRepository.findById(1L)).thenReturn(Optional.of(answer));
+        ArgumentCaptor<Answer> captor = ArgumentCaptor.forClass(Answer.class);
+
+        //when
+        answerService.modifyAnswer(1L, modifyForm);
+        verify(answerRepository, times(1)).save(captor.capture());
+        Answer save = captor.getValue();
+
+        //then
+        assertThat(save).isNotNull();
+        assertThat(save.getId()).isEqualTo(1L);
+        assertThat(save.getContent()).isEqualTo(modifyForm.getContent());
+    }
+
+    @Test
+    @DisplayName("질문 삭제")
+    void deleteAnswer() {
+        //given
+        Question question = createQuestion();
+        AnswerForm answerForm = createAnswerForm("answer content");
+        Answer answer = createAnswer(answerForm, question);
+
+        //when
+        answerService.deleteAnswer(AnswerDto.fromAnswer(answer));
+
+        //then
+        verify(answerRepository, times(1)).delete(ArgumentMatchers.any(Answer.class));
+    }
+
     private AnswerForm createAnswerForm(String content) {
         AnswerForm answerForm = new AnswerForm();
         answerForm.setContent(content);
         return answerForm;
     }
 
-    private Answer createAnswer(Long id, AnswerForm answerForm, Question question) {
+    private Answer createAnswer(AnswerForm answerForm, Question question) {
         return Answer.builder()
-            .id(id)
+            .id(1L)
             .content(answerForm.getContent())
             .createdAt(LocalDateTime.now())
             .question(question)
             .build();
     }
 
-    private Question createQuestion(Long id) {
+    private Question createQuestion() {
         return Question.builder()
-            .id(id)
+            .id(1L)
             .subject("test subject")
             .content("test content")
             .createdAt(LocalDateTime.now())
