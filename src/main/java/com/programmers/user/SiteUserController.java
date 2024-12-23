@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -43,7 +45,10 @@ public class SiteUserController {
     }
 
     @GetMapping("/login")
-    public String signInForm(){
+    public String signInForm(Principal principal){
+        if(principal != null){
+            return "redirect:/questions/all";
+        }
         return "signIn_form";
     }
 }
