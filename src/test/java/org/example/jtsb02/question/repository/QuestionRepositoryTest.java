@@ -57,8 +57,6 @@ class QuestionRepositoryTest {
         assertThat(questions.get(1).getContent()).isEqualTo("내용2");
     }
 
-
-
     @Test
     @DisplayName("ID로 질문 조회")
     void findById() {

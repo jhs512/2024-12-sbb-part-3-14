@@ -1,6 +1,7 @@
 package org.example.jtsb02.question.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.common.exception.DataNotFoundException;
@@ -8,6 +9,11 @@ import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.form.QuestionForm;
 import org.example.jtsb02.question.repository.QuestionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +27,12 @@ public class QuestionService {
             Question.of(questionForm.getSubject(), questionForm.getContent())).getId();
     }
 
-    public List<QuestionDto> getQuestions() {
-        return questionRepository.findAll().stream().map(QuestionDto::fromQuestion).toList();
+    public Page<QuestionDto> getQuestions(int page) {
+        List<Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdAt"));
+
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
+        return questionRepository.findAll(pageable).map(QuestionDto::fromQuestion);
     }
 
     public QuestionDto getQuestion(Long id) {

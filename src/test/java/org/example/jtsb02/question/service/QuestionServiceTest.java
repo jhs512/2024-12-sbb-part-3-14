@@ -1,6 +1,7 @@
 package org.example.jtsb02.question.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,6 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionServiceTest {
@@ -42,7 +47,7 @@ class QuestionServiceTest {
         Question mockQuestion = createQuestion(1L, questionForm);
 
         // questionRepository.save() 메서드가 호출될 때 mockQuestion 객체를 반환하도록 설정
-        when(questionRepository.save(Mockito.any(Question.class))).thenReturn(mockQuestion);
+        when(questionRepository.save(any(Question.class))).thenReturn(mockQuestion);
 
         // when: 메서드 실행
         Long questionId = questionService.createQuestion(questionForm);
@@ -59,18 +64,19 @@ class QuestionServiceTest {
         Question question1 = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         Question question2 = createQuestion(2L, createQuestionForm("제목2", "내용2"));
         List<Question> questions = List.of(question1, question2);
-        when(questionRepository.findAll()).thenReturn(questions);
+        Page<Question> page = new PageImpl<>(questions, PageRequest.of(0, 10), questions.size());
+        when(questionRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         //when
-        List<QuestionDto> result = questionService.getQuestions();
+        Page<QuestionDto> result = questionService.getQuestions(1);
 
         //then
         assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result.getFirst().getSubject()).isEqualTo("제목1");
-        assertThat(result.getFirst().getContent()).isEqualTo("내용1");
-        assertThat(result.get(1).getSubject()).isEqualTo("제목2");
-        assertThat(result.get(1).getContent()).isEqualTo("내용2");
+        assertThat(result.getContent().size()).isEqualTo(2);
+        assertThat(result.getContent().getFirst().getSubject()).isEqualTo("제목1");
+        assertThat(result.getContent().getFirst().getContent()).isEqualTo("내용1");
+        assertThat(result.getContent().get(1).getSubject()).isEqualTo("제목2");
+        assertThat(result.getContent().get(1).getContent()).isEqualTo("내용2");
     }
 
     @Test
@@ -79,7 +85,7 @@ class QuestionServiceTest {
         //given
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
-        when(questionRepository.save(Mockito.any(Question.class))).thenAnswer(
+        when(questionRepository.save(any(Question.class))).thenAnswer(
             invocation -> invocation.getArgument(0));
 
         //when
@@ -114,7 +120,7 @@ class QuestionServiceTest {
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         QuestionForm modifyQuestionForm = createQuestionForm("수정한 제목1", "수정한 내용1");
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
-        when(questionRepository.save(Mockito.any(Question.class))).thenAnswer(
+        when(questionRepository.save(any(Question.class))).thenAnswer(
             invocation -> invocation.getArgument(0));
 
         ArgumentCaptor<Question> captor = ArgumentCaptor.forClass(Question.class);

@@ -7,6 +7,7 @@ import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.form.QuestionForm;
 import org.example.jtsb02.question.service.QuestionService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,9 +40,9 @@ public class QuestionController {
     }
 
     @GetMapping("/list")
-    public String getQuestions(Model model) {
-        List<QuestionDto> questions = questionService.getQuestions();
-        model.addAttribute("questions", questions);
+    public String getQuestions(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        Page<QuestionDto> questions = questionService.getQuestions(page);
+        model.addAttribute("paging", questions);
         return "question/list";
     }
 
