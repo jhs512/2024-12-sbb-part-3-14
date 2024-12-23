@@ -1,0 +1,30 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container">
+    <h5 class="my-3 border-bottom pb-2">질문 등록</h5>
+    <form th:object="${questionForm}" method="post">
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+        <div class="mb-3">
+            <label for="subject" class="form-label">카테고리</label>
+            <select th:field="*{categoryId}" class="form-select" style="width:200px;">
+                <option th:each="category : ${categoryList}"
+                        th:selected="${category.id == categoryId}"
+                        th:value="${category.id}"
+                        th:text="${category.title}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="subject" class="form-label">제목</label>
+            <input type="text" th:field="*{subject}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">내용</label>
+            <textarea th:field="*{content}" class="form-control" rows="10"></textarea>
+        </div>
+        <input type="submit" value="저장하기" class="btn btn-primary my-2">
+    </form>
+</div>
+<script layout:fragment="script" type='text/javascript'>
+    // 마크다운에디터
+    var simplemde = new SimpleMDE({element: document.getElementById("content")});
+</script>
+</html>
