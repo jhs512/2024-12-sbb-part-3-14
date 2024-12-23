@@ -1,4 +1,4 @@
-package baekgwa.sbb.global.security;
+package baekgwa.sbb.global.security.siteuser;
 
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.entity.UserRole;

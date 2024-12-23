@@ -34,6 +34,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // OAuth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     // Devtools
     // 이거 개인적으로 혐오함
 //    developmentOnly 'org.springframework.boot:spring-boot-devtools'
