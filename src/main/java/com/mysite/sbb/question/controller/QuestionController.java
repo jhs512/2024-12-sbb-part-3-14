@@ -1,10 +1,11 @@
 package com.mysite.sbb.question.controller;
 
 import com.mysite.sbb.answer.form.AnswerForm;
+import com.mysite.sbb.answer.service.AnswerService;
+import com.mysite.sbb.entity.Answer;
 import com.mysite.sbb.entity.Question;
 import com.mysite.sbb.entity.SiteUser;
 import com.mysite.sbb.question.form.QuestionForm;
-import com.mysite.sbb.question.repository.QuestionRepository;
 import com.mysite.sbb.question.service.QuestionService;
 import com.mysite.sbb.user.service.UserService;
 import jakarta.validation.Valid;
@@ -27,8 +28,8 @@ import java.security.Principal;
 @Controller
 public class QuestionController {
 
-    private final QuestionRepository questionRepository;
     private final QuestionService questionService;
+    private final AnswerService answerService;
     private final UserService userService;
 
     @GetMapping("/list")
@@ -41,9 +42,13 @@ public class QuestionController {
     }
 
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm){
+    public String detail(Model model, @PathVariable("id") Integer id,
+                                      @RequestParam(value = "page", defaultValue = "0") int page){
         Question question = this.questionService.getQuestion(id);
         model.addAttribute("question", question);
+        Page<Answer> paging = this.answerService.getListByVoterCount(question.getId(),page); // 댓글에 Paging 및 추천 수 별 정렬 기능
+        model.addAttribute("answerForm", new AnswerForm());
+        model.addAttribute("paging", paging); // 댓글에 Paging 및 추천 수 별 정렬 기능
         return "question_detail";
     }
 

@@ -27,6 +27,7 @@ public class AnswerController {
     private final AnswerService answerService;
     private final UserService userService;
 
+    //  댓글 작성
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
     public String createAnswer(Model model, @PathVariable("id") Integer id,
@@ -43,6 +44,7 @@ public class AnswerController {
                 answer.getQuestion().getId(), answer.getId());
     }
 
+    //  댓글 편집 시작
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
     public String answerModify(AnswerForm answerForm, @PathVariable("id") Integer id, Principal principal) {
@@ -51,8 +53,9 @@ public class AnswerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         answerForm.setContent(answer.getContent());
-        return String.format("redirect:/question/detail/%s#answer_%s",
-                answer.getQuestion().getId(), answer.getId());
+
+        return "answer_form";
+
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -72,10 +75,13 @@ public class AnswerController {
         return String.format("redirect:/question/detail/%s#answer_%s",
                 answer.getQuestion().getId(), answer.getId());
     }
+    //  댓글 편집 끝
 
+    //  댓글 삭제 시작
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
-    public String AnswerDelete(@PathVariable("id") Integer id, Principal principal) {
+    public String AnswerDelete(@PathVariable("id") Integer id,
+                               Principal principal) {
         Answer answer = this.answerService.getAnswer(id);
         if(!answer.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제권한 없음");
@@ -85,7 +91,9 @@ public class AnswerController {
         return String.format("redirect:/question/detail/%s#answer_%s",
                 answer.getQuestion().getId(), answer.getId());
     }
+    //  댓글 삭제 끝
 
+    //  댓글 추천 시작
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/vote/{id}")
     public String answerVote(@PathVariable("id") Integer id, Principal principal) {
@@ -96,6 +104,6 @@ public class AnswerController {
         return String.format("redirect:/question/detail/%s#answer_%s",
                 answer.getQuestion().getId(), answer.getId());
     }
-
+    //  댓글 추천 끝
 
 }
