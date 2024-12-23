@@ -1,11 +1,11 @@
 package org.example.jtsb02.answer.controller;
 
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -15,6 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.example.jtsb02.answer.dto.AnswerDto;
+import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.answer.service.AnswerService;
 import org.example.jtsb02.common.security.SecurityConfig;
@@ -82,7 +84,7 @@ class AnswerControllerTest {
     void createAnswerEmptyContent() throws Exception {
         //given
         String url = "/answer/create/1";
-        Question question = createQuestion(1L);
+        Question question = createQuestion();
         when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question));
 
         //when
@@ -103,7 +105,7 @@ class AnswerControllerTest {
     void createAnswerLongContent() throws Exception {
         //given
         String url = "/answer/create/1";
-        Question question = createQuestion(1L);
+        Question question = createQuestion();
         when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question));
 
         //when
@@ -119,14 +121,84 @@ class AnswerControllerTest {
             .andExpect(model().attributeExists("answerForm"));
     }
 
-    private Question createQuestion(Long id) {
+    @Test
+    @DisplayName("GET /answer/modify/{answerId} - Answer 수정폼으로 이동")
+    void modifyAnswerForm() throws Exception {
+        //given
+        String url = "/answer/modify/1";
+        Question question = createQuestion();
+        Answer answer = createAnswer(question);
+        when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
+
+        //when
+        ResultActions result = mockMvc.perform(get(url));
+
+        //then
+        result.andExpect(status().isOk())
+            .andExpect(view().name("answer/form/modify"))
+            .andExpect(model().attributeExists("answerForm"));
+    }
+
+    @Test
+    @DisplayName("POST /answer/modify/{answerId} - Answer 수정")
+    void modifyAnswer() throws Exception {
+        //given
+        String url = "/answer/modify/1";
+        Question question = createQuestion();
+        Answer answer = createAnswer(question);
+        when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
+
+        //when
+        ResultActions result = mockMvc.perform(post(url)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(csrf())
+            .param("id", "1")
+            .param("content", "수정된 내용"));
+
+        //then
+        result.andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/question/detail/1"));
+        verify(answerService, times(1)).modifyAnswer(any(Long.class), any(AnswerForm.class));
+    }
+
+    @Test
+    @DisplayName("GET /answer/delete/{answerId} - Answer 삭제")
+    void deleteAnswer() throws Exception {
+        //given
+        String url = "/answer/delete/1";
+        Question question = createQuestion();
+        Answer answer = createAnswer(question);
+        when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
+
+        //when
+        ResultActions result = mockMvc.perform(get(url)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .with(csrf())
+            .param("id", "1"));
+
+        //then
+        result.andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/question/detail/1"));
+        verify(answerService, times(1)).deleteAnswer(any(AnswerDto.class));
+    }
+
+    private Question createQuestion() {
         return Question.builder()
-            .id(id)
+            .id(1L)
             .subject("test subject")
             .content("test content")
             .createdAt(LocalDateTime.now())
             .hits(1)
             .answers(new ArrayList<>())
+            .build();
+    }
+
+    private Answer createAnswer(Question question) {
+        return Answer.builder()
+            .id(1L)
+            .content("test content")
+            .createdAt(LocalDateTime.now())
+            .question(question)
             .build();
     }
 
