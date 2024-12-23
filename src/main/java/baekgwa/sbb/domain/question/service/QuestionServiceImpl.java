@@ -16,8 +16,10 @@ import baekgwa.sbb.model.question.persistence.QuestionRepository;
 import baekgwa.sbb.model.user.entity.SiteUser;
 import baekgwa.sbb.model.user.persistence.UserRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -41,52 +43,15 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionDto.DetailInfo getQuestion(Integer id, String loginUsername, Integer page,
             Integer size) {
-        Question question = questionRepository.findByIdWithSiteUserAndVoter(id)
-                .orElseThrow(
-                        () -> new DataNotFoundException("question not found"));
-
+        Question question = getQuestionById(id);
         List<Comment> questionCommentList = commentRepository.findByQuestion(question);
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
-        Page<Answer> answer = answerRepository.findByQuestionIdOrderByVoterCountDesc(id, pageable);
+        Page<Answer> answerPage = getAnswersForQuestion(id, page, size);
 
         incrementViewCount(question.getId());
 
-        return QuestionDto.DetailInfo
-                .builder()
-                .id(question.getId())
-                .subject(question.getSubject())
-                .content(question.getContent())
-                .createDate(question.getCreateDate())
-                .modifyDate(question.getModifyDate())
-                .author(question.getSiteUser().getUsername())
-                .voterCount(question.getVoter().stream().count())
-                .userVote(question.getVoter().stream()
-                        .anyMatch(voter -> voter.getUsername().equals(loginUsername)))
-                .answerList(
-                        answer.map(data -> AnswerDto.AnswerDetailInfo
-                                        .builder()
-                                        .id(data.getId())
-                                        .content(data.getContent())
-                                        .modifyDate(data.getModifyDate())
-                                        .createDate(data.getCreateDate())
-                                        .author(data.getSiteUser().getUsername())
-                                        .voteCount(data.getVoter().stream().count())
-                                        .userVote(data.getVoter().stream().anyMatch(
-                                                voter -> voter.getUsername().equals(loginUsername)))
-                                        .build()))
-                .questionCommentList(
-                        questionCommentList.stream().map(
-                                comment -> QuestionDto.QuestionCommentInfo
-                                        .builder()
-                                        .id(comment.getId())
-                                        .author(comment.getSiteUser().getUsername())
-                                        .content(comment.getContent())
-                                        .createDate(comment.getCreateDate())
-                                        .build()).toList())
-                .viewCount(question.getViewCount())
-                .build();
+        return buildQuestionDetailDto(question, loginUsername, answerPage, questionCommentList);
     }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -207,6 +172,7 @@ public class QuestionServiceImpl implements QuestionService {
         commentRepository.save(newComment);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<QuestionDto.CategoryInfo> getCategory() {
         List<Category> findList = categoryRepository.findAll();
@@ -217,6 +183,87 @@ public class QuestionServiceImpl implements QuestionService {
                         .categoryType(c.getCategoryType().name())
                         .build()
         ).toList();
+    }
+
+    private Question getQuestionById(Integer id) {
+        return questionRepository.findByIdWithSiteUserAndVoter(id)
+                .orElseThrow(() -> new DataNotFoundException("question not found"));
+    }
+
+    private Page<Answer> getAnswersForQuestion(Integer id, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
+        return answerRepository.findByQuestionIdOrderByVoterCountDesc(id, pageable);
+    }
+
+    private QuestionDto.DetailInfo buildQuestionDetailDto(
+            Question question,
+            String loginUsername,
+            Page<Answer> answerPage,
+            List<Comment> questionCommentList) {
+
+        return QuestionDto.DetailInfo.builder()
+                .id(question.getId())
+                .subject(question.getSubject())
+                .content(question.getContent())
+                .createDate(question.getCreateDate())
+                .modifyDate(question.getModifyDate())
+                .author(question.getSiteUser().getUsername())
+                .voterCount(getVoterCount(question))
+                .userVote(isUserVoted(question, loginUsername))
+                .answerList(getAnswerDtos(answerPage, loginUsername))
+                .questionCommentList(getCommentDtos(questionCommentList))
+                .viewCount(question.getViewCount())
+                .build();
+    }
+
+    private long getVoterCount(Question question) {
+        return question.getVoter().stream().count();
+    }
+
+    private boolean isUserVoted(Question question, String loginUsername) {
+        return question.getVoter().stream()
+                .anyMatch(voter -> voter.getUsername().equals(loginUsername));
+    }
+
+    private Page<AnswerDto.AnswerDetailInfo> getAnswerDtos(Page<Answer> answerPage, String loginUsername) {
+        List<AnswerDto.AnswerDetailInfo> answerDetailInfoList = answerPage.stream()
+                .map(answer -> buildAnswerDto(answer, loginUsername))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(answerDetailInfoList, answerPage.getPageable(), answerPage.getTotalElements());
+    }
+
+
+    private AnswerDto.AnswerDetailInfo buildAnswerDto(Answer answer, String loginUsername) {
+        return AnswerDto.AnswerDetailInfo.builder()
+                .id(answer.getId())
+                .content(answer.getContent())
+                .modifyDate(answer.getModifyDate())
+                .createDate(answer.getCreateDate())
+                .author(answer.getSiteUser().getUsername())
+                .voteCount(getVoterCount(answer))
+                .userVote(isUserVoted(answer, loginUsername))
+                .build();
+    }
+
+    private long getVoterCount(Answer answer) {
+        return answer.getVoter().stream().count();
+    }
+
+    private boolean isUserVoted(Answer answer, String loginUsername) {
+        return answer.getVoter().stream()
+                .anyMatch(voter -> voter.getUsername().equals(loginUsername));
+    }
+
+    private List<QuestionDto.QuestionCommentInfo> getCommentDtos(List<Comment> comments) {
+        return comments.stream()
+                .map(comment -> QuestionDto.QuestionCommentInfo.builder()
+                        .id(comment.getId())
+                        .author(comment.getSiteUser().getUsername())
+                        .content(comment.getContent())
+                        .createDate(comment.getCreateDate())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private void incrementViewCount(Integer questionId) {
