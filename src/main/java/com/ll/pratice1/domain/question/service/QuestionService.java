@@ -3,6 +3,8 @@ package com.ll.pratice1.domain.question.service;
 import com.ll.pratice1.DataNotFoundException;
 import com.ll.pratice1.domain.answer.Answer;
 import com.ll.pratice1.domain.answer.repository.AnswerRepository;
+import com.ll.pratice1.domain.category.Category;
+import com.ll.pratice1.domain.category.repository.CategoryRepository;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.question.repository.QuestionRepository;
 import com.ll.pratice1.domain.user.SiteUser;
@@ -25,16 +27,19 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final CategoryRepository categoryRepository;
 
     //    public List<Question> getList() {
     //        return this.questionRepository.findAll();
     //    }
 
-    public Page<Question> getList(int page, String kw) {
+    public Page<Question> getList(int page, String kw, String category) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        Specification<Question> spec = search(kw);
+        Category byCategory = categoryRepository.findByCategory(category);
+        Specification<Question> spec = search(kw, byCategory);
+
         return this.questionRepository.findAll(spec, pageable);
     }
 
@@ -64,11 +69,12 @@ public class QuestionService {
         }
     }
 
-    public void create(String subject, String content, SiteUser author) {
+    public void create(String subject, String content, Category category, SiteUser author) {
         Question question = new Question();
         question.setSubject(subject);
         question.setContent(content);
         question.setCreateDate(LocalDateTime.now());
+        question.setCategory(category);
         question.setAuthor(author);
         this.questionRepository.save(question);
     }
@@ -90,7 +96,7 @@ public class QuestionService {
         this.questionRepository.save(question);
     }
 
-    private Specification<Question> search(String kw){
+    private Specification<Question> search(String kw, Category category) {
         return new Specification<Question>() {
             @Override
             public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -98,12 +104,21 @@ public class QuestionService {
                 Join<Question, SiteUser> u1 = q.join("author", JoinType.LEFT);
                 Join<Question, Answer> a = q.join("answerList", JoinType.LEFT);
                 Join<Answer, SiteUser> u2 = q.join("author", JoinType.LEFT);
-                return cb.or(cb.like(q.get("subject"),"%"+kw+"%"),
-                        cb.like(q.get("content"), "%"+kw+"%"),
-                        cb.like(u1.get("username"), "%"+kw+"%"),
-                        cb.like(a.get("content"),"%"+kw+"%"),
-                        cb.like(u2.get("username"),"%"+kw+"%"));
 
+                Predicate keywordPredicate = cb.or(
+                        cb.like(q.get("subject"), "%" + kw + "%"),
+                        cb.like(q.get("content"), "%" + kw + "%"),
+                        cb.like(u1.get("username"), "%" + kw + "%"),
+                        cb.like(a.get("content"), "%" + kw + "%"),
+                        cb.like(u2.get("username"), "%" + kw + "%")
+                );
+
+                // 카테고리 조건 추가
+                if (category != null) {
+                    return cb.and(keywordPredicate, cb.equal(q.get("category"), category));
+                } else {
+                    return keywordPredicate;
+                }
             }
         };
     }

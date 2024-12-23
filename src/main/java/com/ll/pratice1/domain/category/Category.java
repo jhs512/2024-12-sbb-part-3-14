@@ -1,6 +1,7 @@
 package com.ll.pratice1.domain.category;
 
 import com.ll.pratice1.domain.question.Question;
+import com.ll.pratice1.domain.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,5 +20,8 @@ public class Category {
     String category;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
-    private List<Question> questionList;
+    List<Question> questionList;
+
+    @ManyToOne
+    SiteUser siteUser;
 }

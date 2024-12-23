@@ -3647,3 +3647,18 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:1575)
+2024-12-23 15:49:07.528927+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete FROM ANSWER question_id [*]=160"; SQL statement:
+delete FROM ANSWER question_id =160 [42000-232]
+2024-12-23 15:49:14.255735+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete FROM ANSWER question_id [*]=160"; SQL statement:
+delete FROM ANSWER question_id =160 [42000-232]
+2024-12-23 15:49:30.918166+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete FROM ANSWER question_id [*]=160"; SQL statement:
+delete FROM ANSWER question_id =160 [42000-232]
+2024-12-23 15:49:48.396399+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]CATEGORY"; expected "COMMIT, CREATE, CALL, CHECKPOINT, COMMENT"; SQL statement:
+CATEGORY [42001-232]
+2024-12-23 15:50:09.666000+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete [*]* FROM COMMENT where  id>=1"; expected "identifier"; SQL statement:
+delete * FROM COMMENT where  id>=1 [42001-232]

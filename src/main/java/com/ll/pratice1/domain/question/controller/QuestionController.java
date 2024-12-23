@@ -3,8 +3,9 @@ package com.ll.pratice1.domain.question.controller;
 
 import com.ll.pratice1.domain.answer.Answer;
 import com.ll.pratice1.domain.answer.AnswerForm;
+import com.ll.pratice1.domain.category.Category;
+import com.ll.pratice1.domain.category.service.CategoryService;
 import com.ll.pratice1.domain.comment.CommentForm;
-import com.ll.pratice1.domain.comment.service.CommentService;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.question.QuestionForm;
 import com.ll.pratice1.domain.question.service.QuestionService;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,14 +32,25 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final UserService userService;
-    private final CommentService commentService;
+    private final CategoryService categoryService;
+
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0")int page,
-                       @RequestParam(value = "kw", defaultValue = "")String kw){
-        Page<Question> paging = this.questionService.getList(page, kw);
+                       @RequestParam(value = "kw", defaultValue = "")String kw,
+                       @RequestParam(value = "category", defaultValue = "")String category){
+        Page<Question> paging = this.questionService.getList(page, kw, category);
+        List<Category> categoryList = this.categoryService.getCategoryAll();
+        model.addAttribute("categoryList", categoryList);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
+
+        //카테고리등록 해보시겠어요?
+        //추가 부분 구현중이였습니다 ㅠ 되었을까요?
+        // 넵 ! 근데 왜 안되었던걸가요??
+        //1. 아래의 리턴에서 템플릿의 이름을 리턴해야되는데 카테고리 이름을 그대로 리턴하셔서 그랬습니다.
+        //2. 타임리프: 에이치알이에프가 빈값이였습니다.
+        // 감사합니다!
         return "question_list";
     }
 
@@ -55,7 +68,9 @@ public class QuestionController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String questionCreate(QuestionForm questionForm){
+    public String questionCreate(Model model, QuestionForm questionForm){
+        List<Category> categoryList = this.categoryService.getCategoryAll();
+        model.addAttribute("categoryList",categoryList);
         return "question_form";
     }
 
@@ -67,7 +82,8 @@ public class QuestionController {
             return "question_form";
         }
         SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
+        Category category = this.categoryService.getCategory(questionForm.getCategory());
+        this.questionService.create(questionForm.getSubject(), questionForm.getContent(), category, siteUser);
         return "redirect:/question/list";
     }
 
