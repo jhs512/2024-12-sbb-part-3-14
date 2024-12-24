@@ -40,7 +40,7 @@ public class AnswerApiController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .badRequest()
-                    .body(bindingResult.getAllErrors());
+                    .body(new ApiResponse(false, "답변 형식에 맞지 않습니다."));
         }
 
         try {
@@ -55,6 +55,7 @@ public class AnswerApiController {
                                     answer.getQuestion().getId(), answer.getId()))
                     .build();
         } catch (Exception e) {
+            System.out.println("e.getMessage() = " + e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("답변 생성 중 오류가 발생했습니다.");

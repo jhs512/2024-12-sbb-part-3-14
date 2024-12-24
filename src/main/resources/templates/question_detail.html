@@ -181,15 +181,16 @@
     <!-- 답변 반복 끝-->
 
     <!-- 답변 작성-->
-    <form th:object="${answerRequestDTO}" method="post" class="my-3">
-        <div th:replace="form_error :: formErrorsFragment"></div>
+    <form id="answerForm" th:object="${answerRequestDTO}" method="post" class="my-3" onsubmit="submitAnswer(event)">
+        <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
+<!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
 
         <!-- 익명 사용자일 경우 -->
         <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control"
                   rows="10"></textarea>
 
         <!-- 인증된 사용자일 경우 -->
-        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" placeholder="답변을 등록하세요" class="form-control"
+        <textarea sec:authorize="isAuthenticated()"  name="content" th:field="*{content}" placeholder="답변을 등록하세요" class="form-control"
                   rows="10"></textarea>
 
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
@@ -247,6 +248,36 @@
 </div>
 
 <script layout:fragment="script" type='text/javascript'>
+    async function submitAnswer(event) {
+        event.preventDefault();
+        const errorDiv = document.getElementById('errorMessages');
+        const questionId = window.location.pathname.split('/').pop();
+
+        const formData = {
+            content: document.getElementById('content').value
+        };
+
+        try {
+            const response = await fetch(`/api/v1/answer/questions/${questionId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                const redirectUrl = response.headers.get('Location');
+                window.location.replace(redirectUrl);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            errorDiv.textContent = "서버 오류가 발생했습니다.";
+            errorDiv.style.display = 'block';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
 
         async function fetchAPI(url, options = {}) {
@@ -283,7 +314,7 @@
             sortForm.submit();
         });
 
-        // 삭제 버튼 동작
+            // 삭제 버튼 동작
         const delete_elements = document.getElementsByClassName("delete");
         Array.from(delete_elements).forEach(function (element) {
             element.addEventListener('click', async function (e) {
