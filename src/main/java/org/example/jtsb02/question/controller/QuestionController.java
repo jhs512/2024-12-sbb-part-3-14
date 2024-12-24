@@ -1,12 +1,16 @@
 package org.example.jtsb02.question.controller;
 
 import jakarta.validation.Valid;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.answer.form.AnswerForm;
+import org.example.jtsb02.member.dto.MemberDto;
+import org.example.jtsb02.member.service.MemberService;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.form.QuestionForm;
 import org.example.jtsb02.question.service.QuestionService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,19 +26,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final MemberService memberService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     public String createQuestion(Model model, QuestionForm questionForm) {
         model.addAttribute("questionForm", questionForm);
         return "question/form/create";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String createQuestion(@Valid QuestionForm questionForm, BindingResult bindingResult) {
+    public String createQuestion(@Valid QuestionForm questionForm, BindingResult bindingResult,
+        Principal principal) {
         if (bindingResult.hasErrors()) {
             return "question/form/create";
         }
-        Long questionId = questionService.createQuestion(questionForm);
+        MemberDto member = memberService.getMember(principal.getName());
+        Long questionId = questionService.createQuestion(questionForm, member);
         return String.format("redirect:/question/detail/%s", questionId);
     }
 
@@ -53,6 +62,7 @@ public class QuestionController {
         return "question/detail";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
     public String modifyQuestion(@PathVariable("id") Long id, Model model,
         QuestionForm questionForm) {
@@ -63,6 +73,7 @@ public class QuestionController {
         return "question/form/modify";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String modifyQuestion(@PathVariable("id") Long id, @Valid QuestionForm questionForm,
         BindingResult bindingResult) {
@@ -73,6 +84,7 @@ public class QuestionController {
         return String.format("redirect:/question/detail/%s", id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
     public String deleteQuestion(@PathVariable("id") Long id) {
         questionService.deleteQuestion(id);

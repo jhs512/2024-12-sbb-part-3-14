@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.example.jtsb02.common.exception.DataNotFoundException;
+import org.example.jtsb02.member.entity.Member;
+import org.example.jtsb02.member.repository.MemberRepository;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
 import org.junit.jupiter.api.DisplayName;
@@ -19,11 +21,20 @@ class QuestionRepositoryTest {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Test
     @DisplayName("질문 등록")
     void save() {
         //given
-        Question question = Question.of("제목1", "내용1");
+        Member member = memberRepository.save(Member.of(
+            "onlyTset",
+            "onlyTest",
+            "onlyTest",
+            "onlyTest@gmail.com")
+        );
+        Question question = Question.of("제목1", "내용1", member);
 
         //when
         Question save = questionRepository.save(question);
@@ -34,14 +45,21 @@ class QuestionRepositoryTest {
         assertThat(save.getSubject()).isEqualTo("제목1");
         assertThat(save.getContent()).isEqualTo("내용1");
         assertThat(save.getHits()).isEqualTo(0);
+        assertThat(save.getAuthor().getId()).isEqualTo(member.getId());
     }
 
     @Test
     @DisplayName("질문 목록 조회")
     void findAll() {
         //given
-        Question question1 = Question.of("제목1", "내용1");
-        Question question2 = Question.of("제목2", "내용2");
+        Member member = memberRepository.save(Member.of(
+            "onlyTset",
+            "onlyTest",
+            "onlyTest",
+            "onlyTest@gmail.com")
+        );
+        Question question1 = Question.of("제목1", "내용1", member);
+        Question question2 = Question.of("제목2", "내용2", member);
         questionRepository.save(question1);
         questionRepository.save(question2);
 
@@ -55,13 +73,20 @@ class QuestionRepositoryTest {
         assertThat(questions.getFirst().getContent()).isEqualTo("내용1");
         assertThat(questions.get(1).getSubject()).isEqualTo("제목2");
         assertThat(questions.get(1).getContent()).isEqualTo("내용2");
+        assertThat(questions.get(1).getAuthor().getId()).isEqualTo(member.getId());
     }
 
     @Test
     @DisplayName("ID로 질문 조회")
     void findById() {
         //given
-        Question question = Question.of("제목1", "내용1");
+        Member member = memberRepository.save(Member.of(
+            "onlyTset",
+            "onlyTest",
+            "onlyTest",
+            "onlyTest@gmail.com")
+        );
+        Question question = Question.of("제목1", "내용1", member);
         questionRepository.save(question);
 
         //when
@@ -79,7 +104,13 @@ class QuestionRepositoryTest {
     @DisplayName("질문 수정")
     void modify() {
         //given
-        Question question = Question.of("제목1", "내용1");
+        Member member = memberRepository.save(Member.of(
+            "onlyTset",
+            "onlyTest",
+            "onlyTest",
+            "onlyTest@gmail.com")
+        );
+        Question question = Question.of("제목1", "내용1", member);
         questionRepository.save(question);
 
         //when
@@ -103,7 +134,13 @@ class QuestionRepositoryTest {
     @DisplayName("질문 삭제")
     void delete() {
         //given
-        Question question = Question.of("제목1", "내용1");
+        Member member = memberRepository.save(Member.of(
+            "onlyTset",
+            "onlyTest",
+            "onlyTest",
+            "onlyTest@gmail.com")
+        );
+        Question question = Question.of("제목1", "내용1", member);
         questionRepository.save(question);
 
         //when

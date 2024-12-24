@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.model.MemberRole;
 
 @Entity
@@ -46,6 +47,15 @@ public class Member {
             .password(password)
             .email(email)
             .role(MemberRole.USER)
+            .build();
+    }
+
+    public static Member fromMemberDto(MemberDto memberDto) {
+        return Member.builder()
+            .id(memberDto.getId())
+            .memberId(memberDto.getMemberId())
+            .nickname(memberDto.getNickname())
+            .email(memberDto.getEmail())
             .build();
     }
 }

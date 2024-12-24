@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.example.jtsb02.common.exception.DataNotFoundException;
+import org.example.jtsb02.member.dto.MemberDto;
+import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.form.QuestionForm;
@@ -49,7 +51,8 @@ class QuestionServiceTest {
         when(questionRepository.save(any(Question.class))).thenReturn(mockQuestion);
 
         // when: 메서드 실행
-        Long questionId = questionService.createQuestion(questionForm);
+        Long questionId = questionService.createQuestion(questionForm,
+            MemberDto.builder().id(1L).build());
 
         // then: 결과 검증
         assertThat(questionId).isNotNull();
@@ -164,6 +167,13 @@ class QuestionServiceTest {
             .createdAt(LocalDateTime.now())
             .hits(0)
             .answers(new ArrayList<>())
+            .author(Member.builder()
+                .id(1L)
+                .memberId("onlyTest")
+                .nickname("onlyTest")
+                .password("onlyTest")
+                .email("onlyTest@gmail.com")
+                .build())
             .build();
     }
 }

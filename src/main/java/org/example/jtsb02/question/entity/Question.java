@@ -3,9 +3,11 @@ package org.example.jtsb02.question.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.jtsb02.answer.entity.Answer;
+import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.question.dto.QuestionDto;
 
 @Entity
@@ -44,13 +47,17 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answers;
 
-    public static Question of(String subject, String content) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member author;
+
+    public static Question of(String subject, String content, Member author) {
         return Question.builder()
             .subject(subject)
             .content(content)
             .createdAt(LocalDateTime.now())
             .hits(0)
             .answers(new ArrayList<>())
+            .author(author)
             .build();
     }
 

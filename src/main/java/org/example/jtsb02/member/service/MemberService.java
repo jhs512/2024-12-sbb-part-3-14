@@ -1,6 +1,8 @@
 package org.example.jtsb02.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.jtsb02.common.exception.DataNotFoundException;
+import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.member.form.MemberForm;
 import org.example.jtsb02.member.repository.MemberRepository;
@@ -21,5 +23,10 @@ public class MemberService {
             passwordEncoder.encode(memberForm.getPassword()),
             memberForm.getEmail()
         ));
+    }
+
+    public MemberDto getMember(String memberId) {
+        return MemberDto.fromMember(memberRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new DataNotFoundException("Member not found")));
     }
 }

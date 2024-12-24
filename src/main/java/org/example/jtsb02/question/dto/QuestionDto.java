@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.jtsb02.answer.dto.AnswerDto;
+import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.question.entity.Question;
 
 @Getter
@@ -18,6 +19,7 @@ public class QuestionDto {
     private LocalDateTime modifiedAt;
     private int hits;
     private List<AnswerDto> answers;
+    private MemberDto author;
 
     public static QuestionDto fromQuestion(Question question) {
         return QuestionDto.builder()
@@ -28,6 +30,7 @@ public class QuestionDto {
             .modifiedAt(question.getModifiedAt())
             .hits(question.getHits())
             .answers(question.getAnswers().stream().map(AnswerDto::fromAnswer).toList())
+            .author(MemberDto.fromMember(question.getAuthor()))
             .build();
     }
 

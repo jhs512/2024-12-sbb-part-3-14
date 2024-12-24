@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.common.exception.DataNotFoundException;
+import org.example.jtsb02.member.dto.MemberDto;
+import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.form.QuestionForm;
@@ -22,9 +24,10 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public Long createQuestion(QuestionForm questionForm) {
+    public Long createQuestion(QuestionForm questionForm, MemberDto memberDto) {
         return questionRepository.save(
-            Question.of(questionForm.getSubject(), questionForm.getContent())).getId();
+            Question.of(questionForm.getSubject(), questionForm.getContent(),
+                Member.fromMemberDto(memberDto))).getId();
     }
 
     public Page<QuestionDto> getQuestions(int page) {
