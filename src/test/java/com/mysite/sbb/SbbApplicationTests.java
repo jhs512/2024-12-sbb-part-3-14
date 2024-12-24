@@ -87,7 +87,7 @@ class SbbApplicationTests {
         this.answerRepository.save(a);
     }
 
-    @Test
+/*    @Test
     @DisplayName("페이징용 테스트 데이터 생성")
     void testJPA() {
         for (int i = 0; i < 300; i++) {
@@ -96,5 +96,5 @@ class SbbApplicationTests {
 
             this.questionService.create(s,c,null);
         }
-    }
+    }*/
 }

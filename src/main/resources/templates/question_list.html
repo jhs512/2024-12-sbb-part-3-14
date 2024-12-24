@@ -21,6 +21,7 @@
         <thead class="table-dark">
         <tr class="text-center">
             <th>번호</th>
+            <th>카테고리</th>
             <th style="width:50%">제목</th>
             <th>작성자</th>
             <th>작성일시</th>
@@ -29,6 +30,7 @@
         <tbody>
         <tr class="text-center" th:each="question, loop : ${paging}">
             <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+            <td th:text="${question.category.name}"></td>
             <td class="text-start">
                 <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
                 <span class="text-danger small ms-2"

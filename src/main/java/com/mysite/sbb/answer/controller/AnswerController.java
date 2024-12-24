@@ -9,6 +9,7 @@ import com.mysite.sbb.question.service.QuestionService;
 import com.mysite.sbb.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ public class AnswerController {
     private final AnswerService answerService;
     private final UserService userService;
 
-    //  댓글 작성
+    //  답글 작성
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
     public String createAnswer(Model model, @PathVariable("id") Integer id,
@@ -36,6 +37,8 @@ public class AnswerController {
         SiteUser siteUser = this.userService.getUser(principal.getName());
         if(bindingResult.hasErrors()) {
             model.addAttribute("question", question);
+            Page<Answer> paging = this.answerService.getListByVoterCount(question.getId(),0); // 페이징 리스트 생성
+            model.addAttribute("paging", paging); // 페이징 데이터 전달
             return "question_detail";
         }
 

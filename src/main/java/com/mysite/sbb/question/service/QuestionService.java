@@ -1,6 +1,8 @@
 package com.mysite.sbb.question.service;
 
+import com.mysite.sbb.category.repository.CategoryRepository;
 import com.mysite.sbb.entity.Answer;
+import com.mysite.sbb.entity.Category;
 import com.mysite.sbb.entity.Question;
 import com.mysite.sbb.entity.SiteUser;
 import com.mysite.sbb.exception.DataNotFoundException;
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final CategoryRepository categoryRepository;
 
     public List<Question> getList() {
         return this.questionRepository.findAll();
@@ -39,10 +42,20 @@ public class QuestionService {
         }
     }
 
-    public void create(String subject, String content, SiteUser user) {
+    public void create(String subject, String content, String categoryName, SiteUser user) {
+
+        //  카테고리 항목 추가
+        Category category = categoryRepository.findByName(categoryName)
+                                              .orElseGet( () -> {
+                                                  Category newCategory = new Category();
+                                                  newCategory.setName(categoryName);
+                                                  return categoryRepository.save(newCategory);
+                                              });
+
         Question q = new Question();
         q.setSubject(subject);
         q.setContent(content);
+        q.setCategory(category); //  카테고리 항목 추가
         q.setCreateDate(LocalDateTime.now());
         q.setAuthor(user);
         this.questionRepository.save(q);

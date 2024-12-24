@@ -12,6 +12,9 @@ public class QuestionForm {
     @Size(max = 200)
     private String subject;
 
+    @NotEmpty(message = "카테고리를 입력 해 주세요. ")
+    private String category;
+
     @NotEmpty(message = "내용을 입력 해 주세요.")
     private String content;
 }
