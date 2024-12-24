@@ -1,8 +1,6 @@
 package baekgwa.sbb.domain.answer.service;
 
 import baekgwa.sbb.domain.answer.dto.AnswerDto;
-import baekgwa.sbb.domain.question.dto.QuestionDto;
-import baekgwa.sbb.domain.question.service.QuestionService;
 import baekgwa.sbb.global.exception.DataNotFoundException;
 import baekgwa.sbb.model.answer.entity.Answer;
 import baekgwa.sbb.model.answer.persistence.AnswerRepository;
@@ -69,6 +67,10 @@ public class AnswerServiceImpl implements AnswerService {
         Answer findData = answerRepository.findByIdWithQuestion(answerId).orElseThrow(
                 () -> new DataNotFoundException("Answer not found"));
 
+        if (!checkPermission(findData.getSiteUser().getUsername(), loginUsername)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
+
         answerRepository.save(Answer.modifyAnswer(findData, newContent));
         return findData.getQuestion().getId();
     }
@@ -85,11 +87,13 @@ public class AnswerServiceImpl implements AnswerService {
         Answer findData = answerRepository.findByIdWithQuestion(answerId).orElseThrow(
                 () -> new DataNotFoundException("answer not found"));
 
-        if (!findData.getSiteUser().getUsername().equals(loginUsername)) {
+        if (!checkPermission(findData.getSiteUser().getUsername(), loginUsername)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
+
         Integer questionId = findData.getQuestion().getId();
         answerRepository.deleteById(answerId);
+
         return questionId;
     }
 
@@ -118,5 +122,15 @@ public class AnswerServiceImpl implements AnswerService {
 
         answer.getVoter().remove(siteUser);
         return answer.getQuestion().getId();
+    }
+
+    /**
+     * 로그인 이름과, 답변의 주인의 매칭여부로, 권한 여부를 판단합니다.
+     * @param authorName
+     * @param loginName
+     * @return boolean
+     */
+    private boolean checkPermission(String authorName, String loginName) {
+        return authorName.equals(loginName);
     }
 }
