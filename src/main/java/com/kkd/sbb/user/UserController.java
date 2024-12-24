@@ -4,6 +4,8 @@ package com.kkd.sbb.user;
 import com.kkd.sbb.DataNotFoundException;
 import com.kkd.sbb.answer.Answer;
 import com.kkd.sbb.answer.AnswerService;
+import com.kkd.sbb.comment.Comment;
+import com.kkd.sbb.comment.CommentService;
 import com.kkd.sbb.question.Question;
 import com.kkd.sbb.question.QuestionService;
 import jakarta.validation.Valid;
@@ -34,6 +36,7 @@ public class UserController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final JavaMailSender mailSender;
+    private final CommentService commentService;
 
     @GetMapping("/signup")
     public String signup(UserCreateForm userCreateForm) {
@@ -77,18 +80,22 @@ public class UserController {
                           @RequestParam(value="question-page", defaultValue="0") int questionPage,
                           @RequestParam(value="ans-page", defaultValue="0") int ansPage,
                           @RequestParam(value="question-vote-page", defaultValue="0") int questionVoterPage,
-                          @RequestParam(value="ans-vote-page", defaultValue="0") int ansVoterPage) {
+                          @RequestParam(value="ans-vote-page", defaultValue="0") int ansVoterPage,
+                          @RequestParam(value="comment-page", defaultValue="0") int commentPage) {
         SiteUser siteUser = this.userService.getUser(principal.getName());
         Page<Question> wroteQuestions = this.questionService.getListByAuthor(questionPage, siteUser);
         Page<Answer> wroteAnswers = this.answerService.getListByAuthor(ansPage, siteUser);
         Page<Question> votedQuestions = this.questionService.getListByVoter(questionVoterPage, siteUser);
         Page<Answer> votedAnswers = this.answerService.getListByVoter(ansVoterPage, siteUser);
+        Page<Comment> wroteComments = this.commentService.getListByAuthor(commentPage, siteUser);
+
         model.addAttribute("wrote_question_paging", wroteQuestions);
         model.addAttribute("wrote_answer_paging", wroteAnswers);
         model.addAttribute("voted_question_paging", votedQuestions);
         model.addAttribute("voted_answer_paging", votedAnswers);
         model.addAttribute("username", siteUser.getUsername());
         model.addAttribute("userEmail", siteUser.getEmail());
+        model.addAttribute("wrote_comment_paging", wroteComments);
         return "profile";
     }
 
