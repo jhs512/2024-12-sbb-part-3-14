@@ -36,10 +36,6 @@ public class QuestionApiController {
         }
         questionServiceImpl.create(questionRequestDTO, principal.getName());
         return ResponseEntity.ok(new ApiResponse(true, "게시물 작성이 완료되었습니다."));
-//        return ResponseEntity
-//                .status(HttpStatus.SEE_OTHER)
-//                .header(HttpHeaders.LOCATION, "/question/list")
-//                .build();
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -69,21 +65,21 @@ public class QuestionApiController {
     public ResponseEntity<?> removeQuestion(
             @PathVariable("id") Integer id,
             Principal principal) {
-        this.questionServiceImpl.delete(id, principal.getName());
-        return ResponseEntity
-                .status(HttpStatus.SEE_OTHER)
-                .header(HttpHeaders.LOCATION, "/")
-                .build();
+        try {
+            this.questionServiceImpl.delete(id, principal.getName());
+            return ResponseEntity.ok(new ApiResponse(true, "질문이 삭제되었습니다."));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ApiResponse(false, "질문 삭제에 실패했습니다."));
+        }
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/vote")
     public ResponseEntity<?> addVoteToQuestion(@PathVariable("id") Integer id, Principal principal) {
         this.questionServiceImpl.vote(id, principal.getName());
-        return ResponseEntity
-                .status(HttpStatus.SEE_OTHER)
-                .header(HttpHeaders.LOCATION, "/")
-                .build();
+        return ResponseEntity.ok(new ApiResponse(true, "추천이 완료되었습니다."));
     }
 
 }

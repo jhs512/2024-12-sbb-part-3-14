@@ -26,21 +26,25 @@
                 </div>
             </div>
             <div class="my-3">
-                <!-- 추천 버튼-->
-                <a href="javascript:void(0);" class="vote-button recommend btn btn-sm btn-outline-secondary"
+                <a href="javascript:void(0);"
+                   th:data-uri="@{|/question/${question.id}/vote|}"
+                   class="vote-button recommend btn btn-sm btn-outline-secondary"
                    data-id="${question.id}">
                     추천
                     <span class="badge rounded-pill bg-success" th:text="${question.voterCount}"></span>
                 </a>
 
-                <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
+                <a th:href="@{|/question/modify/${question.id}|}"
+                   class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
                    th:if="${question.authorName != null and #authentication.getPrincipal().getUsername() == question.authorName}"
                    th:text="수정"></a>
 
                 <!-- 삭제 버튼-->
-                <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}"
-                   class="delete-button btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+                <a href="javascript:void(0);"
+                   th:data-uri="@{|/question/${question.id}|}"
+                   class="delete btn btn-sm btn-outline-secondary"
+                   sec:authorize="isAuthenticated()"
                    th:text="삭제"></a>
             </div>
 
@@ -279,9 +283,7 @@
             sortForm.submit();
         });
 
-
-
-        // 삭제 버튼 동작 (질문과 답변 모두 처리)
+        // 삭제 버튼 동작
         const delete_elements = document.getElementsByClassName("delete");
         Array.from(delete_elements).forEach(function (element) {
             element.addEventListener('click', async function (e) {
@@ -314,7 +316,7 @@
             });
         });
 
-        // 추천 버튼 동작 (질문과 답변 모두 처리)
+        // 추천 버튼 동작
         const recommend_elements = document.getElementsByClassName("recommend");
         Array.from(recommend_elements).forEach(function (element) {
             element.addEventListener('click', async function (e) {
