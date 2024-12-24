@@ -18,6 +18,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
         http
@@ -37,6 +38,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true))
         ;
         return http.build();
+
     }
 
     @Bean

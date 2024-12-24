@@ -29,10 +29,6 @@ public class QuestionService {
     private final AnswerRepository answerRepository;
     private final CategoryRepository categoryRepository;
 
-    //    public List<Question> getList() {
-    //        return this.questionRepository.findAll();
-    //    }
-
     public Page<Question> getList(int page, String kw, String category) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));

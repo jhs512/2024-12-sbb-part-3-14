@@ -1,4 +1,4 @@
-package com.ll.pratice1.domain.user;
+package com.ll.pratice1.domain.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

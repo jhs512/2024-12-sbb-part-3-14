@@ -3,14 +3,13 @@
     <div id="page-wrapper">
         <!-- 사이드바 -->
         <div id="sidebar-wrapper">
-            <ul class="sidebar-nav"  >
+            <ul class="sidebar-nav" >
                 <li th:each="cat : ${categoryList}">
                     <a th:href="@{|/question/list?category=${cat.category}|}" th:text="${cat.category}"></a>
                 </li>
             </ul>
             <div class="d-grid gap-2 col-6 mx-auto">
                 <a th:href="@{/category/create}" class=" btn btn-primary btn-sm">추가</a>
-                <a th:href="@{/category/delete}" class=" btn btn-secondary btn-sm">삭제</a>
             </div>
         </div>
     </div>
