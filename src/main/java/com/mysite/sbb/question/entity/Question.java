@@ -1,7 +1,7 @@
 package com.mysite.sbb.question.entity;
 
 import com.mysite.sbb.answer.entity.Answer;
-import com.mysite.sbb.global.entity.BaseEntity;
+import com.mysite.sbb.global.entity.BaseEntityVoter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Question extends BaseEntity {
-    // BaseEntity : id, content, createDate, author, modifyDate, voter
+public class Question extends BaseEntityVoter {
+    // BaseEntityVoter : id, content, createDate, author, modifyDate, voter
 
     @Column(length = 200)
     private String subject;

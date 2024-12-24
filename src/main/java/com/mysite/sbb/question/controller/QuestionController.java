@@ -3,6 +3,8 @@ package com.mysite.sbb.question.controller;
 import com.mysite.sbb.answer.entity.Answer;
 import com.mysite.sbb.answer.entity.AnswerForm;
 import com.mysite.sbb.answer.service.AnswerService;
+import com.mysite.sbb.comment.entity.Comment;
+import com.mysite.sbb.comment.service.CommentService;
 import com.mysite.sbb.global.util.Check;
 import com.mysite.sbb.global.util.HttpMethod;
 import com.mysite.sbb.question.entity.Question;
@@ -20,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ public class QuestionController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final UserService userService;
+    private final CommentService commentService;
 
     @GetMapping("/list")
     public String getQuestionList(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
@@ -43,6 +47,7 @@ public class QuestionController {
                                  @RequestParam(value = "page", defaultValue = "0") int page,
                                  @RequestParam(value = "sortOrder", defaultValue = "recommend") String sortOrder) {
         Question question = this.questionService.findQuestionById(id);
+        List<Comment> commentList = this.commentService.findAll(id);
 
         Page<Answer> answerPage;
         if (sortOrder.equals("recommend")){
@@ -54,6 +59,7 @@ public class QuestionController {
         model.addAttribute("question", question);
         model.addAttribute("answerPage", answerPage);
         model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("commentList", commentList);
         return "question_detail";
     }
 
@@ -126,4 +132,6 @@ public class QuestionController {
         this.questionService.voteQuestion(question, voteUser);
         return "redirect:/question/detail/%s".formatted(questionId);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.mysite.sbb.global.util;
 
 import com.mysite.sbb.answer.entity.Answer;
+import com.mysite.sbb.comment.entity.Comment;
 import com.mysite.sbb.question.entity.Question;
 import com.mysite.sbb.user.entity.SiteUser;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,9 @@ public class Check {
         } else if(object instanceof Answer) {
             Answer answer = (Answer) object;
             author = answer.getAuthor();
+        } else if(object instanceof Comment) {
+            Comment comment = (Comment) object;
+            author = comment.getAuthor();
         } else {
             throw new IllegalArgumentException("잘못된 데이터 타입입니다.");
         }
