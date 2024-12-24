@@ -3,18 +3,15 @@ package baekgwa.sbb.domain.question.controller;
 import baekgwa.sbb.domain.answer.form.AnswerForm;
 import baekgwa.sbb.domain.answer.form.CommentForm;
 import baekgwa.sbb.domain.question.dto.QuestionDto;
-import baekgwa.sbb.domain.question.dto.QuestionDto.CategoryInfo;
 import baekgwa.sbb.domain.question.form.QuestionForm;
 import baekgwa.sbb.domain.question.service.QuestionService;
 import baekgwa.sbb.global.util.ControllerUtils;
-import baekgwa.sbb.model.category.entity.CategoryType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/question")

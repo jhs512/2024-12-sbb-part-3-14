@@ -87,9 +87,11 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<QuestionDto.MainInfo> getList(int page, int size, String keyword, String categoryType) {
+    public Page<QuestionDto.MainInfo> getList(int page, int size, String keyword,
+            String categoryType) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createDate")));
-        Specification<Question> spec = QuestionSpecificationBuilder.INSTANCE.searchByKeywordAndCategoryType(keyword, categoryType);
+        Specification<Question> spec = QuestionSpecificationBuilder.INSTANCE.searchByKeywordAndCategoryType(
+                keyword, categoryType);
 
         return questionRepository.findAll(spec, pageable)
                 .map(
@@ -112,6 +114,10 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(
                         () -> new DataNotFoundException("question not found"));
 
+        if(!checkPermission(findData.getSiteUser().getUsername(), loginUsername)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
+        }
+
         findData.modifyQuestion(questionForm.getSubject(), questionForm.getContent());
     }
 
@@ -122,7 +128,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(
                         () -> new DataNotFoundException("question not found"));
 
-        if (!findData.getSiteUser().getUsername().equals(loginUsername)) {
+        if(!checkPermission(findData.getSiteUser().getUsername(), loginUsername)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
 
@@ -225,12 +231,14 @@ public class QuestionServiceImpl implements QuestionService {
                 .anyMatch(voter -> voter.getUsername().equals(loginUsername));
     }
 
-    private Page<AnswerDto.AnswerDetailInfo> getAnswerDtos(Page<Answer> answerPage, String loginUsername) {
+    private Page<AnswerDto.AnswerDetailInfo> getAnswerDtos(Page<Answer> answerPage,
+            String loginUsername) {
         List<AnswerDto.AnswerDetailInfo> answerDetailInfoList = answerPage.stream()
                 .map(answer -> buildAnswerDto(answer, loginUsername))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(answerDetailInfoList, answerPage.getPageable(), answerPage.getTotalElements());
+        return new PageImpl<>(answerDetailInfoList, answerPage.getPageable(),
+                answerPage.getTotalElements());
     }
 
 
@@ -271,5 +279,15 @@ public class QuestionServiceImpl implements QuestionService {
         //todo : 새로고침 시, 무한정 늘어나도록 설정되어있는 것, 처리 필요.
         //todo : 유튜브 처럼, 수십만의 조회수가 몰리면, 이렇게 처리 보다는, 벌크성 쿼리 혹은 batch 작업 필요.
         questionRepository.incrementViewCount(questionId);
+    }
+
+    /**
+     *
+     * @param authorName
+     * @param loginName
+     * @return booelean
+     */
+    private boolean checkPermission(String authorName, String loginName) {
+        return authorName.equals(loginName);
     }
 }
