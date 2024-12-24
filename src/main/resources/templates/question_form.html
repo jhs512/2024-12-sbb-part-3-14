@@ -1,0 +1,50 @@
+<html layout:decorate="~{layout}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div layout:fragment="content" class="container">
+    <h5 class="my-3 border-bottom pb-2">질문등록</h5>
+    <form th:object="${questionForm}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
+        <div class="mb-3">
+            <label th:for="subject" class="form-label">제목</label>
+            <input type="text" th:field="*{subject}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label th:for="content" class="form-label">내용</label>
+            <!-- SimpleMDE 적용 대상 -->
+            <textarea th:field="*{content}" id="markdownEditor" class="form-control" rows="10"></textarea>
+        </div>
+        <input type="submit" value="저장하기" class="btn btn-primary my-2">
+    </form>
+</div>
+
+<!-- 자바스크립트 (Markdown Editor 초기화) -->
+<div layout:fragment="script">
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // SimpleMDE 초기화
+        const simplemde = new SimpleMDE({
+          element: document.getElementById("markdownEditor"),
+          placeholder: "여기에 Markdown을 작성하세요...",
+          spellChecker: false, // 맞춤법 검사 비활성화
+          toolbar: [
+            "bold", "italic", "heading", "|",
+            "quote", "unordered-list", "ordered-list", "|",
+            "link", "image", "table", "|",
+            "preview", "side-by-side", "fullscreen"
+          ]
+        });
+
+        // 폼 제출 시 Markdown 데이터 업데이트
+        document.querySelector("form").addEventListener("submit", function () {
+          // SimpleMDE에서 원래 textarea로 값 동기화
+          document.getElementById("markdownEditor").value = simplemde.value();
+        });
+      });
+    </script>
+</div>
+
+</html>
