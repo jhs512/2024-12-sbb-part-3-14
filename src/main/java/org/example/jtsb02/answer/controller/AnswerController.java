@@ -1,5 +1,7 @@
 package org.example.jtsb02.answer.controller;
 
+import static org.example.jtsb02.common.util.UserUtil.checkUserPermission;
+
 import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
@@ -55,19 +57,21 @@ public class AnswerController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String modifyAnswer(@PathVariable("id") Long answerId, @Valid AnswerForm answerForm,
-        BindingResult bindingResult) {
+        BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "answer/form/modify";
         }
         AnswerDto answer = answerService.getAnswer(answerId);
+        checkUserPermission(principal.getName(), answer.getAuthor().getMemberId(), "수정");
         answerService.modifyAnswer(answerId, answerForm);
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
-    public String deleteAnswer(@PathVariable("id") Long answerId) {
+    public String deleteAnswer(@PathVariable("id") Long answerId, Principal principal) {
         AnswerDto answer = answerService.getAnswer(answerId);
+        checkUserPermission(principal.getName(), answer.getAuthor().getMemberId(), "삭제");
         answerService.deleteAnswer(answer);
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }

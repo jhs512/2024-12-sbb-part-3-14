@@ -23,11 +23,15 @@
 			</div>
 			<div class="my-3">
 				<a class="btn btn-sm btn-outline-secondary" th:href="@{|/question/modify/${question.id}|}"
+				   sec:authorize="isAuthenticated()"
+				   th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.nickname}"
 				   th:text="수정"></a>
 				<a class="delete btn btn-sm btn-outline-secondary" href="javascript:void(0);"
-				   th:data-uri="@{|/question/delete/${question.id}|}" th:text="삭제"></a>
+				   th:data-uri="@{|/question/delete/${question.id}|}"
+				   sec:authorize="isAuthenticated()"
+				   th:if="${question.author != null and #authentication.principal.getUsername() == question.author.nickname}"
+				   th:text="삭제"></a>
 			</div>
-
 		</div>
 	</div>
 
@@ -55,9 +59,14 @@
 			</div>
 			<div class="my-3">
 				<a class="btn btn-sm btn-outline-secondary" th:href="@{|/answer/modify/${answer.id}|}"
+				   sec:authorize="isAuthenticated()"
+				   th:if="${answer.author != null and #authentication.principal.username == answer.author.nickname}"
 				   th:text="수정"></a>
 				<a class="delete btn btn-sm btn-outline-secondary" href="javascript:void(0);"
-				   th:data-uri="@{|/answer/delete/${answer.id}|}" th:text="삭제"></a>
+				   sec:authorize="isAuthenticated()"
+				   th:if="${question.author != null and #authentication.principal.username == answer.author.nickname}"
+				   th:data-uri="@{|/answer/delete/${answer.id}|}"
+				   th:text="삭제"></a>
 			</div>
 		</div>
 	</div>
