@@ -2,6 +2,7 @@ package com.mysite.sbb;
 
 import com.mysite.sbb.answer.repository.AnswerRepository;
 import com.mysite.sbb.entity.Answer;
+import com.mysite.sbb.entity.Comment;
 import com.mysite.sbb.entity.Question;
 import com.mysite.sbb.question.repository.QuestionRepository;
 import com.mysite.sbb.question.service.QuestionService;
@@ -32,9 +33,10 @@ class SbbApplicationTests {
     @Test
     @DisplayName("테이블 생성 테스트 ")
     void CreateTable (){
-        Question question = new Question();
-        Answer answer = new Answer();
+        //Question question = new Question();
+        //Answer answer = new Answer();
         //SiteUser siteUser = new SiteUser();
+        Comment comment = new Comment();
     }
 
     @Test

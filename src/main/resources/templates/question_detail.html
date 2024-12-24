@@ -70,10 +70,42 @@
     <!-- 페이징 끝 -->
 
     <!-- 답변 반복 시작 -->
-    <div class="card my-3" th:each="answer, loop : ${paging}">
-        <a th:id="|answer_${answer.id}|"></a>
+    <div class="card my-3" th:each="answer : ${paging}">
         <div class="card-body">
             <div class="card-text" th:utext="${@commonUtil.markdown(answer.content)}"></div>
+
+            <!-- 댓글 리스트 -->
+            <ul>
+                <li th:each="comment : ${answer.commentList}"  th:if="${comment.parent == null}">
+                    <div>
+                        <span th:text="${comment.author.username}"></span>:
+                        <span th:text="${comment.content}"></span>
+                    </div>
+
+                    <!-- 대댓글 리스트 -->
+                    <ul>
+                        <li th:each="reply : ${comment.children}" class="ms-4">
+                            <div>
+                                <span th:text="${reply.author.username}"></span>:
+                                <span th:text="${reply.content}"></span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- 대댓글 작성 폼 -->
+                    <form th:action="@{|/comment/reply/${comment.id}|}" method="post" class="ms-3">
+                        <textarea name="content" placeholder="대댓글을 입력하세요" rows="2" class="form-control"></textarea>
+                        <button type="submit" class="btn btn-sm btn-primary mt-1">대댓글 작성</button>
+                    </form>
+                </li>
+            </ul>
+
+            <!-- 댓글 작성 폼 -->
+            <form th:action="@{|/comment/create/${answer.id}|}" method="post">
+                <textarea name="content" placeholder="댓글을 입력하세요"></textarea>
+                <button type="submit" class="btn btn-primary">댓글 작성</button>
+            </form>
+            
             <div class="d-flex justify-content-end">
                 <div th:if="${answer.modifyDate != null}" class="badge bg-light text-dark p-2 text-start mx-3">
                     <div class="mb-2">modified at</div>

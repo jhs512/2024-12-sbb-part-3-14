@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,4 +31,8 @@ public class Answer {
 
     @ManyToMany
     Set<SiteUser> voter;
+
+    //  댓글 관련 추가필드
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
+    private List<Comment> commentList;
 }
