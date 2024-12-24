@@ -24,7 +24,7 @@ public class QuestionApiController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<?> createNewQuestion(
+    public ResponseEntity<ApiResponse> createNewQuestion(
             @Valid @RequestBody QuestionRequestDTO questionRequestDTO,
             BindingResult bindingResult,
             Principal principal) {
@@ -32,18 +32,19 @@ public class QuestionApiController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .badRequest()
-                    .body(bindingResult.getAllErrors());
+                    .body(new ApiResponse(false, "입력값이 올바르지 않습니다."));
         }
         questionServiceImpl.create(questionRequestDTO, principal.getName());
-        return ResponseEntity
-                .status(HttpStatus.SEE_OTHER)
-                .header(HttpHeaders.LOCATION, "/question/list")
-                .build();
+        return ResponseEntity.ok(new ApiResponse(true, "게시물 작성이 완료되었습니다."));
+//        return ResponseEntity
+//                .status(HttpStatus.SEE_OTHER)
+//                .header(HttpHeaders.LOCATION, "/question/list")
+//                .build();
     }
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateQuestion(
+    public ResponseEntity<ApiResponse> updateQuestion(
             @Valid @RequestBody QuestionRequestDTO questionRequestDTO,
             BindingResult bindingResult,
             Principal principal,
@@ -51,13 +52,16 @@ public class QuestionApiController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .badRequest()
-                    .body(bindingResult.getAllErrors());
+                    .body(new ApiResponse(false, "입력값이 올바르지 않습니다."));
         }
-        questionServiceImpl.modify(id, questionRequestDTO, principal.getName());
-        return ResponseEntity
-                .status(HttpStatus.SEE_OTHER)
-                .header(HttpHeaders.LOCATION, String.format("/question/detail/%s", id))
-                .build();
+        try {
+            questionServiceImpl.modify(id, questionRequestDTO, principal.getName());
+            return ResponseEntity.ok(new ApiResponse(true, "질문이 수정되었습니다.", id));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ApiResponse(false, "질문 수정에 실패했습니다."));
+        }
     }
 
     @PreAuthorize("isAuthenticated()")

@@ -96,7 +96,7 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         question.setSubject(questionRequestDTO.getSubject());
-        question.setContent(question.getContent());
+        question.setContent(questionRequestDTO.getContent());
         question.setModifyDate(LocalDateTime.now());
         questionRepository.save(question);
     }

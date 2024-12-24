@@ -64,17 +64,13 @@
                 const response = await fetch('/api/v1/user/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: document.getElementById('username').value,
-                        password1: document.getElementById('password1').value,
-                        password2: document.getElementById('password2').value,
-                        email: document.getElementById('email').value
-                    })
+                    body: JSON.stringify(formData)
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
+                    alert(data.message);  // 성공 메시지 출력
                     window.location.href = '/';
                 } else {
                     errorDiv.textContent = data.message;

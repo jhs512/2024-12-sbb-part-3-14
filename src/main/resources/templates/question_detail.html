@@ -6,7 +6,7 @@
 <body>
 <div layout:fragment="content" class="container my-3">
 
-    <!-- 질문 -->
+    <!-- 질문 폼 -->
     <h2 class="border-bottom py-2" th:text="${question?.subject ?: '제목 없음'}"></h2>
     <div class="card my-3">
         <div class="card-body">
@@ -26,8 +26,9 @@
                 </div>
             </div>
             <div class="my-3">
-                <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
-                   th:data-uri="@{|/question/vote/${question.id}|}">
+                <!-- 추천 버튼-->
+                <a href="javascript:void(0);" class="vote-button recommend btn btn-sm btn-outline-secondary"
+                   data-id="${question.id}">
                     추천
                     <span class="badge rounded-pill bg-success" th:text="${question.voterCount}"></span>
                 </a>
@@ -37,9 +38,9 @@
                    th:if="${question.authorName != null and #authentication.getPrincipal().getUsername() == question.authorName}"
                    th:text="수정"></a>
 
+                <!-- 삭제 버튼-->
                 <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${question.id}|}"
-                   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
-                   th:if="${question.authorName != null and #authentication.getPrincipal().getUsername() == question.authorName}"
+                   class="delete-button btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
                    th:text="삭제"></a>
             </div>
 
@@ -176,7 +177,7 @@
     <!-- 답변 반복 끝-->
 
     <!-- 답변 작성-->
-    <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerRequestDTO}" method="post" class="my-3">
+    <form th:object="${answerRequestDTO}" method="post" class="my-3">
         <div th:replace="form_error :: formErrorsFragment"></div>
 
         <!-- 익명 사용자일 경우 -->
@@ -243,6 +244,22 @@
 
 <script layout:fragment="script" type='text/javascript'>
     document.addEventListener('DOMContentLoaded', function () {
+
+        async function fetchAPI(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    ...options
+                });
+                return response;
+            } catch (error) {
+                console.error('API 요청 실패:', error);
+                throw error;
+            }
+        }
+
         // 페이징 버튼 동작
         const page_elements = document.getElementsByClassName("page-link");
         Array.from(page_elements).forEach(function (element) {
@@ -262,28 +279,68 @@
             sortForm.submit();
         });
 
-        // 삭제 버튼 동작
+
+
+        // 삭제 버튼 동작 (질문과 답변 모두 처리)
         const delete_elements = document.getElementsByClassName("delete");
         Array.from(delete_elements).forEach(function (element) {
-            element.addEventListener('click', function () {
+            element.addEventListener('click', async function (e) {
+                e.preventDefault();
                 if (confirm("정말로 삭제하시겠습니까?")) {
-                    location.href = this.dataset.uri;
+                    try {
+                        // URL에서 타입(question 또는 answer) 확인
+                        const uri = this.dataset.uri;
+                        const apiUri = uri.replace('/question/', '/api/v1/question/')
+                            .replace('/answer/', '/api/v1/answer/');
+
+                        const response = await fetchAPI(apiUri, {
+                            method: 'DELETE'
+                        });
+
+                        if (response.ok) {
+                            alert("삭제되었습니다.");
+                            if (uri.includes('/question/')) {
+                                window.location.href = '/';  // 질문 삭제 시 메인으로
+                            } else {
+                                window.location.reload();    // 답변 삭제 시 페이지 새로고침
+                            }
+                        } else {
+                            alert('삭제에 실패했습니다.');
+                        }
+                    } catch (error) {
+                        alert('서버 오류가 발생했습니다.');
+                    }
                 }
-                ;
             });
         });
 
-        // 추천 버튼 동작
+        // 추천 버튼 동작 (질문과 답변 모두 처리)
         const recommend_elements = document.getElementsByClassName("recommend");
         Array.from(recommend_elements).forEach(function (element) {
-            element.addEventListener('click', function () {
+            element.addEventListener('click', async function (e) {
+                e.preventDefault();
                 if (confirm("정말로 추천하시겠습니까?")) {
-                    location.href = this.dataset.uri;
+                    try {
+                        // URL에서 타입(question 또는 answer) 확인
+                        const uri = this.dataset.uri;
+                        const apiUri = uri.replace('/question/', '/api/v1/question/')
+                            .replace('/answer/', '/api/v1/answer/');
+
+                        const response = await fetchAPI(apiUri, {
+                            method: 'POST'
+                        });
+
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert('추천에 실패했습니다.');
+                        }
+                    } catch (error) {
+                        alert('서버 오류가 발생했습니다.');
+                    }
                 }
-                ;
             });
         });
-
     });
 </script>
 </body>
