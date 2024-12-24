@@ -1,9 +1,11 @@
 package com.programmers.answer.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
-public record AnswerRegisterRequestDto(
+@Builder
+public record AnswerModifyRequestDto (
         @NotBlank
         String content
-) {
+){
 }
