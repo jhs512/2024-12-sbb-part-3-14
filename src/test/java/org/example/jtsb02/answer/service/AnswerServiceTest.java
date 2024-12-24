@@ -11,6 +11,8 @@ import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.answer.repository.AnswerRepository;
+import org.example.jtsb02.member.dto.MemberDto;
+import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.repository.QuestionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +37,7 @@ class AnswerServiceTest {
     private AnswerService answerService;
 
     @Test
-    @DisplayName("질문 등록")
+    @DisplayName("답변 등록")
     void createAnswer() {
         //given
         Question question = createQuestion();
@@ -45,7 +47,7 @@ class AnswerServiceTest {
         ArgumentCaptor<Answer> captor = ArgumentCaptor.forClass(Answer.class);
 
         //when
-        answerService.createAnswer(1L, answerForm);
+        answerService.createAnswer(1L, answerForm, MemberDto.builder().id(1L).build());
         verify(answerRepository, times(1)).save(captor.capture());
         Answer save = captor.getValue();
 
@@ -56,7 +58,7 @@ class AnswerServiceTest {
     }
 
     @Test
-    @DisplayName("질문 조회")
+    @DisplayName("답변 조회")
     void getAnswer() {
         //given
         Question question = createQuestion();
@@ -76,7 +78,7 @@ class AnswerServiceTest {
     }
 
     @Test
-    @DisplayName("질문 수정")
+    @DisplayName("답변 수정")
     void modifyAnswer() {
         //given
         Question question = createQuestion();
@@ -99,7 +101,7 @@ class AnswerServiceTest {
     }
 
     @Test
-    @DisplayName("질문 삭제")
+    @DisplayName("답변 삭제")
     void deleteAnswer() {
         //given
         Question question = createQuestion();
@@ -125,6 +127,13 @@ class AnswerServiceTest {
             .content(answerForm.getContent())
             .createdAt(LocalDateTime.now())
             .question(question)
+            .author(Member.builder()
+                .id(1L)
+                .memberId("onlyTest")
+                .nickname("onlyTest")
+                .password("onlyTest")
+                .email("onlyTest@gmail.com")
+                .build())
             .build();
     }
 
@@ -135,6 +144,13 @@ class AnswerServiceTest {
             .content("test content")
             .createdAt(LocalDateTime.now())
             .hits(1)
+            .author(Member.builder()
+                .id(1L)
+                .memberId("onlyTest")
+                .nickname("onlyTest")
+                .password("onlyTest")
+                .email("onlyTest@gmail.com")
+                .build())
             .build();
     }
 }

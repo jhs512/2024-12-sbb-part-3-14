@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDateTime;
 import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.common.exception.DataNotFoundException;
+import org.example.jtsb02.member.entity.Member;
+import org.example.jtsb02.member.repository.MemberRepository;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.repository.QuestionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -21,13 +23,23 @@ class AnswerRepositoryTest {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Test
     @DisplayName("답변 등록")
     void save() {
         //given
+        Member member = memberRepository.save(Member.of(
+            "onlyTset",
+            "onlyTest",
+            "onlyTest",
+            "onlyTest@gmail.com")
+        );
         Question question = questionRepository.save(
-            Question.of("question subject", "question content"));
-        Answer answer = Answer.of("test content", question);
+            Question.of("question subject", "question content", member));
+        Answer answer = Answer.of("test content", question, member);
+
 
         //when
         Answer save = answerRepository.save(answer);
@@ -43,9 +55,15 @@ class AnswerRepositoryTest {
     @DisplayName("답변 수정")
     void modify() {
         //given
+        Member member = memberRepository.save(Member.of(
+            "onlyTset",
+            "onlyTest",
+            "onlyTest",
+            "onlyTest@gmail.com")
+        );
         Question question = questionRepository.save(
-            Question.of("question subject", "question content"));
-        Answer answer = answerRepository.save(Answer.of("answer content", question));
+            Question.of("question subject", "question content", member));
+        Answer answer = answerRepository.save(Answer.of("answer content", question, member));
 
         //when
         Answer result = answerRepository.findById(answer.getId()).map(a -> a.toBuilder()
@@ -64,9 +82,15 @@ class AnswerRepositoryTest {
     @DisplayName("답변 삭제")
     void delete() {
         //given
+        Member member = memberRepository.save(Member.of(
+            "onlyTset",
+            "onlyTest",
+            "onlyTest",
+            "onlyTest@gmail.com")
+        );
         Question question = questionRepository.save(
-            Question.of("question subject", "question content"));
-        Answer answer = answerRepository.save(Answer.of("answer content", question));
+            Question.of("question subject", "question content", member));
+        Answer answer = answerRepository.save(Answer.of("answer content", question, member));
 
         //when
         answerRepository.findById(answer.getId()).ifPresent(a -> answerRepository.delete(a));

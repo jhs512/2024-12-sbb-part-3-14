@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.jtsb02.answer.entity.Answer;
+import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.question.dto.QuestionDto;
 
 @Getter
@@ -15,6 +16,7 @@ public class AnswerDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private QuestionDto question;
+    private MemberDto author;
 
     public static AnswerDto fromAnswer(Answer answer) {
         return AnswerDto.builder()
@@ -23,6 +25,7 @@ public class AnswerDto {
             .createdAt(answer.getCreatedAt())
             .modifiedAt(answer.getModifiedAt())
             .question(QuestionDto.OnlyIdFromQuestion(answer.getQuestion()))
+            .author(MemberDto.fromMember(answer.getAuthor()))
             .build();
     }
 }

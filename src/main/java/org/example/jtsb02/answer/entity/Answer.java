@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.jtsb02.answer.dto.AnswerDto;
+import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.question.entity.Question;
 
 @Entity
@@ -37,11 +38,15 @@ public class Answer {
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
 
-    public static Answer of(String content, Question question) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member author;
+
+    public static Answer of(String content, Question question, Member author) {
         return Answer.builder()
             .content(content)
             .createdAt(LocalDateTime.now())
             .question(question)
+            .author(author)
             .build();
     }
 
