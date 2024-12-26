@@ -10,6 +10,7 @@ import com.mysite.sbb.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @Tag(name = "Answer Controller", description = "답변 컨트롤러")
 @RestController
 @RequestMapping("/api/v1/answer")
 @RequiredArgsConstructor
+@Slf4j
 public class AnswerApiController {
 
     private final QuestionServiceImpl questionService;
@@ -48,14 +52,17 @@ public class AnswerApiController {
             SiteUser siteUser = userService.getUser(principal.getName());
             Answer answer = answerService.create(question, answerRequestDTO.getContent(), siteUser);
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .header(HttpHeaders.LOCATION,
-                            String.format("/question/detail/%s#answer_%s",
-                                    answer.getQuestion().getId(), answer.getId()))
-                    .build();
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("questionId", answer.getQuestion().getId());
+            responseData.put("answerId", answer.getId());
+
+            return ResponseEntity.ok(new ApiResponse(
+                    true,
+                    "답변이 수정되었습니다.",
+                    responseData
+            ));
         } catch (Exception e) {
-            System.out.println("e.getMessage() = " + e.getMessage());
+            log.error("Error updating answer: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("답변 생성 중 오류가 발생했습니다.");
@@ -82,21 +89,23 @@ public class AnswerApiController {
             if (!answer.getAuthor().getUsername().equals(principal.getName())) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
-                        .body("수정권한이 없습니다.");
+                        .body(new ApiResponse(false, "수정권한이 없습니다."));
             }
 
             answerService.modify(answer, answerRequestDTO.getContent());
 
-            return ResponseEntity
-                    .status(HttpStatus.SEE_OTHER)
-                    .header(HttpHeaders.LOCATION,
-                            String.format("/question/detail/%s#answer_%s",
-                                    answer.getQuestion().getId(), answer.getId()))
-                    .build();
+            return ResponseEntity.ok(new ApiResponse(
+                    true,
+                    "답변이 수정되었습니다.",
+                    Map.of(
+                            "questionId", answer.getQuestion().getId(),
+                            "answerId", answer.getId()
+                    )
+            ));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("답변 수정 중 오류가 발생했습니다.");
+                    .body(new ApiResponse(false, "답변 수정 중 오류가 발생했습니다."));
         }
     }
 
