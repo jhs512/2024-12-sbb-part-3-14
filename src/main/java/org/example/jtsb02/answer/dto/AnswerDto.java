@@ -1,6 +1,8 @@
 package org.example.jtsb02.answer.dto;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.jtsb02.answer.entity.Answer;
@@ -17,6 +19,7 @@ public class AnswerDto {
     private LocalDateTime modifiedAt;
     private QuestionDto question;
     private MemberDto author;
+    private Set<MemberDto> voter;
 
     public static AnswerDto fromAnswer(Answer answer) {
         return AnswerDto.builder()
@@ -26,6 +29,7 @@ public class AnswerDto {
             .modifiedAt(answer.getModifiedAt())
             .question(QuestionDto.OnlyIdFromQuestion(answer.getQuestion()))
             .author(MemberDto.fromMember(answer.getAuthor()))
+            .voter(answer.getVoter().stream().map(MemberDto::fromMember).collect(Collectors.toSet()))
             .build();
     }
 }

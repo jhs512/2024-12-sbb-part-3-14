@@ -44,4 +44,11 @@ public class AnswerService {
     public void deleteAnswer(AnswerDto answerDto) {
         answerRepository.delete(Answer.fromAnswerDto(answerDto));
     }
+
+    public void voteAnswer(Long answerId, MemberDto memberDto) {
+        Answer answer = answerRepository.findById(answerId)
+            .orElseThrow(() -> new DataNotFoundException("Answer not found"));
+        answer.getVoter().add(Member.fromMemberDto(memberDto));
+        answerRepository.save(answer);
+    }
 }

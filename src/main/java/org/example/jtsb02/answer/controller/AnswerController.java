@@ -75,4 +75,13 @@ public class AnswerController {
         answerService.deleteAnswer(answer);
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String voteAnswer(@PathVariable("id") Long answerId, Principal principal) {
+        AnswerDto answer = answerService.getAnswer(answerId);
+        MemberDto member = memberService.getMember(principal.getName());
+        answerService.voteAnswer(answerId, member);
+        return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+    }
 }

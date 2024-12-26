@@ -2,6 +2,8 @@ package org.example.jtsb02.question.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.jtsb02.answer.dto.AnswerDto;
@@ -20,6 +22,7 @@ public class QuestionDto {
     private int hits;
     private List<AnswerDto> answers;
     private MemberDto author;
+    private Set<MemberDto> voter;
 
     public static QuestionDto fromQuestion(Question question) {
         return QuestionDto.builder()
@@ -31,6 +34,7 @@ public class QuestionDto {
             .hits(question.getHits())
             .answers(question.getAnswers().stream().map(AnswerDto::fromAnswer).toList())
             .author(MemberDto.fromMember(question.getAuthor()))
+            .voter(question.getVoter().stream().map(MemberDto::fromMember).collect(Collectors.toSet()))
             .build();
     }
 

@@ -6,8 +6,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,12 +44,16 @@ public class Answer {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member author;
 
+    @ManyToMany
+    private Set<Member> voter;
+
     public static Answer of(String content, Question question, Member author) {
         return Answer.builder()
             .content(content)
             .createdAt(LocalDateTime.now())
             .question(question)
             .author(author)
+            .voter(new HashSet<>())
             .build();
     }
 

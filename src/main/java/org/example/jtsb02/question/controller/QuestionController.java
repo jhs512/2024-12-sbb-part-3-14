@@ -50,7 +50,8 @@ public class QuestionController {
     }
 
     @GetMapping("/list")
-    public String getQuestions(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+    public String getQuestions(@RequestParam(value = "page", defaultValue = "1") int page,
+        Model model) {
         Page<QuestionDto> questions = questionService.getQuestions(page);
         model.addAttribute("paging", questions);
         return "question/list";
@@ -95,5 +96,13 @@ public class QuestionController {
         checkUserPermission(principal.getName(), question.getAuthor().getMemberId(), "삭제");
         questionService.deleteQuestion(id);
         return "redirect:/question/list";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String voteQuestion(@PathVariable("id") Long id, Principal principal) {
+        MemberDto member = memberService.getMember(principal.getName());
+        questionService.voteQuestion(id, member);
+        return String.format("redirect:/question/detail/%s", id);
     }
 }

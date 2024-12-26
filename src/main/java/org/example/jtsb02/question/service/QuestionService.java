@@ -67,4 +67,11 @@ public class QuestionService {
             .orElseThrow(() -> new DataNotFoundException("Question not found"));
         questionRepository.delete(question);
     }
+
+    public void voteQuestion(Long id, MemberDto memberDto) {
+        Question question = questionRepository.findById(id)
+            .orElseThrow(() -> new DataNotFoundException("Question not found"));
+        question.getVoter().add(Member.fromMemberDto(memberDto));
+        questionRepository.save(question);
+    }
 }
