@@ -1,6 +1,6 @@
 package com.mysite.sbb.controller.util;
 
-import com.mysite.sbb.domain.dto.QuestionListResponseDTO;
+import com.mysite.sbb.web.question.dto.response.QuestionListResponseDTO;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.test.web.servlet.MvcResult;
