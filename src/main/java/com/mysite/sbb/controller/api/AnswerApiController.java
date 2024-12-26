@@ -131,7 +131,7 @@ public class AnswerApiController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/{id}/vote")
+    @PostMapping("/vote/{id}")
     public ResponseEntity<?> addVoteToAnswer(
             @PathVariable Integer id,
             Principal principal) {

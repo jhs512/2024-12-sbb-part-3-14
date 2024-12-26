@@ -133,12 +133,15 @@
                     <span class="badge rounded-pill bg-success" th:if="${answer.voterCount != null}"
                           th:text="${answer.voterCount}"></span>
                 </a>
-                <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
+                <a th:href="@{|/answer/modify/${answer.id}|}"
+                   class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
                    th:if="${answer?.authorName != null and #authentication.getPrincipal().getUsername() == answer.authorName}"
                    th:text="수정"></a>
-                <a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.id}|}"
-                   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+                <a href="javascript:void(0);"
+                   th:data-uri="@{|/answer/${answer.id}|}"
+                   class="delete btn btn-sm btn-outline-secondary"
+                   sec:authorize="isAuthenticated()"
                    th:if="${answer?.authorName != null and #authentication.getPrincipal().getUsername() == answer.authorName}"
                    th:text="삭제"></a>
             </div>
@@ -268,8 +271,12 @@
             });
 
             if (response.ok) {
-                const redirectUrl = response.headers.get('Location');
-                window.location.replace(redirectUrl);
+                window.location.href = response.headers.get('Location');
+                window.location.reload();
+            } else {
+                const errorData = await response.json();
+                errorDiv.textContent = errorData.message || "답변 등록 중 오류가 발생했습니다.";
+                errorDiv.style.display = 'block';
             }
         } catch (error) {
             console.error('Error:', error);
@@ -297,10 +304,10 @@
 
         // 페이징 버튼 동작
         const page_elements = document.getElementsByClassName("page-link");
-        Array.from(page_elements).forEach(function (element) {
-            element.addEventListener('click', function (e) {
-                e.preventDefault();
-                if(this.dataset.page) {
+                    Array.from(page_elements).forEach(function (element) {
+                        element.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            if(this.dataset.page) {
                     document.getElementById('page').value = this.dataset.page;
                     document.getElementById('pagingForm').submit();
                 }
@@ -314,7 +321,7 @@
             sortForm.submit();
         });
 
-            // 삭제 버튼 동작
+        // 삭제 버튼 동작
         const delete_elements = document.getElementsByClassName("delete");
         Array.from(delete_elements).forEach(function (element) {
             element.addEventListener('click', async function (e) {
