@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,5 +58,18 @@ public class Member {
             .nickname(memberDto.getNickname())
             .email(memberDto.getEmail())
             .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; // 동일 객체
+        if (o == null || getClass() != o.getClass()) return false; // 타입 비교
+        Member member = (Member) o;
+        return Objects.equals(id, member.id); // id를 기준으로 비교
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // id를 기준으로 해시코드 생성
     }
 }

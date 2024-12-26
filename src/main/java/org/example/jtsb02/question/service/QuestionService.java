@@ -71,7 +71,11 @@ public class QuestionService {
     public void voteQuestion(Long id, MemberDto memberDto) {
         Question question = questionRepository.findById(id)
             .orElseThrow(() -> new DataNotFoundException("Question not found"));
-        question.getVoter().add(Member.fromMemberDto(memberDto));
+        if (question.getVoter().contains(Member.fromMemberDto(memberDto))) {
+            question.getVoter().remove(Member.fromMemberDto(memberDto));
+        } else {
+            question.getVoter().add(Member.fromMemberDto(memberDto));
+        }
         questionRepository.save(question);
     }
 }

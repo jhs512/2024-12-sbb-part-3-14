@@ -48,7 +48,11 @@ public class AnswerService {
     public void voteAnswer(Long answerId, MemberDto memberDto) {
         Answer answer = answerRepository.findById(answerId)
             .orElseThrow(() -> new DataNotFoundException("Answer not found"));
-        answer.getVoter().add(Member.fromMemberDto(memberDto));
+        if (answer.getVoter().contains(Member.fromMemberDto(memberDto))) {
+            answer.getVoter().remove(Member.fromMemberDto(memberDto));
+        } else {
+            answer.getVoter().add(Member.fromMemberDto(memberDto));
+        }
         answerRepository.save(answer);
     }
 }
