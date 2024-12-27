@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.mysite.sbb.global.common.constant.PageConstants.*;
 import static com.mysite.sbb.global.common.validator.SecurityValidaotr.validateUserPermission;
@@ -47,12 +49,13 @@ public class QuestionViewController {
         // 질문 정보
         QuestionDetailResponseDTO question = this.questionService.getQuestionDetail(id, page, sortKeyword);
 
-        // 댓글 정보
-        List<Comment> comments = commentService.getCommentsForQuestion(Long.parseLong(String.valueOf(id)));
+        // 질문에 대한 댓글
+        List<Comment> commentOfQuestion = commentService.getCommentsForQuestion(id);
 
         model.addAttribute("question", question);
         model.addAttribute("sort", sortKeyword); // 선택된 정렬 기준 전달
-        model.addAttribute("comments", comments);
+        model.addAttribute("questionComments", commentOfQuestion); // 질문 댓글
+        model.addAttribute("answerComments", ""); // 답변 댓글
         model.addAttribute("answerRequestDTO", new AnswerRequestDTO()); // Form 초기화
         model.addAttribute("commentRequestDTO", CommentRequestDTO.empty());
         return QUESTION_DETAIL_VIEW;

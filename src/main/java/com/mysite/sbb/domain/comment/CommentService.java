@@ -7,6 +7,7 @@ import com.mysite.sbb.domain.question.Question;
 import com.mysite.sbb.domain.question.QuestionRepository;
 import com.mysite.sbb.domain.user.SiteUser;
 import com.mysite.sbb.web.comment.dto.request.CommentRequestDTO;
+import com.mysite.sbb.web.comment.dto.request.CommentTargetType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,36 +23,43 @@ public class CommentService {
     private final AnswerRepository answerRepository;
 
     @Transactional
-    public Comment addCommentToQuestion(CommentRequestDTO dto, SiteUser author) {
-        Question question = questionRepository.findById(dto.targetId());
+    public Comment addComment(CommentRequestDTO dto, SiteUser author, Long questionId) {
         Comment comment = new Comment();
         comment.setContent(dto.content());
         comment.setAuthor(author);
+
+        Question question = findQuestionById(questionId);
         comment.setQuestion(question);
 
-        System.out.println("Author ID: " + author.getId());
-        System.out.println("Author Username: " + author.getUsername());
+        comment.setQuestion(question);
+
+        if (dto.targetType() == CommentTargetType.ANSWER) {
+            Answer answer = findAnswerById(dto.targetId());
+            comment.setAnswer(answer);
+        } else if (dto.targetType() != CommentTargetType.QUESTION) {
+            throw new IllegalStateException("잘못된 대상 유형입니다 : " + dto.targetType());
+        }
 
         return commentRepository.save(comment);
     }
 
-    @Transactional
-    public Comment addCommentToAnswer(CommentRequestDTO dto, SiteUser author) {
-        Answer answer = answerRepository.findById(dto.targetId());
-        Comment comment = new Comment();
-        comment.setContent(dto.content());
-        comment.setAuthor(author);
-        comment.setAnswer(answer);
-        return commentRepository.save(comment);
+    @Transactional(readOnly = true)
+    public List<Comment> getCommentsForQuestion(int questionId) {
+        return commentRepository.findByQuestion_IdAndAnswerIsNull(questionId);
     }
 
     @Transactional(readOnly = true)
-    public List<Comment> getCommentsForQuestion(Long questionId) {
-        return commentRepository.findByQuestionId(questionId);
+    public List<Comment> getCommentsForAnswer(int answerId) {
+        return commentRepository.findByAnswer_Id(answerId);
     }
 
-    @Transactional(readOnly = true)
-    public List<Comment> getCommentsForAnswer(Long answerId) {
-        return commentRepository.findByAnswerId(answerId);
+    private Question findQuestionById(Long questionId) {
+        return questionRepository.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Question not found for id: " + questionId));
+    }
+
+    private Answer findAnswerById(Long answerId) {
+        return answerRepository.findById(answerId)
+                .orElseThrow(() -> new IllegalArgumentException("Answer not found for id: " + answerId));
     }
 }

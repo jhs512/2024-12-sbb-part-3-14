@@ -1,6 +1,9 @@
 package com.mysite.sbb.domain.question;
 
 
+import com.mysite.sbb.domain.comment.Comment;
+import com.mysite.sbb.domain.comment.CommentRepository;
+import com.mysite.sbb.domain.comment.CommentService;
 import com.mysite.sbb.web.question.dto.response.QuestionDetailResponseDTO;
 import com.mysite.sbb.web.question.dto.response.QuestionListResponseDTO;
 import com.mysite.sbb.web.question.dto.request.QuestionRequestDTO;
@@ -23,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -32,6 +36,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final UserServiceImpl userServiceImpl;
     private final AnswerRepository answerRepository;
+    private final CommentService commentService;
 
     @Override
     public List<QuestionListResponseDTO> getAllQuestions() {
@@ -58,15 +63,19 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionDetailResponseDTO getQuestionDetail(Integer id, int page, String sortKeyword) {
-        // 1. 질문 조회
         Question question = questionRepository.findById(id).orElseThrow(() -> new DataNotFoundException("question not found"));
 
-        // 2. 답변 페이징
         Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Order.desc(sortKeyword)));
         Page<Answer> answers = answerRepository.findByQuestion(question, pageable);
 
-        // 3. DTO 변환
-        return new QuestionDetailResponseDTO(question, answers);
+
+        Map<Integer, List<Comment>> commentsForAnswers = answers.stream()
+                .collect(Collectors.toMap(
+                        Answer::getId,
+                        answer -> commentService.getCommentsForAnswer(answer.getId())
+                ));
+
+        return new QuestionDetailResponseDTO(question, answers, commentsForAnswers);
     }
 
     @Override

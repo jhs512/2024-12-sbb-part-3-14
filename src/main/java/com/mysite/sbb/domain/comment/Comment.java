@@ -31,8 +31,12 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    public boolean isValidRelation() {
-        return (this.question != null && this.answer == null) ||
-                (this.question == null && this.answer != null);
+    public int getQuestionId() {
+        if (this.question != null) {
+            return question.getId();
+        }
+
+        throw new IllegalStateException("유효한 질문 ID를 찾을 수 없습니다.");
     }
+
 }

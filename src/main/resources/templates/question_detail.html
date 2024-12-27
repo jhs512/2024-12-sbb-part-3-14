@@ -5,6 +5,8 @@
 </head>
 <body>
 <div layout:fragment="content" class="container my-3">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
     <!-- 질문 폼 -->
     <h2 class="border-bottom py-2" th:text="${question?.subject ?: '제목 없음'}"></h2>
@@ -50,35 +52,34 @@
 
             <!-- 질문 댓글 작성 폼 -->
             <div class="comments-section border-top mt-3 pt-3">
-                <h5>댓글 목록</h5>
+                <h6>댓글</h6>
                 <ul class="list-group">
-                    <li th:each="comment : ${comments}" class="list-group-item">
+                    <li th:each="comment : ${questionComments}" class="list-group-item">
                         <div>
                             <strong th:text="${comment.author.username}">작성자</strong>
-                            <small class="text-muted" th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
+                            <small class="text-muted"
+                                   th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
                         </div>
                         <p th:text="${comment.content}">댓글 내용</p>
                     </li>
                 </ul>
                 <div sec:authorize="isAuthenticated()">
                     <h5>댓글 작성</h5>
-                    <form id="commentToQuestionForm" th:object="${commentRequestDTO}" method="post" class="mt-2" onsubmit="submitCommentForm(event)">
+                    <form class="comment-form mt-2" th:object="${commentRequestDTO}" data-type="question"
+                          th:data-id="${question.id}" onsubmit="submitComment(event)">
                         <!--에러 메시지 전달-->
-                        <div id="errorCommentToQuestion" class="alert alert-danger" style="display: none;"></div>
+                        <div class="alert alert-danger error-message" style="display: none;"></div>
 
-                        <!-- 댓글 대상 정보 전달 -->
-                        <input type="hidden" name="targetType" value="QUESTION" />
-                        <input type="hidden" name="targetId" th:value="${question.id}" />
 
                         <!-- 댓글 내용 입력 -->
                         <div class="input-group input-group-sm">
-                            <textarea id="commentContent" name="content" class="form-control" placeholder="댓글을 입력하세요"></textarea>
+                            <textarea name="content" class="form-control" placeholder="댓글을 입력하세요"></textarea>
                             <button class="btn btn-outline-secondary" type="submit">등록</button>
                         </div>
                     </form>
                 </div>
             </div>
-            <!--    댓글 작성 폼 끝 -->
+            <!--  질문 댓글 작성 폼 끝 -->
 
 
         </div>
@@ -100,9 +101,8 @@
         </form>
     </div>
 
-
     <!-- 답변 반복 시작-->
-    <div class="card my-3" th:if="${question.answers != null}" th:each="answer : ${question.answers}">
+    <div class="card my-3" th:if="${question.answers != null}" th:each="answer : ${question.answers.content}">
         <a th:id="|answer_${answer.id}|"></a>
         <div class="card-body">
             <div class="card-text" th:utext="${@commonUtil.markdown((answer.content))}"></div>
@@ -113,8 +113,8 @@
                 </div>
                 <div class="badge bg-light text-dark p-2 text-start">
                     <div class="mb-2">
-                        <span th:if="${question.authorName != null}"
-                              th:text="${question.authorName ?: '작성자 없음'}"></span>
+                    <span th:if="${answer?.authorName != null}"
+                          th:text="${answer.authorName ?: '작성자 없음'}"></span>
                     </div>
                     <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
@@ -139,54 +139,52 @@
                    th:text="삭제"></a>
             </div>
 
-            <!-- 답변 댓글 영역 -->
-<!--            <div class="comments-section border-top mt-3 pt-3">-->
-                <!--                <div class="d-flex justify-content-between align-items-center mb-2">-->
-                <!--                    <span class="text-muted small">댓글 <span th:text="${answer.commentCount ?: 0}">0</span>개</span>-->
-                <!--                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"-->
-                <!--                            th:data-bs-target="|#answer${answer.id}Comments|">댓글 보기</button>-->
-                <!--                </div>-->
+            <!--  답변 댓글 목록 -->
+            <div class="comments-section border-top mt-3 pt-3">
+                <h6>댓글</h6>
+                <ul class="list-group">
+                    <li th:each="comment : ${answer.comments}" class="list-group-item">
+                        <div>
+                            <strong th:text="${comment.author.username}">작성자</strong>
+                            <small class="text-muted"
+                                   th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
+                        </div>
+                        <p th:text="${comment.content}">댓글 내용</p>
+                    </li>
+                </ul>
+                <div sec:authorize="isAuthenticated()">
+                    <h6>댓글 작성</h6>
+                    <form class="comment-form mt-2" data-type="answer" th:data-id="${answer.id}"
+                          onsubmit="submitComment(event)">
+                        <!-- 에러 메시지 -->
+                        <div class="alert alert-danger error-message" style="display: none;"></div>
 
-                <!--                &lt;!&ndash; 댓글 목록 (접었다 펼 수 있음) &ndash;&gt;-->
-                <!--                <div class="collapse" th:id="|answer${answer.id}Comments|">-->
-                <!--                    &lt;!&ndash; 답변 댓글 목록 &ndash;&gt;-->
-                <!--                    <div class="comment-item small border-bottom py-2" th:each="comment : ${answer.comments}">-->
-                <!--                        <div class="d-flex justify-content-between">-->
-                <!--                            <div>-->
-                <!--                                <span class="me-2" th:text="${comment.content}">댓글 내용</span>-->
-                <!--                                <span class="text-muted" th:text="${comment.authorName}">작성자</span>-->
-                <!--                            </div>-->
-                <!--                            <div class="text-muted" th:text="${#temporals.format(comment.createDate, 'MM.dd HH:mm')}">-->
-                <!--                                날짜-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-
-                <!-- 댓글 작성 폼 -->
-                <!--                                <form th:action="@{|/comment/create/answer/${answer.id}|}" method="post"-->
-<!--                <form method="post"-->
-            <!--                      class="mt-2" sec:authorize="isAuthenticated()">-->
-            <!--                    <div class="input-group input-group-sm">-->
-            <!--                        <input type="text" name="content" class="form-control" placeholder="댓글을 입력하세요">-->
-            <!--                        <button class="btn btn-outline-secondary" type="submit">등록</button>-->
-            <!--                    </div>-->
-            <!--                </form>-->
-            <!--            </div>-->
+                        <!-- 댓글 내용 입력 -->
+                        <div class="input-group input-group-sm">
+                            <textarea name="content" class="form-control" placeholder="댓글을 입력하세요"></textarea>
+                            <button class="btn btn-outline-secondary" type="submit">등록</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--  답변 댓글 목록 끝 -->
         </div>
     </div>
     <!-- 답변 반복 끝-->
 
+
     <!-- 답변 작성-->
     <form id="answerForm" th:object="${answerRequestDTO}" method="post" class="my-3" onsubmit="submitAnswer(event)">
         <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
-<!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
+        <!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
 
         <!-- 익명 사용자일 경우 -->
         <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control"
                   rows="10"></textarea>
 
         <!-- 인증된 사용자일 경우 -->
-        <textarea sec:authorize="isAuthenticated()"  name="content" th:field="*{content}" placeholder="답변을 등록하세요" class="form-control"
+        <textarea sec:authorize="isAuthenticated()" name="content" th:field="*{content}" placeholder="답변을 등록하세요"
+                  class="form-control"
                   rows="10"></textarea>
 
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
@@ -226,15 +224,6 @@
         </ul>
     </div>
 
-    <!-- 댓글에 대한 폼-->
-<!--    <form th:action="@{/comment/create}" method="post" th:object="${commentRequestDTO}">-->
-<!--        <input type="hidden" name="targetType" value="question"/> &lt;!&ndash; or 'answer' &ndash;&gt;-->
-<!--        <input type="hidden" name="targetId" th:value="${question.id}"/>-->
-<!--        <input type="hidden" name="parentId" th:value="${parentComment.id}"/>-->
-<!--        <input type="text" th:field="*{content}" placeholder="댓글을 입력하세요"/>-->
-<!--        <button type="submit">등록</button>-->
-<!--    </form>-->
-
     <!-- 검색 및 페이징 폼 -->
     <form th:action="@{|/question/detail/${question.id}|}" method="get" id="pagingForm">
         <!-- 검색 키워드와 페이지 번호를 Hidden 필드로 전달 -->
@@ -244,30 +233,32 @@
 </div>
 
 <script layout:fragment="script" type='text/javascript'>
-    async function submitCommentForm(event) {
+    async function submitComment(event) {
         event.preventDefault();
-        const errorDiv = document.getElementById('errorCommentToQuestion');
+
+        const form = event.target;
+        const errorDiv = form.querySelector('.error-message');
+        const questionId = window.location.pathname.split('/').pop();
         errorDiv.style.display = 'none';
 
-        const commentContent = document.getElementById('commentContent').value;
-        const targetId = document.querySelector('input[name="targetId"]').value;
+        const content = form.querySelector('textarea[name="content"]').value.trim();
+        const targetType = form.dataset.type.toUpperCase(); // "question" 또는 "answer"
+        const targetId = form.dataset.id;    // 대상 ID
 
-        if (!commentContent.trim()) {
-            errorDiv.textContent = "댓글 내용을 입력하세요.";
+        if (!content) {
+            errorDiv.textContent = '댓글 내용을 입력하세요.';
             errorDiv.style.display = 'block';
             return;
         }
 
-        const formData = {
-            content: commentContent,
-            targetType: 'QUESTION',
-            targetId: targetId
-        };
+        const formData = {content, targetType, targetId};
 
         try {
-            const redirectUrl = await sendComment(`/api/v1/comment/question/${targetId}`, formData);
+            const url = `/api/v1/comment/${questionId}`;
+            const redirectUrl = await sendComment(url, formData);
             if (redirectUrl) {
                 window.location.href = redirectUrl;
+                window.location.reload();
             }
         } catch (error) {
             errorDiv.textContent = error.message || "댓글 작성 중 오류가 발생했습니다.";
@@ -276,16 +267,24 @@
     }
 
     async function sendComment(url, formData) {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         const response = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
             credentials: 'include',
-            body: JSON.stringify(formData)
+            body: JSON.stringify(formData),
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.message || "서버 오류가 발생했습니다.");
+            errorDiv.textContent = errorData.message || '댓글 작성 중 오류가 발생했습니다.';
+            errorDiv.style.display = 'block';
+            return;
         }
 
         return response.headers.get('Location');
@@ -344,10 +343,10 @@
 
         // 페이징 버튼 동작
         const page_elements = document.getElementsByClassName("page-link");
-                    Array.from(page_elements).forEach(function (element) {
-                        element.addEventListener('click', function (e) {
-                            e.preventDefault();
-                            if(this.dataset.page) {
+        Array.from(page_elements).forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (this.dataset.page) {
                     document.getElementById('page').value = this.dataset.page;
                     document.getElementById('pagingForm').submit();
                 }
