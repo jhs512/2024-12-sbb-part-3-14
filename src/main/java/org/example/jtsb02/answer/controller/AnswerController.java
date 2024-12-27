@@ -40,8 +40,8 @@ public class AnswerController {
             model.addAttribute("question", question);
             return "question/detail";
         }
-        answerService.createAnswer(questionId, answerForm, member);
-        return String.format("redirect:/question/detail/%s", questionId);
+        Long answerId = answerService.createAnswer(questionId, answerForm, member);
+        return String.format("redirect:/question/detail/%s#answer_%s", questionId, answerId);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -64,7 +64,7 @@ public class AnswerController {
         AnswerDto answer = answerService.getAnswer(answerId);
         checkUserPermission(principal.getName(), answer.getAuthor().getMemberId(), "수정");
         answerService.modifyAnswer(answerId, answerForm);
-        return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+        return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), answerId);
     }
 
     @PreAuthorize("isAuthenticated()")

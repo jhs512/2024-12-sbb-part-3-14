@@ -20,11 +20,11 @@ public class AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
 
-    public void createAnswer(Long questionId, AnswerForm answerForm, MemberDto memberDto) {
+    public Long createAnswer(Long questionId, AnswerForm answerForm, MemberDto memberDto) {
         Question question = questionRepository.findById(questionId)
             .orElseThrow(() -> new DataNotFoundException("Question not found"));
-        answerRepository.save(
-            Answer.of(answerForm.getContent(), question, Member.fromMemberDto(memberDto)));
+        return answerRepository.save(
+            Answer.of(answerForm.getContent(), question, Member.fromMemberDto(memberDto))).getId();
     }
 
     public AnswerDto getAnswer(Long answerId) {
