@@ -1,6 +1,6 @@
 package com.mysite.sbb.web.question;
 
-import com.mysite.sbb.web.common.dto.response.ApiResponse;
+import com.mysite.sbb.web.api.ApiResponse;
 import com.mysite.sbb.web.question.dto.request.QuestionRequestDTO;
 import com.mysite.sbb.domain.question.QuestionServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;

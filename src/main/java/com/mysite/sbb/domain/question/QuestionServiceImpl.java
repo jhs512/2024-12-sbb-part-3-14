@@ -80,7 +80,6 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = new Question();
         question.setSubject(questionRequestDTO.getSubject());
         question.setContent(questionRequestDTO.getContent());
-        question.setCreateDate(LocalDateTime.now());
         question.setAuthor(user);
         questionRepository.save(question);
     }
@@ -95,7 +94,6 @@ public class QuestionServiceImpl implements QuestionService {
 
         question.setSubject(questionRequestDTO.getSubject());
         question.setContent(questionRequestDTO.getContent());
-        question.setModifyDate(LocalDateTime.now());
         questionRepository.save(question);
     }
 

@@ -1,14 +1,14 @@
 package com.mysite.sbb.web.comment.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
+import jakarta.validation.constraints.NotNull;
 
-@Getter
-public class CommentRequestDTO {
-    @NotEmpty(message = "내용은 필수항목입니다.")
-    private String content;
-    private String targetType; // "question" or "answer"
-    private Integer targetId;
-    private Integer parentId;
-
+public record CommentRequestDTO(
+        @NotEmpty(message = "내용은 필수항목입니다.") String content,
+        @NotNull(message = "대상 타입은 필수항목입니다.") CommentTargetType targetType,
+        @NotNull(message = "대상 ID는 필수항목입니다.") Long targetId
+) {
+    public static CommentRequestDTO empty() {
+        return new CommentRequestDTO("", null, null);
+    }
 }

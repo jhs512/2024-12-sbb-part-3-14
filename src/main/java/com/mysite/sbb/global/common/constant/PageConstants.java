@@ -1,4 +1,4 @@
-package com.mysite.sbb.web.common.constant;
+package com.mysite.sbb.global.common.constant;
 
 public final class PageConstants {
     public static final String QUESTION_LIST_VIEW = "question_list";

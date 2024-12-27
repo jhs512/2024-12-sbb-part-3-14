@@ -1,41 +1,38 @@
 package com.mysite.sbb.domain.comment;
 
+import com.mysite.sbb.domain.BaseEntity;
+import com.mysite.sbb.domain.answer.Answer;
+import com.mysite.sbb.domain.question.Question;
+import com.mysite.sbb.domain.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Setter
 @Getter
-public class Comment {
+public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String author;
-
-    @CreatedDate
-    private LocalDateTime createDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    private Question question;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Comment parent;
+    @JoinColumn(name = "author_id", nullable = false)
+    private SiteUser author;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private List<Comment> children = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_id")
+    private Answer answer;
 
-    private int depth = 0;
+    public boolean isValidRelation() {
+        return (this.question != null && this.answer == null) ||
+                (this.question == null && this.answer != null);
+    }
 }

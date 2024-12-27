@@ -1,7 +1,7 @@
 package com.mysite.sbb.web.answer;
 
 import com.mysite.sbb.web.answer.dto.request.AnswerRequestDTO;
-import com.mysite.sbb.web.common.dto.response.ApiResponse;
+import com.mysite.sbb.web.api.ApiResponse;
 import com.mysite.sbb.domain.answer.Answer;
 import com.mysite.sbb.domain.question.Question;
 import com.mysite.sbb.domain.user.SiteUser;

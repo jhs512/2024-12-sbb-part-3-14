@@ -1,4 +1,4 @@
-package com.mysite.sbb.web.common.validator;
+package com.mysite.sbb.global.common.validator;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

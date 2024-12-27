@@ -1,6 +1,6 @@
 package com.mysite.sbb.web.user;
 
-import com.mysite.sbb.web.common.dto.response.ApiResponse;
+import com.mysite.sbb.web.api.ApiResponse;
 import com.mysite.sbb.web.user.dto.request.UserRequestDTO;
 import com.mysite.sbb.domain.user.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;

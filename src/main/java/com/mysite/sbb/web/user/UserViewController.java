@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import static com.mysite.sbb.web.common.constant.PageConstants.LOGIN_FORM_VIEW;
-import static com.mysite.sbb.web.common.constant.PageConstants.SIGNUP_FORM_VIEW;
+import static com.mysite.sbb.global.common.constant.PageConstants.LOGIN_FORM_VIEW;
+import static com.mysite.sbb.global.common.constant.PageConstants.SIGNUP_FORM_VIEW;
 
 @Controller
 @RequiredArgsConstructor

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
+    Question findById(long id);
     Question findBySubject(String subject);
     Question findBySubjectAndContent(String subject, String content);
     List<Question> findBySubjectLike(String subject);

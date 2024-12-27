@@ -48,46 +48,39 @@
                    th:text="삭제"></a>
             </div>
 
-<!--            <div class="comments-section border-top mt-3 pt-3">-->
-                <!--                <div class="d-flex justify-content-between align-items-center mb-2">-->
-                <!--                    &lt;!&ndash;                    <span class="text-muted small">댓글 <span th:text="${question.commentCount ?: 0}">0</span>개</span>&ndash;&gt;-->
-                <!--                    <span class="text-muted small">댓글 <span>0</span>개</span>-->
-                <!--                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"-->
-                <!--                            data-bs-target="#questionComments">댓글 보기-->
-                <!--                    </button>-->
-                <!--                </div>-->
+            <!-- 질문 댓글 작성 폼 -->
+            <div class="comments-section border-top mt-3 pt-3">
+                <h5>댓글 목록</h5>
+                <ul class="list-group">
+                    <li th:each="comment : ${comments}" class="list-group-item">
+                        <div>
+                            <strong th:text="${comment.author.username}">작성자</strong>
+                            <small class="text-muted" th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
+                        </div>
+                        <p th:text="${comment.content}">댓글 내용</p>
+                    </li>
+                </ul>
+                <div sec:authorize="isAuthenticated()">
+                    <h5>댓글 작성</h5>
+                    <form id="commentToQuestionForm" th:object="${commentRequestDTO}" method="post" class="mt-2" onsubmit="submitCommentForm(event)">
+                        <!--에러 메시지 전달-->
+                        <div id="errorCommentToQuestion" class="alert alert-danger" style="display: none;"></div>
 
-                <!-- 댓글 목록 (접었다 펼 수 있음) -->
-                <!--                <div class="collapse" id="questionComments">-->
-                <!-- 기존 댓글 목록 -->
-                <!--                    <div class="comment-item small border-bottom py-2" th:each="comment : ${question.comments}">-->
-                <!--                        <div class="d-flex justify-content-between">-->
-                <!--                            <div>-->
-                <!--                                <span class="me-2" th:text="${comment.content}">댓글 내용</span>-->
-                <!--                                <span class="text-muted" th:text="${comment.authorName}">작성자</span>-->
-                <!--                            </div>-->
-                <!--                            <div class="text-muted" th:text="${#temporals.format(comment.createDate, 'MM.dd HH:mm')}">-->
-                <!--                                날짜-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                </div>-->
+                        <!-- 댓글 대상 정보 전달 -->
+                        <input type="hidden" name="targetType" value="QUESTION" />
+                        <input type="hidden" name="targetId" th:value="${question.id}" />
 
-                <!-- 댓글 작성 폼 -->
-                <!-- 질문 댓글 작성 폼 -->
-<!--                <form th:action="@{/comment/create}" method="post"-->
-            <!--                      th:object="${commentRequestDTO}" class="mt-2" sec:authorize="isAuthenticated()">-->
+                        <!-- 댓글 내용 입력 -->
+                        <div class="input-group input-group-sm">
+                            <textarea id="commentContent" name="content" class="form-control" placeholder="댓글을 입력하세요"></textarea>
+                            <button class="btn btn-outline-secondary" type="submit">등록</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--    댓글 작성 폼 끝 -->
 
-            <!--                    &lt;!&ndash; 질문이라는 타겟 정보 전달 &ndash;&gt;-->
-            <!--                    <input type="hidden" th:field="*{targetType}" value="question"/>-->
-            <!--                    <input type="hidden" th:field="*{targetId}" th:value="${question.id}"/>-->
-            <!--                    <input type="hidden" th:field="*{parentId}" value=""/>-->
 
-            <!--                    <div class="input-group input-group-sm">-->
-            <!--                        <textarea sec:authorize="isAuthenticated()" th:field="*{content}" class="form-control" placeholder="댓글을 입력하세요"></textarea>-->
-            <!--                        <button class="btn btn-outline-secondary" type="submit">등록</button>-->
-            <!--                    </div>-->
-            <!--                </form>-->
-            <!--            </div>-->
         </div>
     </div>
     <!--  질문 끝 -->
@@ -251,6 +244,53 @@
 </div>
 
 <script layout:fragment="script" type='text/javascript'>
+    async function submitCommentForm(event) {
+        event.preventDefault();
+        const errorDiv = document.getElementById('errorCommentToQuestion');
+        errorDiv.style.display = 'none';
+
+        const commentContent = document.getElementById('commentContent').value;
+        const targetId = document.querySelector('input[name="targetId"]').value;
+
+        if (!commentContent.trim()) {
+            errorDiv.textContent = "댓글 내용을 입력하세요.";
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        const formData = {
+            content: commentContent,
+            targetType: 'QUESTION',
+            targetId: targetId
+        };
+
+        try {
+            const redirectUrl = await sendComment(`/api/v1/comment/question/${targetId}`, formData);
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            }
+        } catch (error) {
+            errorDiv.textContent = error.message || "댓글 작성 중 오류가 발생했습니다.";
+            errorDiv.style.display = 'block';
+        }
+    }
+
+    async function sendComment(url, formData) {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "서버 오류가 발생했습니다.");
+        }
+
+        return response.headers.get('Location');
+    }
+
     async function submitAnswer(event) {
         event.preventDefault();
         const errorDiv = document.getElementById('errorMessages');

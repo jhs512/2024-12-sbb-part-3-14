@@ -1,5 +1,6 @@
 package com.mysite.sbb.domain.user;
 
+import com.mysite.sbb.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class SiteUser {
+public class SiteUser extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

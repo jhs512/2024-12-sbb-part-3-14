@@ -1,7 +1,6 @@
 package com.mysite.sbb.web.question.dto.response;
 
 import com.mysite.sbb.web.answer.dto.response.AnswerResponseDTO;
-import com.mysite.sbb.web.common.dto.QuestionBaseDTO;
 import com.mysite.sbb.domain.answer.Answer;
 import com.mysite.sbb.domain.question.Question;
 import lombok.Getter;
@@ -9,15 +8,30 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestionDetailResponseDTO extends QuestionBaseDTO {
+public class QuestionDetailResponseDTO {
+    private long id;                         // ID
+    private String subject;                 // 제목
+    private String content;                 // 내용
+    private String authorName;              // 작성자
+    private LocalDateTime createDate;       // 생성일
+    private LocalDateTime modifyDate;       // 수정일
+    private int answerCount;                // 답변 개수
     private int voterCount;                         // 추천 수
     private Page<AnswerResponseDTO> answers;        // 답변 리스트
 
     public QuestionDetailResponseDTO(Question question, Page<Answer> answers) {
-        super(question);
+        this.id = question.getId();
+        this.subject = question.getSubject();
+        this.content = question.getContent();
+        this.authorName = question.getAuthor() != null ? question.getAuthor().getUsername() : "익명";
+        this.createDate = question.getCreateDate();
+        this.modifyDate = question.getModifyDate();
+        this.answerCount = question.getAnswerList().size();
         this.voterCount = question.getVoter().size();   // 추천 개수
         this.answers = answers.map(AnswerResponseDTO::new);
     }

@@ -1,5 +1,6 @@
 package com.mysite.sbb.domain.question;
 
+import com.mysite.sbb.domain.BaseEntity;
 import com.mysite.sbb.domain.answer.Answer;
 import com.mysite.sbb.domain.user.SiteUser;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-public class Question {
+public class Question extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -26,17 +27,11 @@ public class Question {
     @Column (columnDefinition =  "TEXT")
     private String content;
 
-    @CreatedDate
-    private LocalDateTime createDate;
-
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 
     @ManyToOne
     private SiteUser author;
-
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
 
     @ManyToMany
     Set<SiteUser> voter;
