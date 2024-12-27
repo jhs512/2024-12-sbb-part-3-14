@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.example.jtsb02.common.exception.DataNotFoundException;
@@ -67,10 +68,10 @@ class QuestionServiceTest {
         Question question2 = createQuestion(2L, createQuestionForm("제목2", "내용2"));
         List<Question> questions = List.of(question1, question2);
         Page<Question> page = new PageImpl<>(questions, PageRequest.of(0, 10), questions.size());
-        when(questionRepository.findAll(any(Pageable.class))).thenReturn(page);
+        when(questionRepository.findAllByKeyword(any(String.class), any(Pageable.class))).thenReturn(page);
 
         //when
-        Page<QuestionDto> result = questionService.getQuestions(1);
+        Page<QuestionDto> result = questionService.getQuestions(1, "");
 
         //then
         assertThat(result).isNotNull();
@@ -174,6 +175,7 @@ class QuestionServiceTest {
                 .password("onlyTest")
                 .email("onlyTest@gmail.com")
                 .build())
+            .voter(new HashSet<>())
             .build();
     }
 }

@@ -30,12 +30,11 @@ public class QuestionService {
                 Member.fromMemberDto(memberDto))).getId();
     }
 
-    public Page<QuestionDto> getQuestions(int page) {
+    public Page<QuestionDto> getQuestions(int page, String kw) {
         List<Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdAt"));
-
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
-        return questionRepository.findAll(pageable).map(QuestionDto::fromQuestion);
+        return questionRepository.findAllByKeyword(kw, pageable).map(QuestionDto::fromQuestion);
     }
 
     public QuestionDto getQuestion(Long id) {
