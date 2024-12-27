@@ -4,7 +4,6 @@ import com.mysite.sbb.domain.question.Question;
 import com.mysite.sbb.domain.user.SiteUser;
 
 public interface AnswerService {
-    void create(Question question, String content);
 
     Answer create(Question question, String content, SiteUser author);
 

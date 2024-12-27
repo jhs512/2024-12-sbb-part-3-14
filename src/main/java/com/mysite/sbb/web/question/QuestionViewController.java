@@ -1,7 +1,7 @@
 package com.mysite.sbb.web.question;
 
 import com.mysite.sbb.domain.comment.Comment;
-import com.mysite.sbb.domain.comment.CommentService;
+import com.mysite.sbb.domain.comment.CommentServiceImpl;
 import com.mysite.sbb.domain.question.Question;
 import com.mysite.sbb.domain.question.QuestionServiceImpl;
 import com.mysite.sbb.web.answer.dto.request.AnswerRequestDTO;
@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.mysite.sbb.global.common.constant.PageConstants.*;
-import static com.mysite.sbb.global.common.validator.SecurityValidaotr.validateUserPermission;
+import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ import static com.mysite.sbb.global.common.validator.SecurityValidaotr.validateU
 public class QuestionViewController {
 
     private final QuestionServiceImpl questionService;
-    private final CommentService commentService;
+    private final CommentServiceImpl commentServiceImpl;
 
 
     @GetMapping("list")
@@ -50,7 +49,7 @@ public class QuestionViewController {
         QuestionDetailResponseDTO question = this.questionService.getQuestionDetail(id, page, sortKeyword);
 
         // 질문에 대한 댓글
-        List<Comment> commentOfQuestion = commentService.getCommentsForQuestion(id);
+        List<Comment> commentOfQuestion = commentServiceImpl.getCommentsForQuestion(id);
 
         model.addAttribute("question", question);
         model.addAttribute("sort", sortKeyword); // 선택된 정렬 기준 전달

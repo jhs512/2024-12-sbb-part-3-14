@@ -1,7 +1,7 @@
 package com.mysite.sbb.web.comment;
 
 import com.mysite.sbb.domain.comment.Comment;
-import com.mysite.sbb.domain.comment.CommentService;
+import com.mysite.sbb.domain.comment.CommentServiceImpl;
 import com.mysite.sbb.domain.user.SiteUser;
 import com.mysite.sbb.domain.user.UserService;
 import com.mysite.sbb.web.api.ApiResponse;
@@ -26,7 +26,7 @@ import java.security.Principal;
 public class CommentRestController {
 
     private final UserService userService;
-    private final CommentService commentService;
+    private final CommentServiceImpl commentServiceImpl;
 
     // 질문에 댓글 생성
     @PreAuthorize("isAuthenticated()")
@@ -47,7 +47,7 @@ public class CommentRestController {
         SiteUser author = userService.getUser(principal.getName());
 
         // 댓글 추가
-        Comment comment = commentService.addComment(dto, author, questionId);
+        Comment comment = commentServiceImpl.addComment(dto, author, questionId);
 
         // URL 생성 및 반환
         return createRedirectResponse(dto.targetType(), dto.targetId(), comment);

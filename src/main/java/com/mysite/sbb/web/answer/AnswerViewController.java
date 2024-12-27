@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 
 import static com.mysite.sbb.global.common.constant.PageConstants.ANSWER_FORM_VIEW;
-import static com.mysite.sbb.global.common.validator.SecurityValidaotr.validateUserPermission;
+import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
 
 @Controller
 @RequiredArgsConstructor
