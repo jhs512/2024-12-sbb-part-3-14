@@ -1,6 +1,13 @@
 package org.example.jtsb02.answer.controller;
 
+import static org.example.util.TestHelper.createAnswer;
+import static org.example.util.TestHelper.createAnswerForm;
+import static org.example.util.TestHelper.createMember;
+import static org.example.util.TestHelper.createQuestion;
+import static org.example.util.TestHelper.createQuestionForm;
+import static org.example.util.TestHelper.generateStringOfLength;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,8 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.entity.Answer;
@@ -22,7 +27,6 @@ import org.example.jtsb02.answer.service.AnswerService;
 import org.example.jtsb02.common.security.SecurityConfig;
 import org.example.jtsb02.common.util.CommonUtil;
 import org.example.jtsb02.member.dto.MemberDto;
-import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.member.service.MemberService;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
@@ -70,11 +74,12 @@ class AnswerControllerTest {
     @Test
     @DisplayName("POST /answer/create/{questionId} - Answer 생성 성공")
     @WithMockUser(username = "onlyTest")
-    void createAnswer() throws Exception {
+    void createAnswerTest() throws Exception {
         //given
         String url = "/answer/create/1";
         MemberDto member = createMember();
         when(memberService.getMember("onlyTest")).thenReturn(member);
+        when(answerService.createAnswer(eq(1L), any(AnswerForm.class), eq(member))).thenReturn(1L);
 
         //when
         ResultActions result = mockMvc.perform(post(url)
@@ -85,7 +90,7 @@ class AnswerControllerTest {
 
         //then
         result.andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/question/detail/1"));
+            .andExpect(redirectedUrl("/question/detail/1#answer_1"));
         verify(answerService, times(1)).createAnswer(any(Long.class),
             any(AnswerForm.class), any(MemberDto.class));
     }
@@ -93,12 +98,12 @@ class AnswerControllerTest {
     @Test
     @DisplayName("POST /answer/create/{questionId} - Answer 생성 실패 - 내용이 비었을 경우")
     @WithMockUser(username = "onlyTest")
-    void createAnswerEmptyContent() throws Exception {
+    void createAnswerEmptyContentTest() throws Exception {
         //given
         String url = "/answer/create/1";
         MemberDto member = createMember();
         when(memberService.getMember("onlyTest")).thenReturn(member);
-        Question question = createQuestion();
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
         when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question));
 
         //when
@@ -117,12 +122,12 @@ class AnswerControllerTest {
     @Test
     @DisplayName("POST /answer/create/{questionId} - Answer 생성 실패 - 내용이 2000자 이상일 경우")
     @WithMockUser(username = "onlyTest")
-    void createAnswerLongContent() throws Exception {
+    void createAnswerLongContentTest() throws Exception {
         //given
         String url = "/answer/create/1";
         MemberDto member = createMember();
         when(memberService.getMember("onlyTest")).thenReturn(member);
-        Question question = createQuestion();
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
         when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question));
 
         //when
@@ -141,12 +146,13 @@ class AnswerControllerTest {
     @Test
     @DisplayName("GET /answer/modify/{answerId} - Answer 수정폼으로 이동")
     @WithMockUser(username = "onlyTest")
-    void modifyAnswerForm() throws Exception {
+    void modifyAnswerFormTest() throws Exception {
         //given
         String url = "/answer/modify/1";
-        Question question = createQuestion();
-        Answer answer = createAnswer(question);
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Answer answer = createAnswer(createAnswerForm("test content"), question);
         when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
+
 
         //when
         ResultActions result = mockMvc.perform(get(url));
@@ -160,11 +166,11 @@ class AnswerControllerTest {
     @Test
     @DisplayName("POST /answer/modify/{answerId} - Answer 수정")
     @WithMockUser(username = "onlyTest")
-    void modifyAnswer() throws Exception {
+    void modifyAnswerTest() throws Exception {
         //given
         String url = "/answer/modify/1";
-        Question question = createQuestion();
-        Answer answer = createAnswer(question);
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Answer answer = createAnswer(createAnswerForm("test content"), question);
         when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
 
         //when
@@ -176,18 +182,18 @@ class AnswerControllerTest {
 
         //then
         result.andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/question/detail/1"));
+            .andExpect(redirectedUrl("/question/detail/1#answer_1"));
         verify(answerService, times(1)).modifyAnswer(any(Long.class), any(AnswerForm.class));
     }
 
     @Test
     @DisplayName("GET /answer/delete/{answerId} - Answer 삭제")
     @WithMockUser(username = "onlyTest")
-    void deleteAnswer() throws Exception {
+    void deleteAnswerTest() throws Exception {
         //given
         String url = "/answer/delete/1";
-        Question question = createQuestion();
-        Answer answer = createAnswer(question);
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Answer answer = createAnswer(createAnswerForm("test content"), question);
         when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
 
         //when
@@ -200,52 +206,5 @@ class AnswerControllerTest {
         result.andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/question/detail/1"));
         verify(answerService, times(1)).deleteAnswer(any(AnswerDto.class));
-    }
-
-    private MemberDto createMember() {
-        return MemberDto.builder()
-            .id(1L)
-            .memberId("onlyTest")
-            .nickname("onlyTest")
-            .email("onlyTest@test.com")
-            .build();
-    }
-
-    private Question createQuestion() {
-        return Question.builder()
-            .id(1L)
-            .subject("test subject")
-            .content("test content")
-            .createdAt(LocalDateTime.now())
-            .hits(1)
-            .answers(new ArrayList<>())
-            .author(Member.builder()
-                .id(1L)
-                .memberId("onlyTest")
-                .nickname("onlyTest")
-                .password("onlyTest")
-                .email("onlyTest@gmail.com")
-                .build())
-            .build();
-    }
-
-    private Answer createAnswer(Question question) {
-        return Answer.builder()
-            .id(1L)
-            .content("test content")
-            .createdAt(LocalDateTime.now())
-            .question(question)
-            .author(Member.builder()
-                .id(1L)
-                .memberId("onlyTest")
-                .nickname("onlyTest")
-                .password("onlyTest")
-                .email("onlyTest@gmail.com")
-                .build())
-            .build();
-    }
-
-    private String generateStringOfLength(int length) {
-        return "a".repeat(length);
     }
 }

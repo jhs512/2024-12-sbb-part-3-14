@@ -1,19 +1,17 @@
 package org.example.jtsb02.question.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.example.util.TestHelper.createQuestion;
+import static org.example.util.TestHelper.createQuestionForm;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.member.dto.MemberDto;
-import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.form.QuestionForm;
@@ -41,7 +39,7 @@ class QuestionServiceTest {
 
     @Test
     @DisplayName("질문 등록")
-    void createQuestion() {
+    void createQuestionTest() {
         //given: 테스트를 위한 데이터 준비
         QuestionForm questionForm = createQuestionForm("테스트 제목", "테스트 내용");
 
@@ -62,7 +60,7 @@ class QuestionServiceTest {
 
     @Test
     @DisplayName("질문 목록 조회")
-    void getQuestions() {
+    void getQuestionsTest() {
         //given
         Question question1 = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         Question question2 = createQuestion(2L, createQuestionForm("제목2", "내용2"));
@@ -84,7 +82,7 @@ class QuestionServiceTest {
 
     @Test
     @DisplayName("질문 조회시 조회수 증가")
-    void getQuestion() {
+    void getQuestionTest() {
         //given
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -105,7 +103,7 @@ class QuestionServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 질문 ID로 조회")
-    void getQuestion_notFound() {
+    void getQuestionTest_notFound() {
         //given
         when(questionRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -118,7 +116,7 @@ class QuestionServiceTest {
 
     @Test
     @DisplayName("질문 수정")
-    void modifyQuestion() {
+    void modifyQuestionTest() {
         //given
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         QuestionForm modifyQuestionForm = createQuestionForm("수정한 제목1", "수정한 내용1");
@@ -141,7 +139,7 @@ class QuestionServiceTest {
 
     @Test
     @DisplayName("질문 삭제")
-    void deleteQuestion() {
+    void deleteQuestionTest() {
         //given
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -151,31 +149,5 @@ class QuestionServiceTest {
 
         //then
         verify(questionRepository, times(1)).delete(question);
-    }
-
-    private QuestionForm createQuestionForm(String subject, String content) {
-        QuestionForm questionForm = new QuestionForm();
-        questionForm.setSubject(subject);
-        questionForm.setContent(content);
-        return questionForm;
-    }
-
-    private Question createQuestion(Long id, QuestionForm questionForm) {
-        return Question.builder()
-            .id(id)
-            .subject(questionForm.getSubject())
-            .content(questionForm.getContent())
-            .createdAt(LocalDateTime.now())
-            .hits(0)
-            .answers(new ArrayList<>())
-            .author(Member.builder()
-                .id(1L)
-                .memberId("onlyTest")
-                .nickname("onlyTest")
-                .password("onlyTest")
-                .email("onlyTest@gmail.com")
-                .build())
-            .voter(new HashSet<>())
-            .build();
     }
 }

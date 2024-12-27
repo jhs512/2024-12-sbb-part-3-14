@@ -1,18 +1,21 @@
 package org.example.jtsb02.answer.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.example.util.TestHelper.createAnswer;
+import static org.example.util.TestHelper.createAnswerForm;
+import static org.example.util.TestHelper.createMember;
+import static org.example.util.TestHelper.createQuestion;
+import static org.example.util.TestHelper.createQuestionForm;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.answer.repository.AnswerRepository;
-import org.example.jtsb02.member.dto.MemberDto;
-import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.repository.QuestionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -38,30 +41,26 @@ class AnswerServiceTest {
 
     @Test
     @DisplayName("답변 등록")
-    void createAnswer() {
+    void createAnswerTest() {
         //given
-        Question question = createQuestion();
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
         AnswerForm answerForm = createAnswerForm("answer content");
-
+        Answer answer = createAnswer(answerForm, question);
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
-        ArgumentCaptor<Answer> captor = ArgumentCaptor.forClass(Answer.class);
+        when(answerRepository.save(any(Answer.class))).thenReturn(answer);
 
         //when
-        answerService.createAnswer(1L, answerForm, MemberDto.builder().id(1L).build());
-        verify(answerRepository, times(1)).save(captor.capture());
-        Answer save = captor.getValue();
+        Long result = answerService.createAnswer(1L, answerForm, createMember());
 
         //then
-        assertThat(save.getContent()).isEqualTo(answerForm.getContent());
-        assertThat(save.getQuestion()).isEqualTo(question);
-        assertThat(save.getQuestion().getId()).isEqualTo(1L);
+        assertThat(result).isEqualTo(answer.getId());
     }
 
     @Test
     @DisplayName("답변 조회")
-    void getAnswer() {
+    void getAnswerTest() {
         //given
-        Question question = createQuestion();
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
         AnswerForm answerForm = createAnswerForm("answer content");
         Answer answer = createAnswer(answerForm, question);
 
@@ -79,9 +78,9 @@ class AnswerServiceTest {
 
     @Test
     @DisplayName("답변 수정")
-    void modifyAnswer() {
+    void modifyAnswerTest() {
         //given
-        Question question = createQuestion();
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
         AnswerForm answerForm = createAnswerForm("answer content");
         AnswerForm modifyForm = createAnswerForm("modify content");
         Answer answer = createAnswer(answerForm, question);
@@ -102,9 +101,9 @@ class AnswerServiceTest {
 
     @Test
     @DisplayName("답변 삭제")
-    void deleteAnswer() {
+    void deleteAnswerTest() {
         //given
-        Question question = createQuestion();
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
         AnswerForm answerForm = createAnswerForm("answer content");
         Answer answer = createAnswer(answerForm, question);
 
@@ -113,44 +112,5 @@ class AnswerServiceTest {
 
         //then
         verify(answerRepository, times(1)).delete(ArgumentMatchers.any(Answer.class));
-    }
-
-    private AnswerForm createAnswerForm(String content) {
-        AnswerForm answerForm = new AnswerForm();
-        answerForm.setContent(content);
-        return answerForm;
-    }
-
-    private Answer createAnswer(AnswerForm answerForm, Question question) {
-        return Answer.builder()
-            .id(1L)
-            .content(answerForm.getContent())
-            .createdAt(LocalDateTime.now())
-            .question(question)
-            .author(Member.builder()
-                .id(1L)
-                .memberId("onlyTest")
-                .nickname("onlyTest")
-                .password("onlyTest")
-                .email("onlyTest@gmail.com")
-                .build())
-            .build();
-    }
-
-    private Question createQuestion() {
-        return Question.builder()
-            .id(1L)
-            .subject("test subject")
-            .content("test content")
-            .createdAt(LocalDateTime.now())
-            .hits(1)
-            .author(Member.builder()
-                .id(1L)
-                .memberId("onlyTest")
-                .nickname("onlyTest")
-                .password("onlyTest")
-                .email("onlyTest@gmail.com")
-                .build())
-            .build();
     }
 }

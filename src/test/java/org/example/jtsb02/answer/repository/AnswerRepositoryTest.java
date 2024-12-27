@@ -31,7 +31,7 @@ class AnswerRepositoryTest {
     void save() {
         //given
         Member member = memberRepository.save(Member.of(
-            "onlyTset",
+            "onlyTest",
             "onlyTest",
             "onlyTest",
             "onlyTest@gmail.com")
@@ -56,7 +56,7 @@ class AnswerRepositoryTest {
     void modify() {
         //given
         Member member = memberRepository.save(Member.of(
-            "onlyTset",
+            "onlyTest",
             "onlyTest",
             "onlyTest",
             "onlyTest@gmail.com")
@@ -83,7 +83,7 @@ class AnswerRepositoryTest {
     void delete() {
         //given
         Member member = memberRepository.save(Member.of(
-            "onlyTset",
+            "onlyTest",
             "onlyTest",
             "onlyTest",
             "onlyTest@gmail.com")

@@ -1,5 +1,6 @@
 package org.example.jtsb02.member.service;
 
+import static org.example.util.TestHelper.createMemberForm;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,16 +58,5 @@ class MemberServiceTest {
         verify(passwordEncoder).encode(memberForm.getPassword());
         verify(memberRepository).save(any(Member.class));
 
-    }
-
-    private MemberForm createMemberForm(String memberId, String nickname, String password,
-        String confirmPassword, String email) {
-        MemberForm memberForm = new MemberForm();
-        memberForm.setMemberId(memberId);
-        memberForm.setNickname(nickname);
-        memberForm.setPassword(password);
-        memberForm.setConfirmPassword(confirmPassword);
-        memberForm.setEmail(email);
-        return memberForm;
     }
 }

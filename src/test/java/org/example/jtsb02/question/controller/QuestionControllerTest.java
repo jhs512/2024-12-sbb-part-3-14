@@ -1,5 +1,6 @@
 package org.example.jtsb02.question.controller;
 
+import static org.example.util.TestHelper.generateStringOfLength;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -132,9 +133,5 @@ class QuestionControllerTest {
             .with(csrf())
             .param("subject", subject)
             .param("content", content));
-    }
-
-    private String generateStringOfLength(int length) {
-        return "a".repeat(length);
     }
 }
