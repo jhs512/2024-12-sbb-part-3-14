@@ -65,7 +65,9 @@ public class QuestionController {
             @Valid @ModelAttribute PageRequestDto pageRequestDto,
             Model model) {
         Question question = questionService.findQuestionById(questionId);
+        log.info("Find question by id: {}", questionId);
         Page<Answer> answerPage = answerService.getAnswers(question, pageRequestDto);
+        log.info("Find answerPage by id: {}", questionId);
         model.addAttribute("question", question);
         model.addAttribute("answerPage", answerPage);
         return "question_detail";

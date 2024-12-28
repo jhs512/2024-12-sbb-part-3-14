@@ -27,11 +27,11 @@ public class AnswerService {
     private static final int DEFAULT_PAGE_SIZE = 5;
     private static final String DEFAULT_SORT_FILED = "id";
 
-    public void createAnswer(Long questionId, AnswerRegisterRequestDto requestDto, String username) {
+    public Answer createAnswer(Long questionId, AnswerRegisterRequestDto requestDto, String username) {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
         SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
 
-        answerRepository.save(Answer.builder()
+        return answerRepository.save(Answer.builder()
                 .siteUser(siteUser)
                 .question(question)
                 .content(requestDto.content())

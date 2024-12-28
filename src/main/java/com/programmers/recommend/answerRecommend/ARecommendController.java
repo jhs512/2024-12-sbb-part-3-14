@@ -27,6 +27,6 @@ public class ARecommendController {
             @PathVariable("answerId") Long answerId,
             Principal principal){
         aRecommendService.recommend(questionId, answerId, principal.getName());
-        return "redirect:/questions/" + questionId;
+        return String.format("redirect:/questions/%d#answer_%s", questionId, answerId);
     }
 }

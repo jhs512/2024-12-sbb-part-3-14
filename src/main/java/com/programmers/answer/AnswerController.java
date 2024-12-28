@@ -21,8 +21,8 @@ public class AnswerController {
     public String answer(@PathVariable Long questionId,
                          @ModelAttribute AnswerRegisterRequestDto requestDto,
                          Principal principal) {
-        answerService.createAnswer(questionId, requestDto, principal.getName());
-        return "redirect:/questions/" + questionId;
+        Answer answer = answerService.createAnswer(questionId, requestDto, principal.getName());
+        return String.format("redirect:/questions/%d/answers/%d", questionId, answer.getId());
     }
 
     @PostMapping("/questions/{questionId}/answers/{answerId}")
