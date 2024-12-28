@@ -62,7 +62,10 @@ public class QuestionService {
     }
 
     public Question findQuestionById(Long questionId) {
-        return questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
+        long answerCount = answerRepository.countByQuestion(question);
+        question.setAnswerCount(answerCount);
+        return question;
     }
 
     public void modifyQuestion(Long questionId, String username, QuestionModifyRequestDto requestDto) {

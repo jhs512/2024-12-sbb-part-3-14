@@ -1,6 +1,7 @@
 package com.programmers.data;
 
 import com.programmers.answer.AnswerService;
+import com.programmers.answer.dto.AnswerRegisterRequestDto;
 import com.programmers.question.QuestionService;
 import com.programmers.question.dto.QuestionRegisterRequestDto;
 import com.programmers.user.SiteUserService;
@@ -17,6 +18,7 @@ import java.security.Principal;
 public class DataInitializer implements ApplicationRunner {
     private final QuestionService questionService;
     private final SiteUserService siteUserService;
+    private final AnswerService answerService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -37,6 +39,10 @@ public class DataInitializer implements ApplicationRunner {
             String subject = String.format("테스트 데이터입니다:[%03d]", i);
             String content = "내용무";
             questionService.createQuestion(new QuestionRegisterRequestDto(subject, content), principal.getName());
+        }
+        for (int i = 1; i <= 60; i++) {
+            String content = "테스트용 댓글" + i;
+            answerService.createAnswer(60L, new AnswerRegisterRequestDto(content), principal.getName());
         }
     }
 }
