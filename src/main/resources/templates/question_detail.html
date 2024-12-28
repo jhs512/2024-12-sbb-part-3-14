@@ -19,12 +19,16 @@
                     <div th:if="${question.modifyDate != null}"
                          th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
                 </div>
-                <div class="badge bg-light text-dark p-2 text-start">
+                <div class="badge bg-light text-dark p-2 text-start mx-3"   >
                     <div class="mb-2">
                         <span th:if="${question.authorName != null}"
                               th:text="${question.authorName ?: '작성자 없음'}"></span>
                     </div>
                     <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+                <div class="badge bg-light text-dark p-2 text-start">
+                    <span th:if="${question.category != null}"
+                          th:text="'카테고리: ' + ${question.category}"></span>
                 </div>
             </div>
             <div class="my-3">
@@ -64,7 +68,7 @@
                     </li>
                 </ul>
                 <div sec:authorize="isAuthenticated()">
-                    <h5>댓글 작성</h5>
+                    <h6>댓글 작성</h6>
                     <form class="comment-form mt-2" th:object="${commentRequestDTO}" data-type="question"
                           th:data-id="${question.id}" onsubmit="submitComment(event)">
                         <!--에러 메시지 전달-->
@@ -233,6 +237,13 @@
 </div>
 
 <script layout:fragment="script" type='text/javascript'>
+
+    function showErrorMessage(errorDiv, message) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+
     async function submitComment(event) {
         event.preventDefault();
 
@@ -246,8 +257,7 @@
         const targetId = form.dataset.id;    // 대상 ID
 
         if (!content) {
-            errorDiv.textContent = '댓글 내용을 입력하세요.';
-            errorDiv.style.display = 'block';
+            showErrorMessage(errorDiv, "댓글 내용을 입력하세요.");
             return;
         }
 
@@ -261,8 +271,7 @@
                 window.location.reload();
             }
         } catch (error) {
-            errorDiv.textContent = error.message || "댓글 작성 중 오류가 발생했습니다.";
-            errorDiv.style.display = 'block';
+            showErrorMessage(errorDiv, "댓글 작성 중 오류가 발생했습니다.");
         }
     }
 
@@ -282,8 +291,7 @@
 
         if (!response.ok) {
             const errorData = await response.json();
-            errorDiv.textContent = errorData.message || '댓글 작성 중 오류가 발생했습니다.';
-            errorDiv.style.display = 'block';
+            showErrorMessage(errorDiv, errorData.message);
             return;
         }
 
@@ -314,13 +322,10 @@
                 window.location.reload();
             } else {
                 const errorData = await response.json();
-                errorDiv.textContent = errorData.message || "답변 등록 중 오류가 발생했습니다.";
-                errorDiv.style.display = 'block';
+                showErrorMessage(errorDiv, errorData.message);
             }
         } catch (error) {
-            console.error('Error:', error);
-            errorDiv.textContent = "서버 오류가 발생했습니다.";
-            errorDiv.style.display = 'block';
+            showErrorMessage(errorDiv, "서버 오류가 발생했습니다.");
         }
     }
 
@@ -379,9 +384,9 @@
                         if (response.ok) {
                             alert("삭제되었습니다.");
                             if (uri.includes('/question/')) {
-                                window.location.href = '/';  // 질문 삭제 시 메인으로
+                                window.location.href = '/';
                             } else {
-                                window.location.reload();    // 답변 삭제 시 페이지 새로고침
+                                window.location.reload();
                             }
                         } else {
                             alert('삭제에 실패했습니다.');

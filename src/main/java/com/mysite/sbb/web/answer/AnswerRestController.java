@@ -1,13 +1,13 @@
 package com.mysite.sbb.web.answer;
 
+import com.mysite.sbb.domain.answer.Answer;
+import com.mysite.sbb.domain.answer.AnswerServiceImpl;
+import com.mysite.sbb.domain.question.Question;
+import com.mysite.sbb.domain.question.QuestionServiceImpl;
+import com.mysite.sbb.domain.user.SiteUser;
+import com.mysite.sbb.domain.user.UserServiceImpl;
 import com.mysite.sbb.web.answer.dto.request.AnswerRequestDTO;
 import com.mysite.sbb.web.api.ApiResponse;
-import com.mysite.sbb.domain.answer.Answer;
-import com.mysite.sbb.domain.question.Question;
-import com.mysite.sbb.domain.user.SiteUser;
-import com.mysite.sbb.domain.answer.AnswerServiceImpl;
-import com.mysite.sbb.domain.question.QuestionServiceImpl;
-import com.mysite.sbb.domain.user.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +43,7 @@ public class AnswerRestController {
             Principal principal) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new ApiResponse(false, "답변 형식에 맞지 않습니다."));
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "답변 형식에 맞지 않습니다."));
         }
 
         try {
@@ -64,9 +62,7 @@ public class AnswerRestController {
             ));
         } catch (Exception e) {
             log.error("Error updating answer: ", e);
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("답변 생성 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "답변 생성 중 오류가 발생했습니다."));
         }
     }
 
@@ -79,18 +75,14 @@ public class AnswerRestController {
             Principal principal) {
 
         if (bindingResult.hasErrors()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(bindingResult.getAllErrors());
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "올바른 형식이 아닙니다"));
         }
 
         try {
             Answer answer = answerService.getAnswer(id);
 
             if (!answer.getAuthor().getUsername().equals(principal.getName())) {
-                return ResponseEntity
-                        .status(HttpStatus.FORBIDDEN)
-                        .body(new ApiResponse(false, "수정권한이 없습니다."));
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false, "수정권한이 없습니다."));
             }
 
             answerService.modify(answer, answerRequestDTO.getContent());
@@ -130,21 +122,17 @@ public class AnswerRestController {
 
             return ResponseEntity
                     .status(HttpStatus.SEE_OTHER)
-                    .header(HttpHeaders.LOCATION,
-                            String.format("/question/detail/%s", questionId))
+                    .header(HttpHeaders.LOCATION, String.format("/question/detail/%s", questionId))
                     .build();
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("답변 삭제 중 오류가 발생했습니다.");
         }
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/vote/{id}")
-    public ResponseEntity<?> addVoteToAnswer(
-            @PathVariable Integer id,
-            Principal principal) {
+    public ResponseEntity<?> addVoteToAnswer(@PathVariable Integer id,Principal principal) {
 
         try {
             Answer answer = answerService.getAnswer(id);
@@ -152,8 +140,7 @@ public class AnswerRestController {
 
             answerService.vote(answer, siteUser);
 
-            return ResponseEntity
-                    .status(HttpStatus.SEE_OTHER)
+            return ResponseEntity.status(HttpStatus.SEE_OTHER)
                     .header(HttpHeaders.LOCATION,
                             String.format("/question/detail/%s#answer_%s",
                                     answer.getQuestion().getId(), answer.getId()))

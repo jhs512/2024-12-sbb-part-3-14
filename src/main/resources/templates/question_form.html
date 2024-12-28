@@ -4,13 +4,24 @@
         th:text="${questionRequestDTO.id == null ? '질문등록' : '질문수정'}">질문</h5>
 
     <form id="questionForm" th:object="${questionRequestDTO}" method="post" onsubmit="submitForm(event)">
-<!--        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <input type="hidden" th:if="${questionRequestDTO.id != null}" th:field="*{id}">
-<!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
+
+        <!-- 에러 메시지 -->
         <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
+
+        <!-- 제출 폼-->
         <div class="mb-3">
             <label for="subject" class="form-label">제목</label>
             <input type="text" th:field="*{subject}" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">종류</label>
+            <select th:field="*{category}" id="category" class="form-control">
+                <option value="질문">질문</option>
+                <option value="강좌">강좌</option>
+                <option value="자유">자유</option>
+            </select>
         </div>
         <div class="mb-3">
             <label for="content" class="form-label">내용</label>
@@ -28,21 +39,27 @@
 
             const formData = {
                 subject: document.getElementById('subject').value,
-                content: document.getElementById('content').value
+                content: document.getElementById('content').value,
+                category: document.getElementById('category').value
             };
 
             // id hidden 필드가 있다면 수정 모드
             const questionId = form.querySelector('input[name="id"]')?.value;
             const isModify = questionId != null;
 
+            const csrfToken = form.querySelector('input[name="_csrf"]').value;
+
             try {
                 const url = isModify
                     ? `/api/v1/question/${questionId}`  // 수정 API
-                    : '/api/v1/question';              // 생성 API
+                    : '/api/v1/question';               // 생성 API
 
                 const response = await fetch(url, {
                     method: isModify ? 'PUT' : 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     body: JSON.stringify(formData)
                 });
 
@@ -50,8 +67,7 @@
 
                 if (data.success) {
                     alert(data.message);
-                    // 수정 시에는 해당 질문의 상세페이지로, 생성 시에는 목록으로
-                    window.location.href = isModify
+                    window.location.href = isModify         // 수정 시에는 해당 질문의 상세페이지로, 생성 시에는 목록으로
                         ? `/question/detail/${questionId}`
                         : '/';
                 } else {

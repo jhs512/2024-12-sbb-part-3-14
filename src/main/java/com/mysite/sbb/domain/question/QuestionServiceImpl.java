@@ -3,6 +3,8 @@ package com.mysite.sbb.domain.question;
 
 import com.mysite.sbb.domain.answer.Answer;
 import com.mysite.sbb.domain.answer.AnswerRepository;
+import com.mysite.sbb.domain.category.Category;
+import com.mysite.sbb.domain.category.CategoryRepository;
 import com.mysite.sbb.domain.comment.Comment;
 import com.mysite.sbb.domain.comment.CommentServiceImpl;
 import com.mysite.sbb.domain.user.SiteUser;
@@ -34,6 +36,7 @@ import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final CategoryRepository categoryRepository;
     private final UserServiceImpl userServiceImpl;
     private final AnswerRepository answerRepository;
     private final CommentServiceImpl commentServiceImpl;
@@ -70,21 +73,28 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void create(QuestionRequestDTO questionRequestDTO, String userName) {
+    public void create(QuestionRequestDTO dto, String userName) {
+        Category category = categoryRepository.findByName(dto.getCategory())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+
         SiteUser user = userServiceImpl.getUser(userName);
         Question question = new Question();
-        question.setSubject(questionRequestDTO.getSubject());
-        question.setContent(questionRequestDTO.getContent());
+        question.setSubject(dto.getSubject());
+        question.setContent(dto.getContent());
+        question.setCategory(category);
         question.setAuthor(user);
         questionRepository.save(question);
     }
 
     @Override
-    public void modify(Integer id, QuestionRequestDTO questionRequestDTO, String userName) {
+    public void modify(Integer id, QuestionRequestDTO dto, String userName) {
         Question question = getQuestion(id);
         validateUserPermission(question.getAuthor().getUsername(), userName, "수정권한");
-        question.setSubject(questionRequestDTO.getSubject());
-        question.setContent(questionRequestDTO.getContent());
+        Category category = categoryRepository.findByName(dto.getCategory())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+        question.setCategory(category);
+        question.setSubject(dto.getSubject());
+        question.setContent(dto.getContent());
         questionRepository.save(question);
     }
 

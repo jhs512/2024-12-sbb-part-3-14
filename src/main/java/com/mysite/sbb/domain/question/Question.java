@@ -2,14 +2,12 @@ package com.mysite.sbb.domain.question;
 
 import com.mysite.sbb.domain.BaseEntity;
 import com.mysite.sbb.domain.answer.Answer;
+import com.mysite.sbb.domain.category.Category;
 import com.mysite.sbb.domain.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -35,5 +33,9 @@ public class Question extends BaseEntity {
 
     @ManyToMany
     Set<SiteUser> voter;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 }

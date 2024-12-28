@@ -21,6 +21,7 @@ public class QuestionDetailResponseDTO {
     private String subject;                 // 제목
     private String content;                 // 내용
     private String authorName;              // 작성자
+    private String category;
     private LocalDateTime createDate;       // 생성일
     private LocalDateTime modifyDate;       // 수정일
     private int answerCount;                // 답변 개수
@@ -33,6 +34,7 @@ public class QuestionDetailResponseDTO {
         this.subject = question.getSubject();
         this.content = question.getContent();
         this.authorName = question.getAuthor() != null ? question.getAuthor().getUsername() : "익명";
+        this.category = question.getCategory() != null ? question.getCategory().getName() : "없음";
         this.createDate = question.getCreateDate();
         this.modifyDate = question.getModifyDate();
         this.answerCount = question.getAnswerList().size();
