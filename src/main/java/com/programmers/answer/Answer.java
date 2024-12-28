@@ -2,9 +2,12 @@ package com.programmers.answer;
 
 import com.programmers.data.BaseEntity;
 import com.programmers.question.Question;
+import com.programmers.recommend.answerRecommend.ARecommend;
 import com.programmers.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -22,4 +25,8 @@ public class Answer extends BaseEntity {
 
     @Setter
     private String content;
+
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "answer")
+    private Set<ARecommend> aRecommendSet;
 }

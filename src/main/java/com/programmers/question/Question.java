@@ -2,7 +2,7 @@ package com.programmers.question;
 
 import com.programmers.answer.Answer;
 import com.programmers.data.BaseEntity;
-import com.programmers.recommend.Recommend;
+import com.programmers.recommend.questionRecommend.QRecommend;
 import com.programmers.user.SiteUser;
 import jakarta.persistence.*;
 
@@ -34,7 +34,7 @@ public class Question extends BaseEntity {
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "question")
-    private Set<Recommend> recommendSet;
+    private Set<QRecommend> qRecommendSet;
 
     @Transient
     private long answerCount;

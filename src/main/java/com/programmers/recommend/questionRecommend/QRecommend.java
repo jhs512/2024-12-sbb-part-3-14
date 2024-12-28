@@ -1,4 +1,4 @@
-package com.programmers.recommend;
+package com.programmers.recommend.questionRecommend;
 
 import com.programmers.question.Question;
 import com.programmers.user.SiteUser;
@@ -13,7 +13,7 @@ import lombok.*;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"siteUser_id", "question_id"})
 })
-public class Recommend {
+public class QRecommend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

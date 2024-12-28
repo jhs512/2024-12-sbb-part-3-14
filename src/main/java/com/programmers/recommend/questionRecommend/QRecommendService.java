@@ -1,4 +1,4 @@
-package com.programmers.recommend;
+package com.programmers.recommend.questionRecommend;
 
 import com.programmers.exception.AlreadyRecommendedException;
 import com.programmers.exception.NotFoundDataException;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class RecommendService {
-    private final RecommendRepository recommendRepository;
+public class QRecommendService {
+    private final com.programmers.recommend.questionRecommend.QRecommendRepository QRecommendRepository;
     private final SiteUserRepository siteUserRepository;
     private final QuestionRepository questionRepository;
 
@@ -22,24 +22,12 @@ public class RecommendService {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
         SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
 
-        if(recommendRepository.existsByQuestionAndSiteUser(question, siteUser)) {
+        if(QRecommendRepository.existsByQuestionAndSiteUser(question, siteUser)) {
             throw new AlreadyRecommendedException();
         }
-        recommendRepository.save(Recommend.builder()
+        QRecommendRepository.save(QRecommend.builder()
                         .question(question)
                         .siteUser(siteUser)
                 .build());
-    }
-
-    public void deleteRecommend(Long questionId, String username) {
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
-        SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
-
-        if(!recommendRepository.existsByQuestionAndSiteUser(question, siteUser)) {
-            throw new NotFoundDataException("Recommend not found");
-        }
-
-        Recommend recommend = recommendRepository.findByQuestionAndSiteUser(question, siteUser);
-        recommendRepository.delete(recommend);
     }
 }
