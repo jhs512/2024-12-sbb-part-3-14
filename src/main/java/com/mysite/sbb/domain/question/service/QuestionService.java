@@ -1,5 +1,6 @@
-package com.mysite.sbb.domain.question;
+package com.mysite.sbb.domain.question.service;
 
+import com.mysite.sbb.domain.question.domain.Question;
 import com.mysite.sbb.web.api.v1.question.dto.request.QuestionRequestDTO;
 import com.mysite.sbb.web.api.v1.question.dto.response.QuestionDetailResponseDTO;
 import com.mysite.sbb.web.api.v1.question.dto.response.QuestionListResponseDTO;

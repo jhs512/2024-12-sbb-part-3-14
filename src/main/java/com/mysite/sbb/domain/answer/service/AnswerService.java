@@ -1,7 +1,8 @@
-package com.mysite.sbb.domain.answer;
+package com.mysite.sbb.domain.answer.service;
 
-import com.mysite.sbb.domain.question.Question;
-import com.mysite.sbb.domain.user.SiteUser;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.question.domain.Question;
+import com.mysite.sbb.domain.user.domain.SiteUser;
 
 public interface AnswerService {
 

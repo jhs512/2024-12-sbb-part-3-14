@@ -1,4 +1,4 @@
-package com.mysite.sbb.web.api.common.v1.comment.dto.request;
+package com.mysite.sbb.web.api.v1.comment.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

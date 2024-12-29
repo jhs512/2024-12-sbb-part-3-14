@@ -1,12 +1,12 @@
-package com.mysite.sbb.web.api.common.v1.answer;
+package com.mysite.sbb.web.api.v1.answer;
 
-import com.mysite.sbb.domain.answer.Answer;
-import com.mysite.sbb.domain.answer.AnswerServiceImpl;
-import com.mysite.sbb.domain.question.Question;
-import com.mysite.sbb.domain.question.QuestionServiceImpl;
-import com.mysite.sbb.domain.user.SiteUser;
-import com.mysite.sbb.domain.user.UserServiceImpl;
-import com.mysite.sbb.web.api.common.v1.answer.dto.request.AnswerRequestDTO;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.service.AnswerServiceImpl;
+import com.mysite.sbb.domain.question.domain.Question;
+import com.mysite.sbb.domain.question.service.QuestionServiceImpl;
+import com.mysite.sbb.domain.user.domain.SiteUser;
+import com.mysite.sbb.domain.user.service.UserServiceImpl;
+import com.mysite.sbb.web.api.v1.answer.dto.request.AnswerRequestDTO;
 import com.mysite.sbb.web.api.common.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

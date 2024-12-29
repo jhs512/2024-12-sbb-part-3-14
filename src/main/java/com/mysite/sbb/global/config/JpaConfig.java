@@ -1,4 +1,4 @@
-package com.mysite.sbb.infrastructure.config;
+package com.mysite.sbb.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

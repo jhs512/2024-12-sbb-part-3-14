@@ -1,16 +1,13 @@
-package com.mysite.sbb.domain.answer;
+package com.mysite.sbb.domain.answer.doamin;
 
 import com.mysite.sbb.domain.BaseEntity;
-import com.mysite.sbb.domain.question.Question;
-import com.mysite.sbb.domain.user.SiteUser;
+import com.mysite.sbb.domain.question.domain.Question;
+import com.mysite.sbb.domain.user.domain.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Formula;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter

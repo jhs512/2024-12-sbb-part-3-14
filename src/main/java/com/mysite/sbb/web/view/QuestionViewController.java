@@ -1,13 +1,13 @@
-package com.mysite.sbb.web.question;
+package com.mysite.sbb.web.view;
 
-import com.mysite.sbb.domain.comment.Comment;
-import com.mysite.sbb.domain.comment.CommentServiceImpl;
-import com.mysite.sbb.domain.question.Question;
-import com.mysite.sbb.domain.question.QuestionServiceImpl;
-import com.mysite.sbb.web.api.common.v1.answer.dto.request.AnswerRequestDTO;
-import com.mysite.sbb.web.api.common.v1.comment.dto.request.CommentRequestDTO;
-import com.mysite.sbb.web.api.common.v1.question.dto.request.QuestionRequestDTO;
-import com.mysite.sbb.web.api.common.v1.question.dto.response.QuestionDetailResponseDTO;
+import com.mysite.sbb.domain.comment.domain.Comment;
+import com.mysite.sbb.domain.comment.service.CommentServiceImpl;
+import com.mysite.sbb.domain.question.domain.Question;
+import com.mysite.sbb.domain.question.service.QuestionServiceImpl;
+import com.mysite.sbb.web.api.v1.answer.dto.request.AnswerRequestDTO;
+import com.mysite.sbb.web.api.v1.comment.dto.request.CommentRequestDTO;
+import com.mysite.sbb.web.api.v1.question.dto.request.QuestionRequestDTO;
+import com.mysite.sbb.web.api.v1.question.dto.response.QuestionDetailResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-import static com.mysite.sbb.global.common.constant.PageConstants.*;
+import static com.mysite.sbb.global.constant.PageConstants.*;
 import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
 
 

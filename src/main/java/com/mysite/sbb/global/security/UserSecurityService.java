@@ -1,4 +1,4 @@
-package com.mysite.sbb.infrastructure.security;
+package com.mysite.sbb.global.security;
 
 import com.mysite.sbb.domain.user.repository.UserRepository;
 import com.mysite.sbb.domain.user.domain.SiteUser;

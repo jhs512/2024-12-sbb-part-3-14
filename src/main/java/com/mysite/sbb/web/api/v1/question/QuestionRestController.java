@@ -1,8 +1,8 @@
-package com.mysite.sbb.web.api.common.v1.question;
+package com.mysite.sbb.web.api.v1.question;
 
 import com.mysite.sbb.web.api.common.ApiResponse;
-import com.mysite.sbb.web.api.common.v1.question.dto.request.QuestionRequestDTO;
-import com.mysite.sbb.domain.question.QuestionServiceImpl;
+import com.mysite.sbb.web.api.v1.question.dto.request.QuestionRequestDTO;
+import com.mysite.sbb.domain.question.service.QuestionServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

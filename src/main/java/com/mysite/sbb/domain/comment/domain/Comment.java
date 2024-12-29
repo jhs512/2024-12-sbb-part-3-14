@@ -1,9 +1,9 @@
-package com.mysite.sbb.domain.comment;
+package com.mysite.sbb.domain.comment.domain;
 
 import com.mysite.sbb.domain.BaseEntity;
-import com.mysite.sbb.domain.answer.Answer;
-import com.mysite.sbb.domain.question.Question;
-import com.mysite.sbb.domain.user.SiteUser;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.question.domain.Question;
+import com.mysite.sbb.domain.user.domain.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

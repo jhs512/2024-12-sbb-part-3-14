@@ -1,6 +1,5 @@
-package com.mysite.sbb.web.api.common.v1.question.dto.request;
+package com.mysite.sbb.web.api.v1.question.dto.request;
 
-import com.mysite.sbb.domain.category.Category;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

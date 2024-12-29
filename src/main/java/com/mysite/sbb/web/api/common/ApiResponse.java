@@ -1,4 +1,4 @@
-package com.mysite.sbb.web.api;
+package com.mysite.sbb.web.api.common;
 
 public record ApiResponse(boolean success, String message, Object data) {
 

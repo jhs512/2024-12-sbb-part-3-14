@@ -1,12 +1,12 @@
-package com.mysite.sbb.web.api.common.v1.comment;
+package com.mysite.sbb.web.api.v1.comment;
 
-import com.mysite.sbb.domain.comment.Comment;
-import com.mysite.sbb.domain.comment.CommentServiceImpl;
-import com.mysite.sbb.domain.user.SiteUser;
-import com.mysite.sbb.domain.user.UserService;
+import com.mysite.sbb.domain.comment.domain.Comment;
+import com.mysite.sbb.domain.comment.service.CommentServiceImpl;
+import com.mysite.sbb.domain.user.domain.SiteUser;
+import com.mysite.sbb.domain.user.service.UserService;
 import com.mysite.sbb.web.api.common.ApiResponse;
-import com.mysite.sbb.web.api.common.v1.comment.dto.request.CommentRequestDTO;
-import com.mysite.sbb.web.api.common.v1.comment.dto.request.CommentTargetType;
+import com.mysite.sbb.web.api.v1.comment.dto.request.CommentRequestDTO;
+import com.mysite.sbb.web.api.v1.comment.dto.request.CommentTargetType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

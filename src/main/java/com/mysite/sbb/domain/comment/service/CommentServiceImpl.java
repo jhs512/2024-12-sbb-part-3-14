@@ -1,11 +1,13 @@
-package com.mysite.sbb.domain.comment;
+package com.mysite.sbb.domain.comment.service;
 
 
-import com.mysite.sbb.domain.answer.Answer;
-import com.mysite.sbb.domain.answer.AnswerRepository;
-import com.mysite.sbb.domain.question.Question;
-import com.mysite.sbb.domain.question.QuestionRepository;
-import com.mysite.sbb.domain.user.SiteUser;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.repository.AnswerRepository;
+import com.mysite.sbb.domain.comment.domain.Comment;
+import com.mysite.sbb.domain.comment.repository.CommentRepository;
+import com.mysite.sbb.domain.question.domain.Question;
+import com.mysite.sbb.domain.question.repository.QuestionRepository;
+import com.mysite.sbb.domain.user.domain.SiteUser;
 import com.mysite.sbb.web.api.v1.comment.dto.request.CommentRequestDTO;
 import com.mysite.sbb.web.api.v1.comment.dto.request.CommentTargetType;
 import lombok.RequiredArgsConstructor;

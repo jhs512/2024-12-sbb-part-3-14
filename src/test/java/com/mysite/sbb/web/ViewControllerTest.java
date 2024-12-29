@@ -2,12 +2,13 @@ package com.mysite.sbb.web;
 
 import com.mysite.sbb.controller.util.QuestionTestFixture;
 import com.mysite.sbb.controller.util.TestUtil;
-import com.mysite.sbb.web.question.dto.response.QuestionListResponseDTO;
-import com.mysite.sbb.web.question.dto.request.QuestionRequestDTO;
+import com.mysite.sbb.web.api.v1.question.dto.response.QuestionListResponseDTO;
+import com.mysite.sbb.web.api.v1.question.dto.request.QuestionRequestDTO;
 import com.mysite.sbb.global.util.CommonUtil;
-import com.mysite.sbb.domain.answer.AnswerServiceImpl;
-import com.mysite.sbb.domain.question.QuestionServiceImpl;
-import com.mysite.sbb.domain.user.UserServiceImpl;
+import com.mysite.sbb.domain.answer.service.AnswerServiceImpl;
+import com.mysite.sbb.domain.question.service.QuestionServiceImpl;
+import com.mysite.sbb.domain.user.service.UserServiceImpl;
+import com.mysite.sbb.web.view.ViewController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

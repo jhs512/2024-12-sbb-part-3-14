@@ -1,7 +1,7 @@
-package com.mysite.sbb.web.user;
+package com.mysite.sbb.web.view;
 
-import com.mysite.sbb.domain.user.UserServiceImpl;
-import com.mysite.sbb.web.api.common.v1.user.dto.request.UserRequestDTO;
+import com.mysite.sbb.domain.user.service.UserServiceImpl;
+import com.mysite.sbb.web.api.v1.user.dto.request.UserRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
-import static com.mysite.sbb.global.common.constant.PageConstants.*;
+import static com.mysite.sbb.global.constant.PageConstants.*;
 
 @Controller
 @RequiredArgsConstructor

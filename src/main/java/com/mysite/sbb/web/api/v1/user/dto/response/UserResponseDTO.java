@@ -1,12 +1,9 @@
-package com.mysite.sbb.web.api.common.v1.user.dto.response;
+package com.mysite.sbb.web.api.v1.user.dto.response;
 
-import com.mysite.sbb.domain.comment.Comment;
-import com.mysite.sbb.web.api.common.v1.answer.dto.response.AnswerResponseDTO;
-import com.mysite.sbb.web.api.common.v1.question.dto.response.QuestionListResponseDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.mysite.sbb.domain.comment.domain.Comment;
+import com.mysite.sbb.web.api.v1.answer.dto.response.AnswerResponseDTO;
+import com.mysite.sbb.web.api.v1.question.dto.response.QuestionListResponseDTO;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserResponseDTO {
     private String username;
     private String email;

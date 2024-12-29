@@ -1,5 +1,6 @@
-package com.mysite.sbb.domain.category;
+package com.mysite.sbb.domain.category.repository;
 
+import com.mysite.sbb.domain.category.domain.Category;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.data.jpa.repository.JpaRepository;
 

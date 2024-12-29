@@ -1,8 +1,8 @@
-package com.mysite.sbb.web.answer;
+package com.mysite.sbb.web.view;
 
-import com.mysite.sbb.domain.answer.Answer;
-import com.mysite.sbb.domain.answer.AnswerServiceImpl;
-import com.mysite.sbb.web.api.common.v1.answer.dto.request.AnswerRequestDTO;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.service.AnswerServiceImpl;
+import com.mysite.sbb.web.api.v1.answer.dto.request.AnswerRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
-import static com.mysite.sbb.global.common.constant.PageConstants.ANSWER_FORM_VIEW;
+import static com.mysite.sbb.global.constant.PageConstants.ANSWER_FORM_VIEW;
 import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
 
 @Controller

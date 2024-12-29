@@ -1,6 +1,6 @@
 package com.mysite.sbb.controller.util;
 
-import com.mysite.sbb.web.question.dto.response.QuestionListResponseDTO;
+import com.mysite.sbb.web.api.v1.question.dto.response.QuestionListResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

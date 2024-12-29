@@ -1,14 +1,16 @@
-package com.mysite.sbb.domain.question;
+package com.mysite.sbb.domain.question.service;
 
 
-import com.mysite.sbb.domain.answer.Answer;
-import com.mysite.sbb.domain.answer.AnswerRepository;
-import com.mysite.sbb.domain.category.Category;
-import com.mysite.sbb.domain.category.CategoryRepository;
-import com.mysite.sbb.domain.comment.Comment;
-import com.mysite.sbb.domain.comment.CommentServiceImpl;
-import com.mysite.sbb.domain.user.SiteUser;
-import com.mysite.sbb.domain.user.UserServiceImpl;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.repository.AnswerRepository;
+import com.mysite.sbb.domain.category.domain.Category;
+import com.mysite.sbb.domain.category.repository.CategoryRepository;
+import com.mysite.sbb.domain.comment.domain.Comment;
+import com.mysite.sbb.domain.comment.service.CommentServiceImpl;
+import com.mysite.sbb.domain.question.domain.Question;
+import com.mysite.sbb.domain.question.repository.QuestionRepository;
+import com.mysite.sbb.domain.user.domain.SiteUser;
+import com.mysite.sbb.domain.user.service.UserServiceImpl;
 import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.web.api.v1.question.dto.request.QuestionRequestDTO;
 import com.mysite.sbb.web.api.v1.question.dto.response.QuestionDetailResponseDTO;

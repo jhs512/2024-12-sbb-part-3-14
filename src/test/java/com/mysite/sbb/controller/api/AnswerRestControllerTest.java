@@ -1,15 +1,15 @@
 package com.mysite.sbb.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysite.sbb.web.answer.AnswerRestController;
+import com.mysite.sbb.web.api.v1.answer.AnswerRestController;
 import com.mysite.sbb.controller.util.TestUtil;
-import com.mysite.sbb.web.answer.dto.request.AnswerRequestDTO;
-import com.mysite.sbb.domain.answer.Answer;
-import com.mysite.sbb.domain.question.Question;
-import com.mysite.sbb.domain.user.SiteUser;
-import com.mysite.sbb.domain.answer.AnswerServiceImpl;
-import com.mysite.sbb.domain.question.QuestionServiceImpl;
-import com.mysite.sbb.domain.user.UserServiceImpl;
+import com.mysite.sbb.web.api.v1.answer.dto.request.AnswerRequestDTO;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.question.domain.Question;
+import com.mysite.sbb.domain.user.domain.SiteUser;
+import com.mysite.sbb.domain.answer.service.AnswerServiceImpl;
+import com.mysite.sbb.domain.question.service.QuestionServiceImpl;
+import com.mysite.sbb.domain.user.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

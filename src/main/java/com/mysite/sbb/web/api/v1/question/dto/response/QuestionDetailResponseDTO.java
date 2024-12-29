@@ -1,9 +1,9 @@
-package com.mysite.sbb.web.api.common.v1.question.dto.response;
+package com.mysite.sbb.web.api.v1.question.dto.response;
 
-import com.mysite.sbb.domain.comment.Comment;
-import com.mysite.sbb.web.api.common.v1.answer.dto.response.AnswerResponseDTO;
-import com.mysite.sbb.domain.answer.Answer;
-import com.mysite.sbb.domain.question.Question;
+import com.mysite.sbb.domain.comment.domain.Comment;
+import com.mysite.sbb.web.api.v1.answer.dto.response.AnswerResponseDTO;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.question.domain.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

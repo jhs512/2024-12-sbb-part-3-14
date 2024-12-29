@@ -1,5 +1,6 @@
-package com.mysite.sbb.domain.comment;
+package com.mysite.sbb.domain.comment.repository;
 
+import com.mysite.sbb.domain.comment.domain.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

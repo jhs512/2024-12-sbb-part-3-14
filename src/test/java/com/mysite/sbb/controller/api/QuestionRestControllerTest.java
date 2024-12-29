@@ -1,12 +1,12 @@
 package com.mysite.sbb.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysite.sbb.web.question.QuestionRestController;
+import com.mysite.sbb.web.api.v1.question.QuestionRestController;
 import com.mysite.sbb.controller.util.TestUtil;
-import com.mysite.sbb.web.question.dto.request.QuestionRequestDTO;
+import com.mysite.sbb.web.api.v1.question.dto.request.QuestionRequestDTO;
 import com.mysite.sbb.global.exception.AccessDeniedException;
 import com.mysite.sbb.global.exception.DataNotFoundException;
-import com.mysite.sbb.domain.question.QuestionServiceImpl;
+import com.mysite.sbb.domain.question.service.QuestionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

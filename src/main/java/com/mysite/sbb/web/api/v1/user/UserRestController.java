@@ -1,10 +1,10 @@
-package com.mysite.sbb.web.api.common.v1.user;
+package com.mysite.sbb.web.api.v1.user;
 
-import com.mysite.sbb.domain.user.UserServiceImpl;
+import com.mysite.sbb.domain.user.service.UserServiceImpl;
 import com.mysite.sbb.web.api.common.ApiResponse;
-import com.mysite.sbb.web.api.common.v1.user.dto.request.ChangeRequestDTO;
-import com.mysite.sbb.web.api.common.v1.user.dto.request.ForgotRequestDTO;
-import com.mysite.sbb.web.api.common.v1.user.dto.request.UserRequestDTO;
+import com.mysite.sbb.web.api.v1.user.dto.request.ChangeRequestDTO;
+import com.mysite.sbb.web.api.v1.user.dto.request.ForgotRequestDTO;
+import com.mysite.sbb.web.api.v1.user.dto.request.UserRequestDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

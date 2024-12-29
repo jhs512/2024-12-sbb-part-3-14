@@ -1,4 +1,4 @@
-package com.mysite.sbb.web.api.common.v1.user.dto.request;
+package com.mysite.sbb.web.api.v1.user.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 

@@ -1,4 +1,4 @@
-package com.mysite.sbb.domain.user;
+package com.mysite.sbb.domain.user.domain;
 
 import com.mysite.sbb.domain.BaseEntity;
 import jakarta.persistence.*;

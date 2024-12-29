@@ -1,6 +1,7 @@
-package com.mysite.sbb.domain.answer;
+package com.mysite.sbb.domain.answer.repository;
 
-import com.mysite.sbb.domain.question.Question;
+import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.question.domain.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

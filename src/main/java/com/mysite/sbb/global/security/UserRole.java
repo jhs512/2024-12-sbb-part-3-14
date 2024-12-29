@@ -1,4 +1,4 @@
-package com.mysite.sbb.infrastructure.security;
+package com.mysite.sbb.global.security;
 
 import lombok.Getter;
 

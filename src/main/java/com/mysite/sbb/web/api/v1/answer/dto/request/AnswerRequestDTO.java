@@ -1,4 +1,4 @@
-package com.mysite.sbb.web.api.common.v1.answer.dto.request;
+package com.mysite.sbb.web.api.v1.answer.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
