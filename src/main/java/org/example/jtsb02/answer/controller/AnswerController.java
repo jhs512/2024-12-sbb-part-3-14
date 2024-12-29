@@ -41,7 +41,8 @@ public class AnswerController {
             return "question/detail";
         }
         Long answerId = answerService.createAnswer(questionId, answerForm, member);
-        return String.format("redirect:/question/detail/%s#answer_%s", questionId, answerId);
+        return String.format("redirect:/question/detail/%s?page=%d#answer_%s", questionId,
+            question.getAnswerCount() / 10 + 1, answerId);
     }
 
     @PreAuthorize("isAuthenticated()")

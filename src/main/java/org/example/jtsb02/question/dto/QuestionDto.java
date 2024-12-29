@@ -9,6 +9,7 @@ import lombok.Getter;
 import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.question.entity.Question;
+import org.springframework.data.domain.Page;
 
 @Getter
 @Builder
@@ -20,7 +21,8 @@ public class QuestionDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private int hits;
-    private List<AnswerDto> answers;
+    private Page<AnswerDto> answers;
+    private int answerCount;
     private MemberDto author;
     private Set<MemberDto> voter;
 
@@ -30,9 +32,22 @@ public class QuestionDto {
             .subject(question.getSubject())
             .content(question.getContent())
             .createdAt(question.getCreatedAt())
+            .hits(question.getHits())
+            .answerCount(question.getAnswers().size())
+            .author(MemberDto.fromMember(question.getAuthor()))
+            .voter(question.getVoter().stream().map(MemberDto::fromMember).collect(Collectors.toSet()))
+            .build();
+    }
+
+    public static QuestionDto fromQuestion(Question question, Page<AnswerDto> answerPage) {
+        return QuestionDto.builder()
+            .id(question.getId())
+            .subject(question.getSubject())
+            .content(question.getContent())
+            .createdAt(question.getCreatedAt())
             .modifiedAt(question.getModifiedAt())
             .hits(question.getHits())
-            .answers(question.getAnswers().stream().map(AnswerDto::fromAnswer).toList())
+            .answers(answerPage)
             .author(MemberDto.fromMember(question.getAuthor()))
             .voter(question.getVoter().stream().map(MemberDto::fromMember).collect(Collectors.toSet()))
             .build();

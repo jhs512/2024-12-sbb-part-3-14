@@ -19,7 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.answer.form.AnswerForm;
@@ -37,6 +39,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -78,6 +82,10 @@ class AnswerControllerTest {
         //given
         String url = "/answer/create/1";
         MemberDto member = createMember();
+        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        List<AnswerDto> answers = new ArrayList<>();
+        Page<AnswerDto> answerPage = new PageImpl<>(answers);
+        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question, answerPage));
         when(memberService.getMember("onlyTest")).thenReturn(member);
         when(answerService.createAnswer(eq(1L), any(AnswerForm.class), eq(member))).thenReturn(1L);
 
@@ -90,7 +98,7 @@ class AnswerControllerTest {
 
         //then
         result.andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/question/detail/1#answer_1"));
+            .andExpect(redirectedUrl("/question/detail/1?page=1#answer_1"));
         verify(answerService, times(1)).createAnswer(any(Long.class),
             any(AnswerForm.class), any(MemberDto.class));
     }
@@ -104,7 +112,9 @@ class AnswerControllerTest {
         MemberDto member = createMember();
         when(memberService.getMember("onlyTest")).thenReturn(member);
         Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
-        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question));
+        List<AnswerDto> answers = new ArrayList<>();
+        Page<AnswerDto> answerPage = new PageImpl<>(answers);
+        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question, answerPage));
 
         //when
         ResultActions result = mockMvc.perform(post(url)
@@ -128,7 +138,9 @@ class AnswerControllerTest {
         MemberDto member = createMember();
         when(memberService.getMember("onlyTest")).thenReturn(member);
         Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
-        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question));
+        List<AnswerDto> answers = new ArrayList<>();
+        Page<AnswerDto> answerPage = new PageImpl<>(answers);
+        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question, answerPage));
 
         //when
         ResultActions result = mockMvc.perform(post(url)

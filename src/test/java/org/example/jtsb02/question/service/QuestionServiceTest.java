@@ -4,12 +4,16 @@ import static org.assertj.core.api.Assertions.*;
 import static org.example.util.TestHelper.createQuestion;
 import static org.example.util.TestHelper.createQuestionForm;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.example.jtsb02.answer.entity.Answer;
+import org.example.jtsb02.answer.repository.AnswerRepository;
 import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.question.dto.QuestionDto;
@@ -33,6 +37,9 @@ class QuestionServiceTest {
 
     @Mock
     private QuestionRepository questionRepository; // 의존성 mock
+
+    @Mock
+    private AnswerRepository answerRepository;
 
     @InjectMocks
     private QuestionService questionService; // 테스트할 클래스
@@ -85,12 +92,15 @@ class QuestionServiceTest {
     void getQuestionTest() {
         //given
         Question question = createQuestion(1L, createQuestionForm("제목1", "내용1"));
+        List<Answer> answers = new ArrayList<>();
+        Page<Answer> answerPage = new PageImpl<>(answers);
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+        when(answerRepository.findByQuestionId(eq(1L), any(Pageable.class))).thenReturn(answerPage);
         when(questionRepository.save(any(Question.class))).thenAnswer(
             invocation -> invocation.getArgument(0));
 
         //when
-        QuestionDto result = questionService.getQuestionWithHitsCount(1L);
+        QuestionDto result = questionService.getQuestionWithHitsCount(1L, 1, "");
 
         //then
         assertThat(result).isNotNull();

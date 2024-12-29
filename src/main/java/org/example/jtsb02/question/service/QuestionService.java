@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.example.jtsb02.answer.dto.AnswerDto;
+import org.example.jtsb02.answer.repository.AnswerRepository;
 import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.entity.Member;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
 
     public Long createQuestion(QuestionForm questionForm, MemberDto memberDto) {
         return questionRepository.save(
@@ -42,9 +45,24 @@ public class QuestionService {
             .orElseThrow(() -> new DataNotFoundException("Question not found")));
     }
 
-    public QuestionDto getQuestionWithHitsCount(Long id) {
+    public QuestionDto getQuestionWithHitsCount(Long id, int page, String sort) {
+        Pageable pageable = getPageable(page, sort);
+        Page<AnswerDto> answerPage = answerRepository.findByQuestionId(id, pageable)
+            .map(AnswerDto::fromAnswer);
         return QuestionDto.fromQuestion(addHits(questionRepository.findById(id)
-            .orElseThrow(() -> new DataNotFoundException("Question not found"))));
+            .orElseThrow(() -> new DataNotFoundException("Question not found"))), answerPage);
+    }
+
+    private Pageable getPageable(int page, String sort) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        if (sort.isEmpty() || sort.equals("old")) {
+            sorts.add(Sort.Order.asc("createdAt"));
+        } else if(sort.equals("new")) {
+            sorts.add(Sort.Order.desc("createdAt"));
+        } else if(sort.equals("recommend")) {
+            sorts.add(Sort.Order.desc("voter"));
+        }
+        return PageRequest.of(page - 1, 10, Sort.by(sorts));
     }
 
     private Question addHits(Question question) {

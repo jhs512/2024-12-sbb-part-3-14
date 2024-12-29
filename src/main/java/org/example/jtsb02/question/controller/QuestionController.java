@@ -52,7 +52,6 @@ public class QuestionController {
     @GetMapping("/list")
     public String getQuestions(@RequestParam(value = "page", defaultValue = "1") int page,
         @RequestParam(value = "kw", defaultValue = "") String kw, Model model) {
-
         Page<QuestionDto> questions = questionService.getQuestions(page, kw);
         model.addAttribute("paging", questions);
         model.addAttribute("kw", kw);
@@ -60,8 +59,11 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{id}")
-    public String getQuestion(@PathVariable("id") Long id, AnswerForm answerForm, Model model) {
-        QuestionDto question = questionService.getQuestionWithHitsCount(id);
+    public String getQuestion(@PathVariable("id") Long id,
+        @RequestParam(value = "page", defaultValue = "1") int page,
+        @RequestParam(value = "sort", defaultValue = "") String sort,
+        AnswerForm answerForm, Model model) {
+        QuestionDto question = questionService.getQuestionWithHitsCount(id, page, sort);
         model.addAttribute("question", question);
         model.addAttribute("answerForm", answerForm);
         return "question/detail";
