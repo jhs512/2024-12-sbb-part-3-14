@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Optional<Question> findById(long id);
+    List<Question> findTop5ByAuthorUsernameOrderByCreateDateDesc(String username);
     Question findBySubject(String subject);
     Question findBySubjectAndContent(String subject, String content);
     List<Question> findBySubjectLike(String subject);

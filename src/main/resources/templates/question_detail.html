@@ -59,7 +59,7 @@
                 <h6>댓글</h6>
                 <ul class="list-group">
                     <li th:each="comment : ${questionComments}" class="list-group-item">
-                        <div>
+                        <div th:id="|comment_${comment.id}|">
                             <strong th:text="${comment.author.username}">작성자</strong>
                             <small class="text-muted"
                                    th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
@@ -148,7 +148,7 @@
                 <h6>댓글</h6>
                 <ul class="list-group">
                     <li th:each="comment : ${answer.comments}" class="list-group-item">
-                        <div>
+                        <div data-id="${comment.id}">
                             <strong th:text="${comment.author.username}">작성자</strong>
                             <small class="text-muted"
                                    th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>

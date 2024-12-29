@@ -13,7 +13,7 @@
             <h4>회원가입</h4>
         </div>
     </div>
-    <form id="signupForm" th:object="${userRequestDTO}" method="post" onsubmit="submitForm(event)">
+    <form id="signupForm" th:object="${userRequestDTO}" onsubmit="submitForm(event)">
         <!-- 에러 메시지 -->
         <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
 <!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
@@ -49,7 +49,7 @@
 
 <div layout:fragment="script">
     <script type="application/javascript">
-        async  function submitForm(event) {
+        async function submitForm(event) {
             event.preventDefault();
             const errorDiv = document.getElementById('errorMessages');
 

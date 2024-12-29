@@ -1,18 +1,19 @@
 package com.mysite.sbb.web.user;
 
-import com.mysite.sbb.web.api.ApiResponse;
-import com.mysite.sbb.web.user.dto.request.UserRequestDTO;
 import com.mysite.sbb.domain.user.UserServiceImpl;
+import com.mysite.sbb.web.api.ApiResponse;
+import com.mysite.sbb.web.user.dto.request.ChangeRequestDTO;
+import com.mysite.sbb.web.user.dto.request.ForgotRequestDTO;
+import com.mysite.sbb.web.user.dto.request.UserRequestDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Tag(name = "Auth Controller", description = "유저 권한 컨트롤러")
 @RequestMapping("/api/v1/user")
@@ -43,9 +44,48 @@ public class UserRestController {
                     .body(new ApiResponse(false, "이미 등록된 ID 혹은 이메일입니다."));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false, "signupFailed"));
+                    .body(new ApiResponse(false, "회원가입 실패"));
+        }
+    }
+
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse> forgotPassword(
+            @Valid @RequestBody ForgotRequestDTO forgotRequestDTO,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "ID 또는 이메일을 확인해주세요."));
         }
 
+        boolean emailSent = userServiceImpl.sendPasswordResetEmail(forgotRequestDTO);
+
+        if (emailSent) {
+            return ResponseEntity.ok(new ApiResponse(true, "새 비밀번호가 이메일에 전송되었습니다."));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "ID 또는 이메일을 확인해주세요."));
+        }
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse> changePassword(
+            @Valid @RequestBody ChangeRequestDTO changeRequestDTO,
+            BindingResult bindingResult,
+            Principal principal) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, "비밀번호를 확인해주세요."));
+        }
+
+        boolean isChanged = userServiceImpl.changePassword(changeRequestDTO, principal.getName());
+
+        if (isChanged) {
+            return ResponseEntity.ok(new ApiResponse(true, "새 비밀번호가 이메일에 전송되었습니다."));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "비밀번호를 확인해주세요."));
+        }
     }
 
 }
