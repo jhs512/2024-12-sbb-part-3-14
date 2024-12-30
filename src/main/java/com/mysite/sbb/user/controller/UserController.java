@@ -1,7 +1,9 @@
 package com.mysite.sbb.user.controller;
 
+import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.user.entity.*;
 import com.mysite.sbb.user.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,6 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -135,6 +141,36 @@ public class UserController {
             this.userService.changePassword(user, changePasswordForm.getNewPassword());
         }
         return "redirect:/user/profile/%s".formatted(username);
+    }
+
+    @GetMapping("/passwordForget")
+    public String passwordForget() {
+        return "password_forget_form";
+    }
+
+    @PostMapping("/tempPassword")
+    public String tempPassword(@RequestParam("username") String username, @RequestParam("email") String email,
+                               RedirectAttributes redirectAttributes) {
+        List<String> errorMessages = new ArrayList<>();
+        try {
+            SiteUser user = this.userService.findUser(username);
+            if(!user.getEmail().equals(email)) {
+                errorMessages.add("이메일이 다릅니다.");
+            } else {
+                this.userService.tempPassword(user);
+            }
+        } catch (DataNotFoundException e) {
+            errorMessages.add("사용자를 찾을 수 없습니다.");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        if(errorMessages.isEmpty()) {
+            return "redirect:/user/login";
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return "redirect:/user/passwordForget";
+        }
     }
 
 }
