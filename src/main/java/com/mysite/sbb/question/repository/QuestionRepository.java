@@ -17,4 +17,6 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     Page<Question> findAll(Pageable pageable);
     Page<Question> findAll(Specification<Question> specification, Pageable pageable);
+
+    List<Question> findAllByAuthorId(Integer id);
 }

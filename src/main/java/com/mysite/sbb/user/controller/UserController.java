@@ -1,13 +1,17 @@
 package com.mysite.sbb.user.controller;
 
+import com.mysite.sbb.user.entity.SiteUser;
 import com.mysite.sbb.user.entity.UserCreateForm;
+import com.mysite.sbb.user.entity.UserPostsDTO;
 import com.mysite.sbb.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -52,5 +56,15 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "login_form";
+    }
+
+    @GetMapping("/profile/{name}")
+    public String profile(@PathVariable("name") String username, Model model) {
+        SiteUser siteUser = this.userService.findUser(username);
+        UserPostsDTO userPosts = this.userService.findAllPost(username);
+
+        model.addAttribute("siteUser", siteUser);
+        model.addAttribute("userPostsDTO", userPosts);
+        return "profile_page";
     }
 }
