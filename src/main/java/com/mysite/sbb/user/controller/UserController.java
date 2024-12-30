@@ -1,13 +1,11 @@
 package com.mysite.sbb.user.controller;
 
-import com.mysite.sbb.user.entity.EmailChangeForm;
-import com.mysite.sbb.user.entity.SiteUser;
-import com.mysite.sbb.user.entity.UserCreateForm;
-import com.mysite.sbb.user.entity.UserPostsDTO;
+import com.mysite.sbb.user.entity.*;
 import com.mysite.sbb.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/signup")
     public String signup(UserCreateForm userCreateForm) {
@@ -94,4 +93,42 @@ public class UserController {
         }
         return "redirect:/user/profile/%s".formatted(username);
     }
+
+    @GetMapping("/changePassword/{username}")
+    public String changePassword(@PathVariable("username") String username, Model model, ChangePasswordForm changePasswordForm) {
+        SiteUser user = this.userService.findUser(username);
+        model.addAttribute("user", user);
+        return "change_password_form";
+    }
+
+    @RequestMapping(value = "/changePassword/{username}", method = RequestMethod.POST)
+    public String changePassword(@PathVariable("username") String username, @RequestParam("_method") String method,
+                                 @Valid ChangePasswordForm changePasswordForm, BindingResult bindingResult, Model model) {
+        if ("PATCH".equalsIgnoreCase(method)) {
+            SiteUser user = this.userService.findUser(username);
+            model.addAttribute("user", user);
+
+            if(bindingResult.hasErrors()) {
+                return "change_password_form";
+            }
+
+            // 현재 비밀번호 확인
+            if (!this.passwordEncoder.matches(changePasswordForm.getCurrentPassword(), user.getPassword())) {
+                bindingResult.rejectValue("currentPassword", "error.currentPassword", "현재 비밀번호가 일치하지 않습니다.");
+                return "change_password_form";
+            }
+
+            // 비밀번호 확인 확인
+            if(!changePasswordForm.getNewPassword().equals(changePasswordForm.getConfirmPassword())){
+                bindingResult.rejectValue("confirmPassword", "passwordIncorrect",
+                        "비밀번호가 일치하지 않습니다.");
+                return "change_password_form";
+            }
+
+            // 비밀번호 변경
+            this.userService.changePassword(user, changePasswordForm.getNewPassword());
+        }
+        return "redirect:/user/profile/%s".formatted(username);
+    }
+
 }

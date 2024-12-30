@@ -57,4 +57,9 @@ public class UserService {
         user.setEmail(newEmail);
         this.userRepository.save(user);
     }
+
+    public void changePassword(SiteUser user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        this.userRepository.save(user);
+    }
 }
