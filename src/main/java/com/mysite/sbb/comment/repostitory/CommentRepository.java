@@ -9,4 +9,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByQuestionId(Integer questionId);
 
     List<Comment> findAllByAuthorId(Integer id);
+
+    void deleteByQuestionId(Integer id);
+    void deleteByParentId(Integer id);
 }

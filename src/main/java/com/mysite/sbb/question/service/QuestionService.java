@@ -2,6 +2,7 @@ package com.mysite.sbb.question.service;
 
 import com.mysite.sbb.answer.entity.Answer;
 import com.mysite.sbb.category.entity.Category;
+import com.mysite.sbb.comment.repostitory.CommentRepository;
 import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.question.entity.Question;
 import com.mysite.sbb.question.repository.QuestionRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final CommentRepository commentRepository;
 
     private Specification<Question> search(String kw, Category category) {
         return new Specification<>() {
@@ -81,8 +84,10 @@ public class QuestionService {
         this.questionRepository.save(question);
     }
 
+    @Transactional
     public void deleteQuestion(Question question) {
         this.questionRepository.delete(question);
+        this.commentRepository.deleteByQuestionId(question.getId());
     }
 
     public void voteQuestion(Question question, SiteUser siteUser) {
