@@ -3,6 +3,7 @@ package com.mysite.sbb.domain.question.domain;
 import com.mysite.sbb.domain.BaseEntity;
 import com.mysite.sbb.domain.answer.doamin.Answer;
 import com.mysite.sbb.domain.category.domain.Category;
+import com.mysite.sbb.domain.comment.domain.Comment;
 import com.mysite.sbb.domain.user.domain.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,6 +28,9 @@ public class Question extends BaseEntity {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList;
 
     @ManyToOne
     private SiteUser author;

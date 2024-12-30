@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,6 @@
     <form id="signupForm" th:object="${userRequestDTO}" onsubmit="submitForm(event)">
         <!-- 에러 메시지 -->
         <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
-<!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
 
         <!-- 사용자ID -->
         <div class="mb-3">
@@ -63,7 +62,7 @@
             try {
                 const response = await fetch('/api/v1/user/signup', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(formData)
                 });
 

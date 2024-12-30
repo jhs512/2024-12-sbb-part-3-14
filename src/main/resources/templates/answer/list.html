@@ -1,16 +1,12 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{common/layout}">
 <head>
-    <title>Question List</title>
+    <title>Answer List</title>
 </head>
 <body>
 <div layout:fragment="content" class="container my-3">
     <!-- 질문 등록 버튼 및 검색창 -->
     <div class="row my-3">
-        <div class="col-6">
-            <!-- 질문 등록하기 버튼 -->
-            <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
-        </div>
         <div class="col-6">
             <!-- 검색 입력창 및 버튼 -->
             <div class="input-group">
@@ -25,31 +21,33 @@
         <thead class="table-dark">
         <tr class="text-center">
             <th>번호</th>
-            <th style="width:50%">제목</th>
-            <th>글쓴이</th>
-            <th>작성일시</th>
+            <th style="width:50%">내용</th>
+            <th>작성자</th>
+            <th>작성 일시</th>
         </tr>
         </thead>
         <tbody>
         <!-- 페이징된 질문 데이터 출력 -->
-        <tr class="text-center" th:each="question, loop : ${paging.content}">
+        <tr class="text-center" th:each="answer, loop : ${paging.content}">
             <!-- 번호 계산: 총 데이터 수에서 현재 페이지의 시작 인덱스를 빼고 루프 인덱스를 뺌 -->
             <td th:text="${paging.getTotalElements() - (paging.number * paging.size) - loop.index}"></td>
 
-            <!-- 질문 제목 및 답변 개수 -->
+            <!-- 답변 내용 -->
             <td class="text-start">
-                <a th:href="@{/question/detail/{id}(id=${question.id})}" th:text="${question.subject}"></a>
-                <span class="text-danger small ms-2"
-                      th:if="${question.answerCount > 0}"
-                th:text="${question.answerCount}">
+                <a th:href="@{|/question/detail/${answer.questionId}|} + '#answer_' + ${answer.id}"
+                   th:text="${#strings.length(answer.content) > 30 ? #strings.substring(answer.content, 0, 30) + '...' : answer.content}">
+                </a>
+                <span class="text-danzger small ms-2"
+                      th:if="${answer.voterCount > 0}"
+                th:text="${answer.voterCount}">
                 </span>
             </td>
 
             <!-- 질문 작성자 -->
-            <td><span th:if="${question.authorName != null}" th:text="${question.authorName}"></span></td>
+            <td><span th:if="${answer.authorName != null}" th:text="${answer.authorName}"></span></td>
 
             <!-- 작성일 포맷: yyyy-MM-dd HH:mm -->
-            <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
         </tbody>
     </table>
@@ -86,7 +84,7 @@
     </div>
 
     <!-- 검색 및 페이징 폼 -->
-    <form th:action="@{/question/list}" method="get" id="searchForm">
+    <form th:action="@{/answer/list}" method="get" id="searchForm">
         <!-- 검색 키워드와 키워드를 Hidden 필드로 전달 -->
         <input type="hidden" id="kw" name="kw" th:value="${kw}">
         <input type="hidden" id="page" name="page" th:value="${paging.number}">

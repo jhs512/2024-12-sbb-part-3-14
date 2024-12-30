@@ -1,6 +1,7 @@
 package com.mysite.sbb.domain.answer.doamin;
 
 import com.mysite.sbb.domain.BaseEntity;
+import com.mysite.sbb.domain.comment.domain.Comment;
 import com.mysite.sbb.domain.question.domain.Question;
 import com.mysite.sbb.domain.user.domain.SiteUser;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Formula;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -29,6 +31,9 @@ public class Answer extends BaseEntity {
 
     @ManyToMany
     Set<SiteUser> voter;
+
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> comments;
 
     // 추천 수 계산 필드
     @Formula("(SELECT COUNT(AV.VOTER_ID) FROM ANSWER_VOTER AV where AV.answer_id = id)")

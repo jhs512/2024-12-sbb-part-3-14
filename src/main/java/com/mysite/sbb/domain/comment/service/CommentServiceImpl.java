@@ -10,7 +10,14 @@ import com.mysite.sbb.domain.question.repository.QuestionRepository;
 import com.mysite.sbb.domain.user.domain.SiteUser;
 import com.mysite.sbb.web.api.v1.comment.dto.request.CommentRequestDTO;
 import com.mysite.sbb.web.api.v1.comment.dto.request.CommentTargetType;
+import com.mysite.sbb.web.api.v1.comment.dto.response.CommentListResponseDTO;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,5 +75,31 @@ public class CommentServiceImpl implements CommentService {
     private Answer findAnswerById(Long answerId) {
         return answerRepository.findById(answerId)
                 .orElseThrow(() -> new IllegalArgumentException("Answer not found for id: " + answerId));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<CommentListResponseDTO> getList(int page, String kw) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
+        Specification<Comment> spec = search(kw);
+        return commentRepository.findAll(spec, pageable)
+                .map(CommentListResponseDTO::new);
+    }
+
+    private Specification<Comment> search(String kw) {
+        return (Root<Comment> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
+            query.distinct(true);
+
+            // Join 처리
+            Join<Comment, Question> questionJoin = root.join("question", JoinType.LEFT);
+            Join<Comment, SiteUser> authorJoin = root.join("author", JoinType.LEFT);
+
+            // 검색 조건
+            return cb.or(
+                    cb.like(root.get("content"), "%" + kw + "%"),    // 댓글 내용 검색
+                    cb.like(questionJoin.get("subject"), "%" + kw + "%"),  // 질문 제목 검색
+                    cb.like(authorJoin.get("username"), "%" + kw + "%")    // 작성자 검색
+            );
+        };
     }
 }

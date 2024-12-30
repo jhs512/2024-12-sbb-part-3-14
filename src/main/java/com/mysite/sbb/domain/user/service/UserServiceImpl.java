@@ -18,6 +18,7 @@ import com.mysite.sbb.web.api.v1.user.dto.response.UserResponseDTO;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,10 +46,10 @@ public class UserServiceImpl implements UserService {
 
     private void validateNewUser(String username, String email) {
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("이미 존재하는 사용자명입니다.");
+            throw new DataIntegrityViolationException("이미 존재하는 사용자명입니다.");
         }
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+            throw new DataIntegrityViolationException("이미 등록된 이메일입니다.");
         }
     }
 
@@ -103,7 +104,7 @@ public class UserServiceImpl implements UserService {
         try {
             SiteUser user = findUserByUsername(dto.username());
             String temporaryPassword = resetUserPassword(user);
-            emailService.sendPassowrdResetEmail(user.getEmail(), temporaryPassword);
+            emailService.sendPasswordResetEmail(user.getEmail(), temporaryPassword);
             return true;
         } catch (MessagingException e) {
             log.error("비밀번호 초기화 실패 - 사용자: {}", dto.username(), e);

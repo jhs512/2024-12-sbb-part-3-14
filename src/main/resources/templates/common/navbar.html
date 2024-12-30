@@ -18,6 +18,15 @@
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/signup}">회원가입</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/question/list}">질문</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/answer/list}">답변</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/comment/list}">댓글</a>
+                </li>
             </ul>
         </div>
     </div>

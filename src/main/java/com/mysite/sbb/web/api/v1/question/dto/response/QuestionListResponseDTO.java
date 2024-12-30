@@ -3,14 +3,12 @@ package com.mysite.sbb.web.api.v1.question.dto.response;
 import com.mysite.sbb.domain.question.domain.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class QuestionListResponseDTO{
+public class QuestionListResponseDTO {
     private long id;                         // ID
     private String subject;                 // 제목
     private String content;                 // 내용

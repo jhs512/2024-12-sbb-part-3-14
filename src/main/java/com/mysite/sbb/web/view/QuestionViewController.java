@@ -4,6 +4,7 @@ import com.mysite.sbb.domain.comment.domain.Comment;
 import com.mysite.sbb.domain.comment.service.CommentServiceImpl;
 import com.mysite.sbb.domain.question.domain.Question;
 import com.mysite.sbb.domain.question.service.QuestionServiceImpl;
+import com.mysite.sbb.global.constant.View;
 import com.mysite.sbb.web.api.v1.answer.dto.request.AnswerRequestDTO;
 import com.mysite.sbb.web.api.v1.comment.dto.request.CommentRequestDTO;
 import com.mysite.sbb.web.api.v1.question.dto.request.QuestionRequestDTO;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-import static com.mysite.sbb.global.constant.PageConstants.*;
 import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
 
 
@@ -36,7 +36,7 @@ public class QuestionViewController {
                                    @RequestParam(value = "kw", defaultValue = "") String kw) {
         model.addAttribute("paging", questionService.getList(page, kw));
         model.addAttribute("kw", kw);
-        return QUESTION_LIST_VIEW;
+        return View.Question.LIST;
     }
 
     @GetMapping(value = "detail/{id}")
@@ -57,13 +57,13 @@ public class QuestionViewController {
         model.addAttribute("answerComments", ""); // 답변 댓글
         model.addAttribute("answerRequestDTO", new AnswerRequestDTO()); // Form 초기화
         model.addAttribute("commentRequestDTO", CommentRequestDTO.empty());
-        return QUESTION_DETAIL_VIEW;
+        return View.Question.DETAIL;
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("create")
     public String showQuestionForm(@ModelAttribute QuestionRequestDTO questionRequestDTO) {
-        return QUESTION_FORM_VIEW;
+        return View.Question.FORM;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -73,6 +73,6 @@ public class QuestionViewController {
         validateUserPermission(principal.getName(), question.getAuthor().getUsername(), "수정권한");
         questionRequestDTO.setSubject(question.getSubject());
         questionRequestDTO.setContent(question.getContent());
-        return QUESTION_FORM_VIEW;
+        return View.Question.FORM;
     }
 }

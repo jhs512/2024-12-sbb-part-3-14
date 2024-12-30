@@ -4,7 +4,6 @@
     <form id="answerForm" th:object="${answerRequestDTO}" method="post" onsubmit="submitForm(event)">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
-<!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
         <div class="mb-3">
             <label for="content" class="form-label">내용</label>
             <textarea id="content" th:field="*{content}" class="form-control" rows="10"></textarea>

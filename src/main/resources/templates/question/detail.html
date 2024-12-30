@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout}" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Question Detail</title>
 </head>
@@ -67,6 +68,7 @@
                         <p th:text="${comment.content}">댓글 내용</p>
                     </li>
                 </ul>
+                <br>
                 <div sec:authorize="isAuthenticated()">
                     <h6>댓글 작성</h6>
                     <form class="comment-form mt-2" th:object="${commentRequestDTO}" data-type="question"
@@ -148,7 +150,7 @@
                 <h6>댓글</h6>
                 <ul class="list-group">
                     <li th:each="comment : ${answer.comments}" class="list-group-item">
-                        <div data-id="${comment.id}">
+                        <div th:id="|comment_${comment.id}|">
                             <strong th:text="${comment.author.username}">작성자</strong>
                             <small class="text-muted"
                                    th:text="${#temporals.format(comment.createDate, 'yyyy-MM-dd HH:mm')}">작성일</small>
@@ -156,6 +158,7 @@
                         <p th:text="${comment.content}">댓글 내용</p>
                     </li>
                 </ul>
+                <br>
                 <div sec:authorize="isAuthenticated()">
                     <h6>댓글 작성</h6>
                     <form class="comment-form mt-2" data-type="answer" th:data-id="${answer.id}"
@@ -180,7 +183,6 @@
     <!-- 답변 작성-->
     <form id="answerForm" th:object="${answerRequestDTO}" method="post" class="my-3" onsubmit="submitAnswer(event)">
         <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
-        <!--        <div th:replace="form_error :: formErrorsFragment"></div>-->
 
         <!-- 익명 사용자일 경우 -->
         <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control"

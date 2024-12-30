@@ -6,6 +6,8 @@ import com.mysite.sbb.domain.user.domain.SiteUser;
 
 public interface AnswerService {
 
+    Object getList(int page, String kw);
+
     Answer create(Question question, String content, SiteUser author);
 
     Answer getAnswer(Integer id);

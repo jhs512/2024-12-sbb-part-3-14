@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
-import static com.mysite.sbb.global.constant.PageConstants.*;
+import static com.mysite.sbb.global.constant.View.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,24 +22,25 @@ public class UserViewController {
 
     @GetMapping("/signup")
     public String showSignupForm(UserRequestDTO userRequestDTO) {
-        return SIGNUP_FORM_VIEW;
+        return User.SIGNUP;
     }
 
     @GetMapping("/login")
     public String showLoginForm() {
-        return LOGIN_FORM_VIEW;
+        return User.LOGIN;
     }
 
     @GetMapping("/forgot-password")
     public String showForgotPasswordForm() {
-        return FORGOT_PASSWORD_VIEW;
+        return User.FORGOT_PASSWORD;
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public String showProfileForm(Model model, Principal principal) {
+        // TODO: 모든 질문/댓글/답변 나오게 하기
         model.addAttribute("user", userService.getProfile(principal.getName()));
-        return PROFILE_FORM_VIEW;
+        return User.PROFILE;
     }
 
 }
