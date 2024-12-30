@@ -5,6 +5,7 @@ import com.mysite.sbb.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +54,7 @@ public class UserController {
         return "login_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile/{name}")
     public String profile(@PathVariable("name") String username, Model model) {
         SiteUser siteUser = this.userService.findUser(username);
@@ -63,6 +65,7 @@ public class UserController {
         return "profile_page";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/changeEmail/{username}")
     public String changeEmail(@PathVariable("username") String username, Model model, EmailChangeForm emailChangeForm) {
         SiteUser user = this.userService.findUser(username);
@@ -70,6 +73,7 @@ public class UserController {
         return "change_email_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/changeEmail/{username}", method = RequestMethod.POST)
     public String changeEmail(@PathVariable("username") String username, @RequestParam("_method") String method,
                               @Valid EmailChangeForm emailChangeForm, BindingResult bindingResult, Model model) {
@@ -94,6 +98,7 @@ public class UserController {
         return "redirect:/user/profile/%s".formatted(username);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/changePassword/{username}")
     public String changePassword(@PathVariable("username") String username, Model model, ChangePasswordForm changePasswordForm) {
         SiteUser user = this.userService.findUser(username);
@@ -101,6 +106,7 @@ public class UserController {
         return "change_password_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/changePassword/{username}", method = RequestMethod.POST)
     public String changePassword(@PathVariable("username") String username, @RequestParam("_method") String method,
                                  @Valid ChangePasswordForm changePasswordForm, BindingResult bindingResult, Model model) {
