@@ -20,6 +20,13 @@
                     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/signup}">회원가입</a>
                 </li>
             </ul>
+
+            <!-- 카테고리 링크 -->
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item" th:each="category : ${categoryList}">
+                    <a class="nav-link" th:href="@{'/' + ${category.categoryName} + '/list'}" th:text="${category.categoryKorName}"></a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

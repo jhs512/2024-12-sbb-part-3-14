@@ -2,6 +2,8 @@ package com.mysite.sbb.global.entity;
 
 import com.mysite.sbb.answer.entity.Answer;
 import com.mysite.sbb.answer.repository.AnswerRepository;
+import com.mysite.sbb.category.entity.Category;
+import com.mysite.sbb.category.service.CategoryService;
 import com.mysite.sbb.question.entity.Question;
 import com.mysite.sbb.question.repository.QuestionRepository;
 import com.mysite.sbb.question.service.QuestionService;
@@ -20,6 +22,7 @@ public class BaseInitData {
     private final QuestionRepository questionRepository;
     private final QuestionService questionService;
     private final AnswerRepository answerRepository;
+    private final CategoryService categoryService;
 
     @Autowired
     @Lazy
@@ -30,6 +33,7 @@ public class BaseInitData {
         return args -> {
             self.work1();
             self.work2();
+//            self.work3();
         };
     }
 
@@ -63,7 +67,24 @@ public class BaseInitData {
         for (int i = 1; i <= 300; i++) {
             String subject = String.format("테스트 데이터입니다:[%03d]", i);
             String content = "내용무";
-            this.questionService.createQuestion(subject, content, null);
+            Category category = this.categoryService.findCategory("question");
+            this.questionService.createQuestion(subject, content, null, category);
         }
     }
+
+//    @Transactional
+//    public void work3() {
+//        // 카테고리 3개 만들기
+//        Category category1 = new Category();
+//        category1.setCategoryName("question");
+//        categoryRepository.save(category1);
+//
+//        Category category2 = new Category();
+//        category2.setCategoryName("class");
+//        categoryRepository.save(category2);
+//
+//        Category category3 = new Category();
+//        category3.setCategoryName("freeBoard");
+//        categoryRepository.save(category3);
+//    }
 }

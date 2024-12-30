@@ -1,6 +1,7 @@
 package com.mysite.sbb.question.service;
 
 import com.mysite.sbb.answer.entity.Answer;
+import com.mysite.sbb.category.entity.Category;
 import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.question.entity.Question;
 import com.mysite.sbb.question.repository.QuestionRepository;
@@ -24,7 +25,7 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository questionRepository;
 
-    private Specification<Question> search(String kw) {
+    private Specification<Question> search(String kw, Category category) {
         return new Specification<>() {
             private static final long serialVersionUID = 1L;
             @Override
@@ -35,20 +36,21 @@ public class QuestionService {
                 Join<Question, Answer> answer = question.join("answerList", JoinType.LEFT);
                 Join<Answer, SiteUser> answerAuthor = answer.join("author", JoinType.LEFT);
 
-                return cb.or(cb.like(question.get("subject"), "%" + kw + "%"),
-                        cb.like(question.get("content"), "%" + kw + "%"),
-                        cb.like(questionAuthor.get("username"), "%" + kw + "%"),
-                        cb.like(answer.get("content"), "%" + kw + "%"),
-                        cb.like(answerAuthor.get("username"), "%" + kw + "%"));
+                return cb.and(cb.equal(question.get("category"), category),
+                        cb.or(cb.like(question.get("subject"), "%" + kw + "%"),
+                            cb.like(question.get("content"), "%" + kw + "%"),
+                            cb.like(questionAuthor.get("username"), "%" + kw + "%"),
+                            cb.like(answer.get("content"), "%" + kw + "%"),
+                            cb.like(answerAuthor.get("username"), "%" + kw + "%")));
             }
         };
     }
 
-    public Page<Question> findAll(int page, String kw) {
+    public Page<Question> findAll(int page, String kw, Category category) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        Specification<Question> specification = search(kw);
+        Specification<Question> specification = search(kw, category);
         return this.questionRepository.findAll(specification, pageable);
     }
 
@@ -61,12 +63,13 @@ public class QuestionService {
         }
     }
 
-    public Question createQuestion(String subject, String content, SiteUser author) {
+    public Question createQuestion(String subject, String content, SiteUser author, Category category) {
         Question question = new Question();
         question.setSubject(subject);
         question.setContent(content);
         question.setCreateDate(LocalDateTime.now());
         question.setAuthor(author);
+        question.setCategory(category);
         this.questionRepository.save(question);
         return question;
     }
