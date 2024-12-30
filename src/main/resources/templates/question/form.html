@@ -25,13 +25,33 @@
         </div>
         <div class="mb-3">
             <label for="content" class="form-label">내용</label>
-            <textarea th:field="*{content}" class="form-control" rows="10"></textarea>
+            <textarea id="markdownEditor" th:field="*{content}" class="form-control" rows="10"></textarea>
         </div>
         <input type="submit" value="저장하기" class="btn btn-primary my-2">
     </form>
 </div>
 <div layout:fragment="script">
     <script type="application/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            var simplemde = new SimpleMDE({
+                element: document.getElementById("markdownEditor"),
+                placeholder: "여기에 내용을 입력하세요...",
+                spellChecker: false,
+                toolbar: [
+                    "bold", "italic", "heading", "|",
+                    "quote", "unordered-list", "ordered-list", "|",
+                    "link", "image", "preview", "fullscreen", "|",
+                    "guide"
+                ]
+            });
+
+            // 폼 제출 시, SimpleMDE의 내용을 textarea에 반영
+            const form = document.getElementById("questionForm");
+            form.addEventListener("submit", function () {
+                document.getElementById("markdownEditor").value = simplemde.value();
+            });
+        });
+
         async function submitForm(event) {
             event.preventDefault();
             const errorDiv = document.getElementById('errorMessages');
@@ -39,7 +59,7 @@
 
             const formData = {
                 subject: document.getElementById('subject').value,
-                content: document.getElementById('content').value,
+                content: document.getElementById('markdownEditor').value,
                 category: document.getElementById('category').value
             };
 
