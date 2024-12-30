@@ -8,7 +8,7 @@
                     <strong>이메일:</strong> <span th:text="${siteUser.email}">사용자 이메일</span>
                 </p>
                 <p>
-                    <a href="#" class="btn btn-link">이메일 변경</a>
+                    <a th:href="@{/user/changeEmail/{username}(username=${siteUser.username})}" class="btn btn-link">이메일 변경</a>
                     <a href="#" class="btn btn-link">비밀번호 변경</a>
                 </p>
 

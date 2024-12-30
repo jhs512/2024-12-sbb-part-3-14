@@ -51,4 +51,10 @@ public class UserService {
         List<Comment> commentList = this.commentRepository.findAllByAuthorId(user.getId());
         return new UserPostsDTO(questionList, answerList, commentList);
     }
+
+    public void changeEmail(String username, String newEmail) {
+        SiteUser user = findUser(username);
+        user.setEmail(newEmail);
+        this.userRepository.save(user);
+    }
 }
