@@ -44,9 +44,11 @@ public class QuestionViewController {
                                      @PathVariable("id") Integer id,
                                      @RequestParam(value = "page", defaultValue = "0") int page,
                                      @RequestParam(value = "sortKeyword", defaultValue = "createDate") String sortKeyword) {
+        // 조회수 증가
+        questionService.increaseViewCount(id);
 
         // 질문 정보
-        QuestionDetailResponseDTO question = this.questionService.getQuestionDetail(id, page, sortKeyword);
+        QuestionDetailResponseDTO question = questionService.getQuestionDetail(id, page, sortKeyword);
 
         // 질문에 대한 댓글
         List<Comment> commentOfQuestion = commentServiceImpl.getCommentsForQuestion(id);

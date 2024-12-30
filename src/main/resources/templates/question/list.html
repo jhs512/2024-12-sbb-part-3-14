@@ -51,6 +51,9 @@
 
             <!-- 작성일 포맷: yyyy-MM-dd HH:mm -->
             <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+
+            <!-- 조회수-->
+            <td th:text="${question.viewCount}"></td>
         </tr>
         </tbody>
     </table>

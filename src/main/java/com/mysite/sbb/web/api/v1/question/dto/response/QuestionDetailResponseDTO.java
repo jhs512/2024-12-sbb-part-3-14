@@ -26,6 +26,7 @@ public class QuestionDetailResponseDTO {
     private LocalDateTime modifyDate;       // 수정일
     private int answerCount;                // 답변 개수
     private int voterCount;                         // 추천 수
+    private int viewCount;
     private Page<AnswerResponseDTO> answers;        // 답변 리스트
     private Map<Long, List<Comment>> commentsForAnswers;
 
@@ -39,6 +40,7 @@ public class QuestionDetailResponseDTO {
         this.modifyDate = question.getModifyDate();
         this.answerCount = question.getAnswerList().size();
         this.voterCount = question.getVoter().size();   // 추천 개수
+        this.viewCount = question.getViewCount();
         this.answers = answers
                 .map(answer -> new AnswerResponseDTO(answer, commentsForAnswers.get(answer.getId())));
 

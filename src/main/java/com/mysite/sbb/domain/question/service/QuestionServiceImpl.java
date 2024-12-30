@@ -137,6 +137,14 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     private Question findQuestionById(Integer id) {
-        return questionRepository.findById(id).orElseThrow(() -> new DataNotFoundException("question not found"));
+        return questionRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("해당 질문을 찾을 수 없습니다 : " + id));
+    }
+
+    @Transactional
+    public void increaseViewCount(Integer questionId) {
+        Question question = findQuestionById(questionId);
+        question.setViewCount(question.getViewCount() + 1);
+        questionRepository.save(question); // 조회수 증가를 저장
     }
 }

@@ -16,6 +16,7 @@ public class QuestionListResponseDTO {
     private LocalDateTime createDate;       // 생성일
     private LocalDateTime modifyDate;       // 수정일
     private int answerCount;                // 답변 개수
+    private int viewCount;
 
     public QuestionListResponseDTO(Question question) {
         this.id = question.getId();
@@ -25,5 +26,6 @@ public class QuestionListResponseDTO {
         this.createDate = question.getCreateDate();
         this.modifyDate = question.getModifyDate();
         this.answerCount = question.getAnswerList().size();
+        this.viewCount = question.getViewCount();
     }
 }

@@ -8,6 +8,7 @@ import com.mysite.sbb.domain.user.domain.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 import java.util.Set;
@@ -41,5 +42,14 @@ public class Question extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @Column(nullable = false)
+    @ColumnDefault("1")
+    private int viewCount;
+
+    // 초기값 설정
+    public Question() {
+        this.viewCount = 0;
+    }
 
 }
