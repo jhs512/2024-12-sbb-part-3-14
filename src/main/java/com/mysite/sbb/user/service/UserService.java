@@ -25,14 +25,35 @@ public class UserService {
     }
 
     public SiteUser getUser(String username) {
+        System.out.println("FindByUsername 호출 전: " + username);
         Optional<SiteUser> siteUser = this.userRepository.findByUsername(username);
+        System.out.println("FindByUsername 결과: " + siteUser);
 
         if(siteUser.isPresent()) {
+            System.out.println("현재 사용자 이름: " + username);
             return siteUser.get();
         } else {
+            System.out.println("사용자를 찾을 수 없습니다: " + username);
             throw new DataNotFoundException("User not found");
         }
     }
 
+    public boolean isUsingTemporaryPassword(String username) {
+        SiteUser user = userRepository.findByUsername(username)
+                .orElse(null);
 
+        return user.isTempPassword();
+    }
+
+    public SiteUser getUserByUsername(String username) {
+        Optional<SiteUser> siteUser = this.userRepository.findByUsername(username);
+
+        if(siteUser.isPresent()) {
+            System.out.println("현재 사용자 이름: " + username);
+            return siteUser.get();
+        } else {
+            System.out.println("사용자를 찾을 수 없습니다: " + username);
+            throw new DataNotFoundException("User not found");
+        }
+    }
 }

@@ -18,12 +18,20 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @PreAuthorize("isAuthenticated()")
 public class SecurityConfig {
 
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+    }
+
     //  h2 db 쓰는 경우에만 설정.
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+                .authorizeHttpRequests((authorizeHttpRequests) ->
+                         authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+
                 .csrf((csrf) -> csrf
                         .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
                 .headers((headers) -> headers
@@ -31,7 +39,8 @@ public class SecurityConfig {
                                 XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
-                        .defaultSuccessUrl("/"))
+                        .successHandler(customAuthenticationSuccessHandler)
+                )
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .logoutSuccessUrl("/")
