@@ -18,12 +18,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+import static com.mysite.sbb.global.util.CommonUtil.getUserName;
+
 @Tag(name = "Comment Controller", description = "댓글 컨트롤러")
 @RestController
 @RequestMapping("/api/v1/comment")
 @RequiredArgsConstructor
 @Slf4j
 public class CommentRestController {
+
+    // TODO : 삭제, 수정 기능 추가
 
     private final UserService userService;
     private final CommentServiceImpl commentServiceImpl;
@@ -44,7 +48,7 @@ public class CommentRestController {
         }
 
         // 현재 로그인한 사용자를 가져옴
-        SiteUser author = userService.getUser(principal.getName());
+        SiteUser author = userService.getUser(getUserName(principal));
 
         // 댓글 추가
         Comment comment = commentServiceImpl.addComment(dto, author, questionId);

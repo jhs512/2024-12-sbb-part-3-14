@@ -20,4 +20,8 @@ public class SiteUser extends BaseEntity {
 
     @Column(unique = true)
     private String email;
+
+    private String provider; // OAuth 제공자 (GOOGLE, KAKAO, NAVER 등)
+
+    private String providerId; // OAuth 제공자에서의 고유 ID
 }

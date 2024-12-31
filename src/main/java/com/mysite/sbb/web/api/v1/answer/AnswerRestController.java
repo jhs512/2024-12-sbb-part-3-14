@@ -23,6 +23,9 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mysite.sbb.global.util.CommonUtil.getUserName;
+import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
+
 @Tag(name = "Answer Controller", description = "답변 컨트롤러")
 @RestController
 @RequestMapping("/api/v1/answer")
@@ -48,7 +51,7 @@ public class AnswerRestController {
 
         try {
             Question question = questionService.getQuestion(questionId);
-            SiteUser siteUser = userService.getUser(principal.getName());
+            SiteUser siteUser = userService.getUser(getUserName(principal));
             Answer answer = answerService.create(question, answerRequestDTO.getContent(), siteUser);
 
             Map<String, Object> responseData = new HashMap<>();
@@ -80,13 +83,8 @@ public class AnswerRestController {
 
         try {
             Answer answer = answerService.getAnswer(id);
-
-            if (!answer.getAuthor().getUsername().equals(principal.getName())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false, "수정권한이 없습니다."));
-            }
-
+            validateUserPermission(getUserName(principal), answer.getAuthor().getUsername(), "수정권한");
             answerService.modify(answer, answerRequestDTO.getContent());
-
             return ResponseEntity.ok(new ApiResponse(
                     true,
                     "답변이 수정되었습니다.",
@@ -111,7 +109,7 @@ public class AnswerRestController {
         try {
             Answer answer = answerService.getAnswer(id);
 
-            if (!answer.getAuthor().getUsername().equals(principal.getName())) {
+            if (!answer.getAuthor().getUsername().equals(getUserName(principal))) {
                 return ResponseEntity
                         .status(HttpStatus.FORBIDDEN)
                         .body("삭제권한이 없습니다.");
@@ -136,7 +134,7 @@ public class AnswerRestController {
 
         try {
             Answer answer = answerService.getAnswer(id);
-            SiteUser siteUser = userService.getUser(principal.getName());
+            SiteUser siteUser = userService.getUser(getUserName(principal));
 
             answerService.vote(answer, siteUser);
 

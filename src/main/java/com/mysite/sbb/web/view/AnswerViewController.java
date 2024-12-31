@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 
+import static com.mysite.sbb.global.util.CommonUtil.getUserName;
 import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
 
 @Controller
@@ -40,7 +41,7 @@ public class AnswerViewController {
     @GetMapping("/modify/{id}")
     public String showAnswerModifyForm(AnswerRequestDTO answerRequestDTO, @PathVariable("id") Integer id, Principal principal) {
         Answer answer = answerService.getAnswer(id);
-        validateUserPermission(principal.getName(), answer.getAuthor().getUsername(), "수정권한");
+        validateUserPermission(getUserName(principal), answer.getAuthor().getUsername(), "수정권한");
         answerRequestDTO.setContent(answer.getContent());
         return View.Answer.FORM;
     }

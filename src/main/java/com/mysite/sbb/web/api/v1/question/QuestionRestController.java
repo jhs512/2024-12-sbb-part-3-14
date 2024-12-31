@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+import static com.mysite.sbb.global.util.CommonUtil.getUserName;
+
 @Tag(name = "Question Controller", description = "질문 컨트롤러")
 @RequestMapping("/api/v1/question")
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class QuestionRestController {
                     .badRequest()
                     .body(new ApiResponse(false, "입력값이 올바르지 않습니다."));
         }
-        questionServiceImpl.create(questionRequestDTO, principal.getName());
+        questionServiceImpl.create(questionRequestDTO, getUserName(principal));
         return ResponseEntity.ok(new ApiResponse(true, "게시물 작성이 완료되었습니다."));
     }
 
@@ -50,7 +52,7 @@ public class QuestionRestController {
                     .body(new ApiResponse(false, "입력값이 올바르지 않습니다."));
         }
         try {
-            questionServiceImpl.modify(id, questionRequestDTO, principal.getName());
+            questionServiceImpl.modify(id, questionRequestDTO, getUserName(principal));
             return ResponseEntity.ok(new ApiResponse(true, "질문이 수정되었습니다.", id));
         } catch (Exception e) {
             return ResponseEntity
@@ -65,7 +67,7 @@ public class QuestionRestController {
             @PathVariable("id") Integer id,
             Principal principal) {
         try {
-            this.questionServiceImpl.delete(id, principal.getName());
+            this.questionServiceImpl.delete(id, getUserName(principal));
             return ResponseEntity.ok(new ApiResponse(true, "질문이 삭제되었습니다."));
         } catch (Exception e) {
             return ResponseEntity
@@ -77,7 +79,7 @@ public class QuestionRestController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/vote")
     public ResponseEntity<?> addVoteToQuestion(@PathVariable("id") Integer id, Principal principal) {
-        this.questionServiceImpl.vote(id, principal.getName());
+        this.questionServiceImpl.vote(id, getUserName(principal));
         return ResponseEntity.ok(new ApiResponse(true, "추천이 완료되었습니다."));
     }
 

@@ -1,9 +1,12 @@
 package com.mysite.sbb.web.view;
 
+import com.mysite.sbb.domain.user.domain.SiteUser;
 import com.mysite.sbb.domain.user.service.UserServiceImpl;
 import com.mysite.sbb.web.api.v1.user.dto.request.UserRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 
 import static com.mysite.sbb.global.constant.View.*;
+import static com.mysite.sbb.global.util.CommonUtil.getUserName;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,7 +43,7 @@ public class UserViewController {
     @GetMapping("/profile")
     public String showProfileForm(Model model, Principal principal) {
         // TODO: 모든 질문/댓글/답변 나오게 하기
-        model.addAttribute("user", userService.getProfile(principal.getName()));
+        model.addAttribute("user", userService.getProfile(getUserName(principal)));
         return User.PROFILE;
     }
 

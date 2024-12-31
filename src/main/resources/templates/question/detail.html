@@ -39,6 +39,7 @@
                 </div>
             </div>
             <div class="my-3">
+                <!-- 질문 추천 버튼 -->
                 <a href="javascript:void(0);"
                    th:data-uri="@{|/question/${question.id}/vote|}"
                    class="vote-button recommend btn btn-sm btn-outline-secondary"
@@ -47,17 +48,19 @@
                     <span class="badge rounded-pill bg-success" th:text="${question.voterCount}"></span>
                 </a>
 
+                <!-- 질문 수정 버튼 -->
                 <a th:href="@{|/question/modify/${question.id}|}"
                    class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${question.authorName != null and #authentication.getPrincipal().getUsername() == question.authorName}"
+                   th:if="${question.authorName != null and @commonUtil.getCurrentUsername(#authentication) == question.authorName}"
                    th:text="수정"></a>
 
-                <!-- 삭제 버튼-->
+                <!-- 질문 삭제 버튼 -->
                 <a href="javascript:void(0);"
                    th:data-uri="@{|/question/${question.id}|}"
                    class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
+                   th:if="${question.authorName != null and @commonUtil.getCurrentUsername(#authentication) == question.authorName}"
                    th:text="삭제"></a>
             </div>
 
@@ -132,22 +135,27 @@
                 </div>
             </div>
             <div class="my-3">
+                <!-- 답변 추천 버튼 -->
                 <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
                    th:data-uri="@{|/answer/vote/${answer.id}|}">
                     추천
                     <span class="badge rounded-pill bg-success" th:if="${answer.voterCount != null}"
                           th:text="${answer.voterCount}"></span>
                 </a>
+
+                <!-- 답변 수정 버튼 -->
                 <a th:href="@{|/answer/modify/${answer.id}|}"
                    class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${answer?.authorName != null and #authentication.getPrincipal().getUsername() == answer.authorName}"
+                   th:if="${answer.authorName != null and @commonUtil.getCurrentUsername(#authentication) == answer.authorName}"
                    th:text="수정"></a>
+
+                <!-- 답변 삭제 버튼 -->
                 <a href="javascript:void(0);"
                    th:data-uri="@{|/answer/${answer.id}|}"
                    class="delete btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
-                   th:if="${answer?.authorName != null and #authentication.getPrincipal().getUsername() == answer.authorName}"
+                   th:if="${answer.authorName != null and @commonUtil.getCurrentUsername(#authentication) == answer.authorName}"
                    th:text="삭제"></a>
             </div>
 
