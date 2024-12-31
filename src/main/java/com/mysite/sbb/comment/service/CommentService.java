@@ -47,4 +47,8 @@ public class CommentService {
     public void deleteComment(Comment comment) {
         this.commentRepository.delete(comment);
     }
+
+    public List<Comment> findRecentComments() {
+        return this.commentRepository.findTop5ByOrderByCreateDateDesc();
+    }
 }

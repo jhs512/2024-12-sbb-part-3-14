@@ -15,4 +15,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     Page<Answer> findByQuestionIdOrderByCreateDateDesc(Integer id, Pageable pageable);
 
     List<Answer> findAllByAuthorId(Integer id);
+
+    List<Answer> findTop5ByOrderByCreateDateDesc();
 }

@@ -2,6 +2,8 @@ package com.mysite.sbb.question.service;
 
 import com.mysite.sbb.answer.entity.Answer;
 import com.mysite.sbb.category.entity.Category;
+import com.mysite.sbb.category.entity.CategorysListDTO;
+import com.mysite.sbb.category.service.CategoryService;
 import com.mysite.sbb.comment.repostitory.CommentRepository;
 import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.question.entity.Question;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final CommentRepository commentRepository;
+    private final CategoryService categoryService;
 
     private Specification<Question> search(String kw, Category category) {
         return new Specification<>() {
@@ -49,12 +52,20 @@ public class QuestionService {
         };
     }
 
-    public Page<Question> findAll(int page, String kw, Category category) {
+    public Page<Question> findAll(int page, String kw, Category category, int pageSize) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createDate"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sorts));
         Specification<Question> specification = search(kw, category);
         return this.questionRepository.findAll(specification, pageable);
+    }
+
+    public Page<Question> findAll(int page, String kw, Category category) {
+        return findAll(page, kw, category, 10);
+    }
+
+    public List<Question> findAll(Category category) {
+        return findAll(0, "", category, 5).getContent();
     }
 
     public Question findQuestionById(Integer id) {
@@ -97,5 +108,25 @@ public class QuestionService {
             question.getVoter().add(siteUser);
         }
         this.questionRepository.save(question);
+    }
+
+    public CategorysListDTO findAllRecentPosts() {
+        List<List<Question>> categorysPosts = new ArrayList<>();
+        List<String> categorysKorName = new ArrayList<>();
+        List<String> categorysName = new ArrayList<>();
+
+        List<Category> categoryList = this.categoryService.getList();
+        for(Category category : categoryList){
+            //카테고리별 이름들 넣기
+            categorysKorName.add(category.getCategoryKorName());
+            categorysName.add(category.getCategoryName());
+
+            //각 카테고리별 최신 게시물 5개 가져오기
+            List<Question> recentPosts = this.findAll(category);
+
+            //가져온 게시물 리스트를 categorysPosts 넣기
+            categorysPosts.add(recentPosts);
+        }
+        return new CategorysListDTO(categorysPosts, categorysKorName, categorysName);
     }
 }

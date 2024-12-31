@@ -12,4 +12,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     void deleteByQuestionId(Integer id);
     void deleteByParentId(Integer id);
+
+    List<Comment> findTop5ByOrderByCreateDateDesc();
 }
