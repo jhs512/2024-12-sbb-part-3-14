@@ -1,6 +1,6 @@
 package com.mysite.sbb.web.view;
 
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.answer.service.AnswerServiceImpl;
 import com.mysite.sbb.global.constant.View;
 import com.mysite.sbb.web.api.v1.answer.dto.request.AnswerRequestDTO;

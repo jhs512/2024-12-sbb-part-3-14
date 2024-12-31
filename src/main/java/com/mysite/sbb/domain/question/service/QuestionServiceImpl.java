@@ -1,16 +1,16 @@
 package com.mysite.sbb.domain.question.service;
 
 
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.answer.repository.AnswerRepository;
 import com.mysite.sbb.domain.category.domain.Category;
 import com.mysite.sbb.domain.category.repository.CategoryRepository;
 import com.mysite.sbb.domain.comment.domain.Comment;
-import com.mysite.sbb.domain.comment.service.CommentServiceImpl;
+import com.mysite.sbb.domain.comment.service.CommentService;
 import com.mysite.sbb.domain.question.domain.Question;
 import com.mysite.sbb.domain.question.repository.QuestionRepository;
 import com.mysite.sbb.domain.user.domain.SiteUser;
-import com.mysite.sbb.domain.user.service.UserServiceImpl;
+import com.mysite.sbb.domain.user.service.UserService;
 import com.mysite.sbb.global.exception.DataNotFoundException;
 import com.mysite.sbb.web.api.v1.question.dto.request.QuestionRequestDTO;
 import com.mysite.sbb.web.api.v1.question.dto.response.QuestionDetailResponseDTO;
@@ -34,14 +34,13 @@ import static com.mysite.sbb.global.util.CommonUtil.validateUserPermission;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final CategoryRepository categoryRepository;
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
     private final AnswerRepository answerRepository;
-    private final CommentServiceImpl commentServiceImpl;
+    private final CommentService commentService;
 
     @Transactional(readOnly = true)
     @Override
@@ -62,7 +61,7 @@ public class QuestionServiceImpl implements QuestionService {
         Map<Integer, List<Comment>> commentsForAnswers = answers.stream()
                 .collect(Collectors.toMap(
                         Answer::getId,
-                        answer -> commentServiceImpl.getCommentsForAnswer(answer.getId())
+                        answer -> commentService.getCommentsForAnswer(answer.getId())
                 ));
 
         return new QuestionDetailResponseDTO(question, answers, commentsForAnswers);
@@ -74,12 +73,13 @@ public class QuestionServiceImpl implements QuestionService {
         return findQuestionById(id);
     }
 
+    @Transactional
     @Override
     public void create(QuestionRequestDTO dto, String userName) {
         Category category = categoryRepository.findByName(dto.getCategory())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
 
-        SiteUser user = userServiceImpl.getUser(userName);
+        SiteUser user = userService.getUser(userName);
         Question question = new Question();
         question.setSubject(dto.getSubject());
         question.setContent(dto.getContent());
@@ -88,6 +88,7 @@ public class QuestionServiceImpl implements QuestionService {
         questionRepository.save(question);
     }
 
+    @Transactional
     @Override
     public void modify(Integer id, QuestionRequestDTO dto, String userName) {
         Question question = getQuestion(id);
@@ -100,6 +101,7 @@ public class QuestionServiceImpl implements QuestionService {
         questionRepository.save(question);
     }
 
+    @Transactional
     @Override
     public void delete(Integer id, String userName) {
         Question question = getQuestion(id);
@@ -107,10 +109,11 @@ public class QuestionServiceImpl implements QuestionService {
         this.questionRepository.delete(question);
     }
 
+    @Transactional
     @Override
     public void vote(Integer id, String userName) {
         Question question = getQuestion(id);
-        SiteUser siteUser = userServiceImpl.getUser(userName);
+        SiteUser siteUser = userService.getUser(userName);
         question.getVoter().add(siteUser);
         this.questionRepository.save(question);
     }

@@ -2,7 +2,7 @@ package com.mysite.sbb.web.api.v1.question.dto.response;
 
 import com.mysite.sbb.domain.comment.domain.Comment;
 import com.mysite.sbb.web.api.v1.answer.dto.response.AnswerResponseDTO;
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.question.domain.Question;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

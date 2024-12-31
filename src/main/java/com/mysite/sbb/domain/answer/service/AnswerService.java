@@ -1,12 +1,14 @@
 package com.mysite.sbb.domain.answer.service;
 
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.question.domain.Question;
 import com.mysite.sbb.domain.user.domain.SiteUser;
+import com.mysite.sbb.web.api.v1.answer.dto.response.AnswerListResponseDTO;
+import org.springframework.data.domain.Page;
 
 public interface AnswerService {
 
-    Object getList(int page, String kw);
+    Page<AnswerListResponseDTO> getList(int page, String kw);
 
     Answer create(Question question, String content, SiteUser author);
 

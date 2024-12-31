@@ -27,7 +27,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
 
@@ -38,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final CommentRepository commentRepository;
     private final EmailService emailService;
 
+    @Transactional
     @Override
     public SiteUser create(String username, String email, String password) {
         validateNewUser(username, email);
@@ -112,6 +112,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
     public boolean changePassword(ChangeRequestDTO dto, String username) {
         try {
             SiteUser user = findUserByUsername(username);
@@ -149,10 +150,5 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByusername(username)
                 .orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다: " + username));
     }
-
-
-    public void socialLogin(String code, String registrationId) {
-        System.out.println("code = " + code);
-        System.out.println("registrationId = " + registrationId);
-    }
+    
 }

@@ -1,7 +1,7 @@
 package com.mysite.sbb.domain.comment.service;
 
 
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.answer.repository.AnswerRepository;
 import com.mysite.sbb.domain.comment.domain.Comment;
 import com.mysite.sbb.domain.comment.repository.CommentRepository;
@@ -25,7 +25,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
@@ -33,6 +32,7 @@ public class CommentServiceImpl implements CommentService {
     private final AnswerRepository answerRepository;
 
     @Override
+    @Transactional
     public Comment addComment(CommentRequestDTO dto, SiteUser author, Long questionId) {
         Comment comment = createBaseComment(dto, author, questionId);
         attachTarget(dto, comment);

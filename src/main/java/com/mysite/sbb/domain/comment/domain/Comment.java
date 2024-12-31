@@ -1,7 +1,7 @@
 package com.mysite.sbb.domain.comment.domain;
 
 import com.mysite.sbb.domain.BaseEntity;
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.question.domain.Question;
 import com.mysite.sbb.domain.user.domain.SiteUser;
 import jakarta.persistence.*;

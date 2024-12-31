@@ -1,6 +1,6 @@
 package com.mysite.sbb.domain.answer.repository;
 
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.question.domain.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     Page<Answer> findByQuestion(Question question, Pageable pageable);
+    
     Optional<Answer> findById(Long id);
 
     List<Answer> findTop5ByAuthorUsernameOrderByCreateDateDesc(String username);

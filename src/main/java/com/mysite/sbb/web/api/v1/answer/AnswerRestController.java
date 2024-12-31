@@ -1,6 +1,6 @@
 package com.mysite.sbb.web.api.v1.answer;
 
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.answer.service.AnswerServiceImpl;
 import com.mysite.sbb.domain.question.domain.Question;
 import com.mysite.sbb.domain.question.service.QuestionServiceImpl;

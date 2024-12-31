@@ -27,8 +27,6 @@ import static com.mysite.sbb.global.util.CommonUtil.getUserName;
 @Slf4j
 public class CommentRestController {
 
-    // TODO : 삭제, 수정 기능 추가
-
     private final UserService userService;
     private final CommentServiceImpl commentServiceImpl;
 

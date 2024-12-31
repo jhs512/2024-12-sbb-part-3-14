@@ -42,7 +42,6 @@ public class UserViewController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public String showProfileForm(Model model, Principal principal) {
-        // TODO: 모든 질문/댓글/답변 나오게 하기
         model.addAttribute("user", userService.getProfile(getUserName(principal)));
         return User.PROFILE;
     }

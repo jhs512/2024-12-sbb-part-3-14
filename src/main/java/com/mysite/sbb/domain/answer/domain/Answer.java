@@ -1,4 +1,4 @@
-package com.mysite.sbb.domain.answer.doamin;
+package com.mysite.sbb.domain.answer.domain;
 
 import com.mysite.sbb.domain.BaseEntity;
 import com.mysite.sbb.domain.comment.domain.Comment;

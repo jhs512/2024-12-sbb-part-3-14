@@ -1,7 +1,7 @@
 package com.mysite.sbb.domain.question.domain;
 
 import com.mysite.sbb.domain.BaseEntity;
-import com.mysite.sbb.domain.answer.doamin.Answer;
+import com.mysite.sbb.domain.answer.domain.Answer;
 import com.mysite.sbb.domain.category.domain.Category;
 import com.mysite.sbb.domain.comment.domain.Comment;
 import com.mysite.sbb.domain.user.domain.SiteUser;
