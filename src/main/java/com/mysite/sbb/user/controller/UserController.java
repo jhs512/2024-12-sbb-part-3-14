@@ -1,16 +1,25 @@
 package com.mysite.sbb.user.controller;
 
+import com.mysite.sbb.answer.repository.AnswerRepository;
+import com.mysite.sbb.comment.repository.CommentRepository;
+import com.mysite.sbb.question.repository.QuestionRepository;
 import com.mysite.sbb.user.form.UserCreateForm;
 import com.mysite.sbb.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -18,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController {
 
     private final UserService userService;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
+    private final CommentRepository commentRepository;
 
     // 화면 form 받아오는 기능
     @GetMapping("/signup")
@@ -58,5 +70,22 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
         return "login_form";
+    }
+
+    @GetMapping("/user_profile")
+    public String showProfile(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            Model model) {
+        System.out.println("프로필 페이지 요청 수신");
+        //  현재 로그인 유저의 유저명 획득
+        String username = userService.getCurrentUserName();
+
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("createDate").descending());
+
+        Map<String,Object> profileData = userService.getUserProfile(username,pageable);
+
+        model.addAttribute("profileData", profileData);
+
+        return "user_profile";
     }
 }

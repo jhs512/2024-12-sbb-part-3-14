@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 프로필</title>
+</head>
+<body>
+<div layout:fragment="content" class="container my-5">
+    <!-- 사용자 프로필 섹션 -->
+    <section id="user-profile" class="mb-5">
+        <h1 class="text-center">사용자 프로필</h1>
+        <p class="text-muted text-center">
+            사용자 이름: <span th:text="${profileData['user'].username}"></span>
+        </p>
+    </section>
+
+    <!-- 작성한 질문 섹션 -->
+    <section id="user-questions" class="mb-5">
+        <h2 class="mb-3">작성한 질문</h2>
+        <ul class="list-group" th:if="${profileData['questions'] != null and profileData['questions'].content.size() > 0}">
+            <li class="list-group-item" th:each="question : ${profileData['questions'].content}">
+                <a class="text-decoration-none" th:href="@{/question/view/{id}(id=${question.id})}" th:text="${question.subject}"></a>
+            </li>
+        </ul>
+        <p class="text-muted" th:if="${profileData['questions'] == null or profileData['questions'].content.size() == 0}">
+            작성한 질문이 없습니다.
+        </p>
+    </section>
+
+    <!-- 작성한 답변 섹션 -->
+    <section id="user-answers" class="mb-5">
+        <h2 class="mb-3">작성한 답변</h2>
+        <ul class="list-group" th:if="${profileData['answers'] != null and profileData['answers'].content.size() > 0}">
+            <li class="list-group-item" th:each="answer : ${profileData['answers'].content}">
+                <span th:text="${answer.content}"></span>
+            </li>
+        </ul>
+        <p class="text-muted" th:if="${profileData['answers'] == null or profileData['answers'].content.size() == 0}">
+            작성한 답변이 없습니다.
+        </p>
+    </section>
+
+    <!-- 작성한 댓글 섹션 -->
+    <section id="user-comments" class="mb-5">
+        <h2 class="mb-3">작성한 댓글</h2>
+        <ul class="list-group" th:if="${profileData['comments'] != null and profileData['comments'].content.size() > 0}">
+            <li class="list-group-item" th:each="comment : ${profileData['comments'].content}">
+                <span th:text="${comment.content}"></span>
+            </li>
+        </ul>
+        <p class="text-muted" th:if="${profileData['comments'] == null or profileData['comments'].content.size() == 0}">
+            작성한 댓글이 없습니다.
+        </p>
+    </section>
+
+    <!-- 페이지 네비게이션 -->
+    <div id="pagination" class="d-flex justify-content-between">
+        <a class="btn btn-primary" th:href="@{/user/profile(page=${profileData['questions'].number - 1})}"
+           th:if="${profileData['questions'] != null and profileData['questions'].hasPrevious()}">이전</a>
+        <a class="btn btn-primary" th:href="@{/user/profile(page=${profileData['questions'].number + 1})}"
+           th:if="${profileData['questions'] != null and profileData['questions'].hasNext()}">다음</a>
+    </div>
+</div>
+</body>
+</html>

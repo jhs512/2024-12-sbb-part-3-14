@@ -59,7 +59,7 @@ public class PasswordService {
 
     @Transactional
     public void updatePassword(String currentPassword, String newPassword) {
-        String username = getCurrentUserName();
+        String username = userService.getCurrentUserName();
 
         SiteUser user = userService.getUserByUsername(username);
 
@@ -72,15 +72,5 @@ public class PasswordService {
         user.setPassword(encodePassword(newPassword));
         user.setTempPassword(false);
         userRepository.save(user);
-    }
-
-    public String getCurrentUserName() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if(principal instanceof User) {
-            return ((User) principal).getUsername();
-        } else {
-            return principal.toString();
-        }
     }
 }
