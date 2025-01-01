@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     //  댓글에 where 조건 없이, 모든 댓글을 가져오는 경우
@@ -22,4 +24,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     Page<Answer> findByQuestionIdOrderByVoterCountDesc(@Param("questionId") Integer questionId, Pageable pageable);
 
     Page<Answer> findByAuthor(SiteUser siteUser, Pageable pageable);
+
+    List<Answer> findTop5ByOrderByCreateDateDesc();
 }

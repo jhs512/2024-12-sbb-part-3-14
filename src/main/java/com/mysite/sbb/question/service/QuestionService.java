@@ -1,10 +1,9 @@
 package com.mysite.sbb.question.service;
 
+import com.mysite.sbb.answer.repository.AnswerRepository;
 import com.mysite.sbb.category.repository.CategoryRepository;
-import com.mysite.sbb.entity.Answer;
-import com.mysite.sbb.entity.Category;
-import com.mysite.sbb.entity.Question;
-import com.mysite.sbb.entity.SiteUser;
+import com.mysite.sbb.comment.repository.CommentRepository;
+import com.mysite.sbb.entity.*;
 import com.mysite.sbb.exception.DataNotFoundException;
 import com.mysite.sbb.question.repository.QuestionRepository;
 import jakarta.persistence.criteria.*;
@@ -28,6 +27,8 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final CategoryRepository categoryRepository;
+    private final AnswerRepository answerRepository;
+    private final CommentRepository commentRepository;
 
     public List<Question> getList() {
         return this.questionRepository.findAll();
@@ -103,5 +104,13 @@ public class QuestionService {
                 );
             }
         };
+    }
+
+    public List<Answer> getRecentAnswers() {
+        return this.answerRepository.findTop5ByOrderByCreateDateDesc();
+    }
+
+    public List<Comment> getRecentComments() {
+        return this.commentRepository.findTop5ByOrderByCreateDateDesc();
     }
 }

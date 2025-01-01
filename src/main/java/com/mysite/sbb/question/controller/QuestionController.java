@@ -42,6 +42,8 @@ public class QuestionController {
         Page<Question> paging = this.questionService.getList(page,kw);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
+        model.addAttribute("recentAnswers", questionService.getRecentAnswers());
+        model.addAttribute("recentComments", questionService.getRecentComments());
         return "question_list";
     }
 
