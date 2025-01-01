@@ -6,11 +6,12 @@
         </div>
         <div class="col-6">
             <div class="input-group">
-                <input type="text" id="search_kw" class="form-control" th:value="${kw}">
+                <input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="검색어를 입력해주세요.">
                 <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
             </div>
         </div>
     </div>
+    <h2 class="border-bottom py-2">전체 글 목록</h2>
     <table class="table">
         <thead class="table-dark">
         <tr class="text-center">
