@@ -97,9 +97,10 @@ public class QuestionController {
         List<Category> categoryList = this.categoryService.getAll();
         model.addAttribute("category_list", categoryList);
 
+        questionForm.setId(question.getId());
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
-        return "question_form";
+        return "question_modify_form";
     }
 
     @PreAuthorize("isAuthenticated()")
