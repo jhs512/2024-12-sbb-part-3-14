@@ -34,6 +34,8 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation ("org.slf4j:slf4j-api")
     implementation ("ch.qos.logback:logback-classic")
+
+    implementation ("org.commonmark:commonmark:0.21.0")
 }
 
 tasks.withType<Test> {

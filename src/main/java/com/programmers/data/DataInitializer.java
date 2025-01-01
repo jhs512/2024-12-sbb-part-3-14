@@ -37,7 +37,15 @@ public class DataInitializer implements ApplicationRunner {
         };
         for (int i = 1; i <= 60; i++) {
             String subject = String.format("테스트 데이터입니다:[%03d]", i);
-            String content = "내용무";
+            String content = """
+            마크다운 적용
+            
+            ## 마크다운 문법으로 작성.
+            * 리스트1
+            * 리스트 2
+            * 리스트 3
+            파이선 홈페이지는 [http://www.python.org](http://www.python.org) 입니다.
+            """;
             questionService.createQuestion(new QuestionRegisterRequestDto(subject, content), principal.getName());
         }
         for (int i = 1; i <= 60; i++) {
