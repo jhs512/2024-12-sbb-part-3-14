@@ -23,4 +23,6 @@ public class Question extends BaseEntityVoter {
 
     @ManyToOne
     private Category category;
+
+    private int viewCounter;
 }

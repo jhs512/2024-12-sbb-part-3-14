@@ -68,6 +68,7 @@ public class QuestionController {
         model.addAttribute("sortOrder", sortOrder);
         model.addAttribute("commentList", commentList);
         model.addAttribute("categoryList", this.categoryService.getList());
+        this.questionService.addViewCount(question);
         return "question_detail";
     }
 

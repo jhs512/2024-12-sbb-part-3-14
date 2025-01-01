@@ -129,4 +129,9 @@ public class QuestionService {
         }
         return new CategorysListDTO(categorysPosts, categorysKorName, categorysName);
     }
+
+    public void addViewCount(Question question) {
+        question.setViewCounter(question.getViewCounter()+1);
+        this.questionRepository.save(question);
+    }
 }
