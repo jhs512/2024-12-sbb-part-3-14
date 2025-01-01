@@ -3,6 +3,8 @@ package com.kkd.sbb.question;
 import com.kkd.sbb.answer.Answer;
 import com.kkd.sbb.answer.AnswerForm;
 import com.kkd.sbb.answer.AnswerService;
+import com.kkd.sbb.category.Category;
+import com.kkd.sbb.category.CategoryService;
 import com.kkd.sbb.comment.Comment;
 import com.kkd.sbb.comment.CommentForm;
 import com.kkd.sbb.comment.CommentService;
@@ -31,13 +33,16 @@ public class QuestionController {
     private final UserService userService;
     private final AnswerService answerService;
     private final CommentService commentService;
+    private final CategoryService categoryService;
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "kw", defaultValue = "") String kw) {
         Page<Question> paging = this.questionService.getList(page, kw);
+        List<Category> categoryList = this.categoryService.getAll();
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
+        model.addAttribute("category_list", categoryList);
         return "question_list";
     }
 
@@ -51,15 +56,20 @@ public class QuestionController {
         Page<Answer> answerPaging = this.answerService.getAnswerList(question,
                 answerPage, answerOrderMethod);
         List<Comment> commentList = this.commentService.getCommentList(question);
+        List<Category> categoryList = this.categoryService.getAll();
+
         model.addAttribute("question", question);
         model.addAttribute("ans_paging", answerPaging);
         model.addAttribute("comment_list", commentList);
+        model.addAttribute("category_list", categoryList);
         return "question_detail";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String questionCreate(QuestionForm questionForm) {
+    public String questionCreate(QuestionForm questionForm, Model model) {
+        List<Category> categoryList = this.categoryService.getAll();
+        model.addAttribute("category_list", categoryList);
         return "question_form";
     }
 
@@ -70,17 +80,23 @@ public class QuestionController {
             return "question_form";
         }
         SiteUser siteUser = this.userService.getUser(principal.getName());
-        this.questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
+        Category category = this.categoryService.getCategoryByName(questionForm.getCategory());
+        System.out.println("category.getName() = " + category.getName());
+        this.questionService.create(questionForm.getSubject(), questionForm.getContent(),
+                category, siteUser);
         return "redirect:/question/list";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal) {
+    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id, Principal principal, Model model) {
         Question question = this.questionService.getQuestion(id);
         if(!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
+        List<Category> categoryList = this.categoryService.getAll();
+        model.addAttribute("category_list", categoryList);
+
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
         return "question_form";

@@ -3,6 +3,7 @@ package com.kkd.sbb;
 import com.kkd.sbb.answer.Answer;
 import com.kkd.sbb.answer.AnswerRepository;
 import com.kkd.sbb.answer.AnswerService;
+import com.kkd.sbb.category.CategoryService;
 import com.kkd.sbb.comment.CommentService;
 import com.kkd.sbb.question.Question;
 import com.kkd.sbb.question.QuestionRepository;
@@ -43,6 +44,9 @@ class SbbApplicationTests {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @Test
     void testJpa1() {
         Question q1 = new Question();
@@ -68,28 +72,28 @@ class SbbApplicationTests {
     }
 
     @Test
-    void testJpa3(){
+    void testJpa3() {
         Optional<Question> oq = this.questionRepository.findById(1);
-        if(oq.isPresent()){
+        if (oq.isPresent()) {
             Question q = oq.get();
             assertEquals("sbb가 무엇인가요?", q.getSubject());
         }
     }
 
     @Test
-    void testJpa4(){
+    void testJpa4() {
         Question q = this.questionRepository.findBySubject("sbb가 무엇인가요?");
         assertEquals(1, q.getId());
     }
 
     @Test
-    void testJpa5(){
+    void testJpa5() {
         Question q = this.questionRepository.findBySubjectAndContent("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다.");
         assertEquals(1, q.getId());
     }
 
     @Test
-    void testJpa6(){
+    void testJpa6() {
         List<Question> qList = this.questionRepository.findBySubjectLike("%sbb%");
 
         Question q = qList.get(0);
@@ -97,7 +101,7 @@ class SbbApplicationTests {
     }
 
     @Test
-    void testJpa7(){
+    void testJpa7() {
         Optional<Question> oq = this.questionRepository.findById(1);
 
         assertTrue(oq.isPresent());
@@ -107,8 +111,8 @@ class SbbApplicationTests {
     }
 
     @Test
-    void testJpa8(){
-        assertEquals(2,this.questionRepository.count());
+    void testJpa8() {
+        assertEquals(2, this.questionRepository.count());
         Optional<Question> oq = this.questionRepository.findById(1);
         assertTrue(oq.isPresent());
         Question q = oq.get();
@@ -157,7 +161,7 @@ class SbbApplicationTests {
         for (int i = 1; i <= 300; i++) {
             String subject = String.format("테스트 데이터입니다:[%03d]", i);
             String content = "내용무";
-            this.questionService.create(subject, content, null);
+            this.questionService.create(subject, content, null, null);
         }
     }
 
@@ -171,5 +175,13 @@ class SbbApplicationTests {
         this.commentService.create("테스트 질문 댓글", question, null, user);
         Answer answer = this.answerService.create(question, "테스트 답변", user);
         this.commentService.create("테스트 답변 댓글", question, answer, user);
+    }
+
+    @Transactional
+    @Test
+    void testCategory() {
+        this.questionService.create("게시판 테스트", "테스트테스트",
+                this.categoryService.getCategoryByName("게시판1"),
+                userService.getUser("kkd"));
     }
 }

@@ -2,6 +2,7 @@ package com.kkd.sbb.question;
 
 import com.kkd.sbb.DataNotFoundException;
 import com.kkd.sbb.answer.Answer;
+import com.kkd.sbb.category.Category;
 import com.kkd.sbb.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -67,12 +68,12 @@ public class QuestionService {
         }
     }
 
-    public void create(String subject, String content, SiteUser author){
+    public void create(String subject, String content, Category category, SiteUser author){
         Question q = new Question();
         q.setSubject(subject);
         q.setContent(content);
         q.setCreateDate(LocalDateTime.now());
-        q.setViews(0);
+        q.setCategory(category);
         q.setAuthor(author);
         this.questionRepository.save(q);
     }
@@ -131,6 +132,14 @@ public class QuestionService {
         Pageable pageable = PageRequest.of(page, 5, Sort.by(sorts));
         Specification<Question> spec = this.hasVoter(siteUser);
         return this.questionRepository.findAll(spec, pageable);
+    }
+
+    public Page<Question> getCategoryQuestionList(Category category, int page){
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
+        return this.questionRepository.findByCategory(category, pageable);
     }
 
 }

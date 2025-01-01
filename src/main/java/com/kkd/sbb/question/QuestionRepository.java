@@ -1,5 +1,6 @@
 package com.kkd.sbb.question;
 
+import com.kkd.sbb.category.Category;
 import com.kkd.sbb.user.SiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 
     Page<Question> findByAuthor(SiteUser siteUser, Pageable pageable);
+    Page<Question> findByCategory(Category category, Pageable pageable);
 
 //    @Query("select "
 //            + "distinct q "

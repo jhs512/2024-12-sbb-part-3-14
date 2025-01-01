@@ -1,6 +1,7 @@
 package com.kkd.sbb.question;
 
 import com.kkd.sbb.answer.Answer;
+import com.kkd.sbb.category.Category;
 import com.kkd.sbb.comment.Comment;
 import com.kkd.sbb.user.SiteUser;
 import jakarta.persistence.*;
@@ -46,4 +47,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Comment> commentList;
+
+    @ManyToOne
+    private Category category;
 }
