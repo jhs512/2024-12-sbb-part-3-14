@@ -37,4 +37,7 @@ public class Question {
 
     @ManyToOne
     private Category category;
+
+    //  조회수 필드
+    private int viewCount;
 }

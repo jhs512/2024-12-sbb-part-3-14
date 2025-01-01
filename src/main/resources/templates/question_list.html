@@ -33,6 +33,7 @@
             <td th:text="${question.category != null ? question.category.name : '카테고리 없음'}"></td>
             <td class="text-start">
                 <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+                <span class="text-muted small ms-2">[조회수: <span th:text="${question.viewCount}"></span>]</span>
                 <span class="text-danger small ms-2"
                       th:if="${#lists.size(question.answerList) > 0}"
                       th:text="${#lists.size(question.answerList)}">
