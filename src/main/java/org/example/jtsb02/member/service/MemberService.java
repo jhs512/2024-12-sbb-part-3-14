@@ -53,4 +53,16 @@ public class MemberService {
             .password(passwordEncoder.encode(passwordUpdateForm.getNewPassword()))
             .build());
     }
+
+    public MemberDto updateTempPassword(String email, String tempPassword) {
+        Member member = checkEmailExists(email);
+        return MemberDto.fromMember(memberRepository.save(member.toBuilder()
+            .password(passwordEncoder.encode(tempPassword))
+            .build()));
+    }
+
+    private Member checkEmailExists(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new DataNotFoundException("email not found"));
+    }
 }

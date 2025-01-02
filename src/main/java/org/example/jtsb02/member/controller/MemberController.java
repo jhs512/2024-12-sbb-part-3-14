@@ -3,6 +3,7 @@ package org.example.jtsb02.member.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.common.exception.PasswordNotMatchException;
+import org.example.jtsb02.mail.form.MailForm;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.form.MemberForm;
 import org.example.jtsb02.member.form.PasswordUpdateForm;
@@ -102,5 +103,11 @@ public class MemberController {
 
         memberService.updatePassword(id, passwordUpdateForm);
         return "redirect:/member/logout";
+    }
+
+    @GetMapping("/find/password")
+    public String findPassword(Model model, MailForm mailForm) {
+        model.addAttribute("mailForm", mailForm);
+        return "mail/form";
     }
 }
