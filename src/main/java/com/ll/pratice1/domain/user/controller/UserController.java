@@ -1,6 +1,12 @@
 package com.ll.pratice1.domain.user.controller;
 
 
+import com.ll.pratice1.domain.answer.Answer;
+import com.ll.pratice1.domain.answer.service.AnswerService;
+import com.ll.pratice1.domain.comment.Comment;
+import com.ll.pratice1.domain.comment.service.CommentService;
+import com.ll.pratice1.domain.question.Question;
+import com.ll.pratice1.domain.question.service.QuestionService;
 import com.ll.pratice1.domain.user.SiteUser;
 import com.ll.pratice1.domain.user.dto.MailForm;
 import com.ll.pratice1.domain.user.dto.PasswordFindForm;
@@ -11,10 +17,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +33,9 @@ public class UserController {
 
     private final UserService userService;
     private final MailService mailService;
+    private final QuestionService questionService;
+    private final AnswerService answerService;
+    private final CommentService commentService;
 
 
     @GetMapping("/signup")
@@ -61,6 +74,21 @@ public class UserController {
     @GetMapping("/password-find")
     public String findPassword(PasswordFindForm passwordFindForm){
         return "password-find_form";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, Principal principal){
+        SiteUser siteUser = userService.getUser(principal.getName());
+        List<Question> questionList = questionService.getList(siteUser);
+        List<Answer> answerList = answerService.getAnswerList(siteUser);
+        List<Comment> commentList = commentService.getCommentList(siteUser);
+
+        model.addAttribute("commentList", commentList);
+        model.addAttribute("answerList", answerList);
+        model.addAttribute("questionList", questionList);
+        model.addAttribute("siteUser", siteUser);
+
+        return "profile";
     }
 
     @PostMapping("password-find")

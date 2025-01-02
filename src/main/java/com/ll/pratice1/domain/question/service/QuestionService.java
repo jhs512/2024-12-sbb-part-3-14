@@ -2,7 +2,6 @@ package com.ll.pratice1.domain.question.service;
 
 import com.ll.pratice1.DataNotFoundException;
 import com.ll.pratice1.domain.answer.Answer;
-import com.ll.pratice1.domain.answer.repository.AnswerRepository;
 import com.ll.pratice1.domain.category.Category;
 import com.ll.pratice1.domain.category.repository.CategoryRepository;
 import com.ll.pratice1.domain.question.Question;
@@ -26,7 +25,6 @@ import java.util.Optional;
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
     private final CategoryRepository categoryRepository;
 
     public Page<Question> getList(int page, String kw, String category) {
@@ -35,25 +33,7 @@ public class QuestionService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         Category byCategory = categoryRepository.findByCategory(category);
         Specification<Question> spec = search(kw, byCategory);
-
         return this.questionRepository.findAll(spec, pageable);
-    }
-
-    public Page<Answer> getAnswerList(Question question, int page, String sort) {
-        List<Sort.Order> sorts = new ArrayList<>();
-        Pageable pageable = null;
-        if (sort.equals("latest")){
-            sorts.add(Sort.Order.desc("createDate"));
-            pageable = PageRequest.of(page, 5, Sort.by(sorts));
-        }else if(sort.equals("vote")) {
-            sorts.add(Sort.Order.desc("voter"));
-            pageable = PageRequest.of(page, 5, Sort.by(sorts));
-        }else{
-            sorts.add(Sort.Order.desc("createDate"));
-            pageable = PageRequest.of(page, 5, Sort.by(sorts));
-        }
-        // 페이징된 Answer 리스트 반환
-        return answerRepository.findByQuestion(question, pageable);
     }
 
     public Question getQuestion(int id) {
@@ -64,6 +44,18 @@ public class QuestionService {
             throw new DataNotFoundException("question not found");
         }
     }
+
+    public List<Question> getList(SiteUser siteUser) {
+        List<Question> questionList = this.questionRepository.findByAuthor(siteUser);
+        return questionList;
+//        if (question.isPresent()) {
+//            return question.get();
+//        } else {
+//            throw new DataNotFoundException("question not found");
+//        }
+    }
+
+
 
     public void create(String subject, String content, Category category, SiteUser author) {
         Question question = new Question();

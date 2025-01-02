@@ -55,3 +55,11 @@ input[type=submit] {
     background-color: rgba(0, 0, 0, 0.1);
     color: black;
 }
+
+
+.white-box {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0.5px 0.5px 2px 1px #eee;
+}

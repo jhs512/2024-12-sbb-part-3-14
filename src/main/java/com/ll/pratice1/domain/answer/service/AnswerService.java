@@ -6,9 +6,15 @@ import com.ll.pratice1.domain.answer.repository.AnswerRepository;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +40,28 @@ public class AnswerService {
         }else{
             throw new DataNotFoundException("answer not found");
         }
+    }
+
+    public List<Answer> getAnswerList(SiteUser siteUser){
+        List<Answer> answerList = this.answerRepository.findByAuthor(siteUser);
+        return answerList;
+    }
+
+    public Page<Answer> getAnswerList(Question question, int page, String sort) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        Pageable pageable = null;
+        if (sort.equals("latest")){
+            sorts.add(Sort.Order.desc("createDate"));
+            pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        }else if(sort.equals("vote")) {
+            sorts.add(Sort.Order.desc("voter"));
+            pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        }else{
+            sorts.add(Sort.Order.desc("createDate"));
+            pageable = PageRequest.of(page, 5, Sort.by(sorts));
+        }
+        // 페이징된 Answer 리스트 반환
+        return answerRepository.findByQuestion(question, pageable);
     }
 
     public void modify(Answer answer, String content){

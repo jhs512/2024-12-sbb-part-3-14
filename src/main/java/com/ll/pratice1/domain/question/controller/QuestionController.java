@@ -3,6 +3,7 @@ package com.ll.pratice1.domain.question.controller;
 
 import com.ll.pratice1.domain.answer.Answer;
 import com.ll.pratice1.domain.answer.AnswerForm;
+import com.ll.pratice1.domain.answer.service.AnswerService;
 import com.ll.pratice1.domain.category.Category;
 import com.ll.pratice1.domain.category.service.CategoryService;
 import com.ll.pratice1.domain.comment.CommentForm;
@@ -33,6 +34,7 @@ public class QuestionController {
     private final QuestionService questionService;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final AnswerService answerService;
 
 
     @GetMapping("/list")
@@ -45,12 +47,6 @@ public class QuestionController {
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
 
-        //카테고리등록 해보시겠어요?
-        //추가 부분 구현중이였습니다 ㅠ 되었을까요?
-        // 넵 ! 근데 왜 안되었던걸가요??
-        //1. 아래의 리턴에서 템플릿의 이름을 리턴해야되는데 카테고리 이름을 그대로 리턴하셔서 그랬습니다.
-        //2. 타임리프: 에이치알이에프가 빈값이였습니다.
-        // 감사합니다!
         return "question_list";
     }
 
@@ -59,7 +55,7 @@ public class QuestionController {
                          @PathVariable("id") Integer id, @RequestParam(defaultValue = "latest") String sort,
                          CommentForm commentForm, AnswerForm answerForm){
         Question question = this.questionService.getQuestion(id);
-        Page<Answer> paging = this.questionService.getAnswerList(question, page, sort);
+        Page<Answer> paging = this.answerService.getAnswerList(question, page, sort);
         model.addAttribute("sort", sort);
         model.addAttribute("paging", paging);
         model.addAttribute("question", question);

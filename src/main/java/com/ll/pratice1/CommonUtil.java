@@ -1,4 +1,4 @@
-package com.ll.pratice1.domain;
+package com.ll.pratice1;
 
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
