@@ -56,6 +56,26 @@
 									<div th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
 								</div>
 							</div>
+							<div class="my-3">
+								<a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+								   th:data-uri="@{|/comment/question/vote/${comment.id}|}">
+									추천
+									<span class="badge rounded-pill bg-success" th:text="${#lists.size(comment.voter)}"></span>
+								</a>
+<!--								<a th:href="@{|/comment/question/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"-->
+<!--								   th:if="${(comment.author != null and #authentication.getPrincipal() instanceof T(org.example.jtsb01.user.model.CustomUserDetails)-->
+<!--								        and #authentication.getPrincipal().getUsername() == comment.author.nickname)-->
+<!--								   or (comment.author != null and #authentication.getPrincipal() instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)-->
+<!--								        and #authentication.getPrincipal().attributes.name == comment.author.nickname)}"-->
+<!--								   th:text="수정"></a>-->
+<!--								<a href="javascript:void(0);" th:data-uri="@{|/comment/question/delete/${comment.id}|}"-->
+<!--								   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"-->
+<!--								   th:if="${(comment.author != null and #authentication.getPrincipal() instanceof T(org.example.jtsb01.user.model.CustomUserDetails)-->
+<!--								        and #authentication.getPrincipal().getUsername() == comment.author.nickname)-->
+<!--								   or (comment.author != null and #authentication.getPrincipal() instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)-->
+<!--								        and #authentication.getPrincipal().attributes.name == comment.author.nickname)}"-->
+<!--								   th:text="삭제"></a>-->
+							</div>
 						</div>
 					</div>
 					<!-- 코멘트 반복 끝 -->
@@ -119,6 +139,60 @@
 				   th:if="${question.author != null and #authentication.principal.username == answer.author.nickname}"
 				   th:data-uri="@{|/answer/delete/${answer.id}|}"
 				   th:text="삭제"></a>
+				<a class="btn btn-sm btn-outline-secondary"
+				   th:id="|answerToggleButton_${answer.id}|"
+				   th:onclick="|toggleCommentBox('answerCommentBox_${answer.id}')|">코멘트 보기</a>
+
+				<div class="d-none mt-3" th:id="|answerCommentBox_${answer.id}|">
+
+					<!-- 코멘트 반복 시작 -->
+					<div class="card my-3" th:each="comment : ${answer.comments}">
+						<a th:id="|comment_${comment.id}|"></a>
+						<div class="card-body">
+							<div class="card-text" th:utext="${@commonUtil.markdown(comment.content)}"></div>
+							<div class="d-flex justify-content-end">
+								<div th:if="${comment.modifiedAt != null}" class="badge bg-light text-dark p-2 text-start mx-3">
+									<div class="mb-2">modified at</div>
+									<div th:text="${#temporals.format(comment.modifiedAt, 'yyyy-MM-dd HH:mm')}"></div>
+								</div>
+								<div class="badge bg-light text-dark p-2 text-start">
+									<div class="mb-2">
+										<span th:if="${comment.author != null}" th:text="${comment.author.nickname}"></span>
+									</div>
+									<div th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+								</div>
+							</div>
+							<div class="my-3">
+								<a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+								   th:data-uri="@{|/comment/answer/vote/${comment.id}|}">
+									추천
+									<span class="badge rounded-pill bg-success" th:text="${#lists.size(comment.voter)}"></span>
+								</a>
+<!--								<a th:href="@{|/comment/answer/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"-->
+<!--								   th:if="${(comment.author != null and #authentication.getPrincipal() instanceof T(org.example.jtsb01.user.model.CustomUserDetails)-->
+<!--								        and #authentication.getPrincipal().getUsername() == comment.author.nickname)-->
+<!--								   or (comment.author != null and #authentication.getPrincipal() instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)-->
+<!--								        and #authentication.getPrincipal().attributes.name == comment.author.nickname)}"-->
+<!--								   th:text="수정"></a>-->
+<!--								<a href="javascript:void(0);" th:data-uri="@{|/comment/answer/delete/${comment.id}|}"-->
+<!--								   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"-->
+<!--								   th:if="${(comment.author != null and #authentication.getPrincipal() instanceof T(org.example.jtsb01.user.model.CustomUserDetails)-->
+<!--								        and #authentication.getPrincipal().getUsername() == comment.author.nickname)-->
+<!--								   or (comment.author != null and #authentication.getPrincipal() instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)-->
+<!--								        and #authentication.getPrincipal().attributes.name == comment.author.nickname)}"-->
+<!--								   th:text="삭제"></a>-->
+							</div>
+						</div>
+					</div>
+					<!-- 코멘트 반복 끝 -->
+
+					<form th:action="@{|/comment/answer/create/${answer.id}|}" th:object="${commentForm}" method="post" class="my-3">
+						<div th:replace="~{form_errors :: formErrorsFragment}"></div>
+						<textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control"></textarea>
+						<textarea class="form-control" sec:authorize="isAuthenticated()" id="answerComment" th:field="*{content}" rows="3" placeholder="코멘트를 작성하세요..."></textarea>
+						<input class="btn btn-primary mt-2 my-2" type="submit" value="코멘트 등록"></input>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -177,5 +251,11 @@
         const commentBox = document.getElementById('commentBox');
         commentBox.classList.toggle('d-none');
     });
+    function toggleCommentBox(commentBoxId) {
+        const answerCommentBox = document.getElementById(commentBoxId);
+        if (answerCommentBox) {
+            answerCommentBox.classList.toggle('d-none');
+        }
+    }
 </script>
 </html>
