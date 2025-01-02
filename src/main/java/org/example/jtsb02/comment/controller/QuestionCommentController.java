@@ -1,10 +1,12 @@
 package org.example.jtsb02.comment.controller;
 
+import static org.example.jtsb02.common.util.UserUtil.checkUserPermission;
 import static org.example.jtsb02.common.util.UserUtil.getUsernameFromPrincipal;
 
 import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
+import org.example.jtsb02.comment.dto.CommentDto;
 import org.example.jtsb02.comment.form.CommentForm;
 import org.example.jtsb02.comment.service.QuestionCommentService;
 import org.example.jtsb02.member.dto.MemberDto;
@@ -15,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,5 +44,30 @@ public class QuestionCommentController {
         MemberDto member = memberService.getMember(memberId);
         questionCommentService.createQuestionComment(id, commentForm, member);
         return String.format("redirect:/question/detail/%s", id);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String modifyAnswerComment(@PathVariable("id") Long id, CommentForm commentForm, Model model) {
+        CommentDto comment = questionCommentService.getQuestionComment(id);
+        commentForm.setContent(comment.getContent());
+        model.addAttribute("commentForm", commentForm);
+        return "comment/form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    public String modifyQuestionComment(@PathVariable("id") Long id, @Valid CommentForm commentForm,
+        BindingResult bindingResult, Principal principal) {
+        if (bindingResult.hasErrors()) {
+            return "comment/form";
+        }
+
+        String username = getUsernameFromPrincipal(principal);
+        CommentDto comment = questionCommentService.getQuestionComment(id);
+        checkUserPermission(username, comment.getAuthor().getMemberId(), "수정");
+
+        questionCommentService.modifyQuestionComment(id, commentForm);
+        return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());
     }
 }

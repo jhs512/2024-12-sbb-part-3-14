@@ -18,6 +18,7 @@ public class AnswerCommentService {
 
     private final CommentRepository commentRepository;
     private final AnswerRepository answerRepository;
+    private final CommentService commentService;
 
     public void createAnswerComment(Long answerId, CommentForm commentForm, MemberDto memberDto) {
         Answer answer = answerRepository.findById(answerId)
@@ -29,5 +30,9 @@ public class AnswerCommentService {
     public CommentDto getAnswerComment(Long commentId) {
         return CommentDto.AnswerCommentDtoFromComment(commentRepository.findById(commentId)
             .orElseThrow(() -> new DataNotFoundException("comment not found")));
+    }
+
+    public void modifyAnswerComment(Long commentId, CommentForm CommentForm) {
+        commentService.modifyComment(commentId, CommentForm);
     }
 }
