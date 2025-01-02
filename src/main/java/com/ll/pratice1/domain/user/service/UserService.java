@@ -52,9 +52,17 @@ public class UserService {
         return password.toString();
     }
 
-    public void updatePassword(SiteUser siteUser, String ramdomPassword){
-        siteUser.setPassword(passwordEncoder.encode(ramdomPassword));
+    public void updatePassword(SiteUser siteUser, String password){
+        siteUser.setPassword(passwordEncoder.encode(password));
         this.userRepository.save(siteUser);
+    }
+
+    public SiteUser validatePassword(String username, String password) {
+        Optional<SiteUser> siteUser = userRepository.findByusername(username);
+        if (!passwordEncoder.matches(password, siteUser.get().getPassword())) {
+            return null;
+        }
+        return siteUser.get();
     }
 
 

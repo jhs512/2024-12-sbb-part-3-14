@@ -10,6 +10,7 @@ import com.ll.pratice1.domain.question.service.QuestionService;
 import com.ll.pratice1.domain.user.SiteUser;
 import com.ll.pratice1.domain.user.dto.MailForm;
 import com.ll.pratice1.domain.user.dto.PasswordFindForm;
+import com.ll.pratice1.domain.user.dto.PasswordResetForm;
 import com.ll.pratice1.domain.user.dto.UserCreateForm;
 import com.ll.pratice1.domain.user.service.MailService;
 import com.ll.pratice1.domain.user.service.UserService;
@@ -76,21 +77,6 @@ public class UserController {
         return "password-find_form";
     }
 
-    @GetMapping("/profile")
-    public String profile(Model model, Principal principal){
-        SiteUser siteUser = userService.getUser(principal.getName());
-        List<Question> questionList = questionService.getList(siteUser);
-        List<Answer> answerList = answerService.getAnswerList(siteUser);
-        List<Comment> commentList = commentService.getCommentList(siteUser);
-
-        model.addAttribute("commentList", commentList);
-        model.addAttribute("answerList", answerList);
-        model.addAttribute("questionList", questionList);
-        model.addAttribute("siteUser", siteUser);
-
-        return "profile";
-    }
-
     @PostMapping("password-find")
     public String findPassword(@Valid PasswordFindForm passwordFindForm, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
@@ -112,6 +98,51 @@ public class UserController {
             bindingResult.reject("userFindFailed", "등록된 유저가 존재하지 않습니다.");
             return "password-find_form";
         }
+    }
+    @GetMapping("/password-reset")
+    public String resetPassword(PasswordResetForm passwordResetForm){
+        return "password-reset_form";
+    }
+
+    @PostMapping("/password-reset")
+    public String resetPassword(@Valid PasswordResetForm passwordResetForm, BindingResult bindingResult, Principal principal){
+        if(bindingResult.hasErrors()){
+            return "password-reset_form";
+        }
+        try {
+            SiteUser siteUser = userService.validatePassword(principal.getName(), passwordResetForm.getPassword());
+            if(siteUser==null){
+                bindingResult.rejectValue("password", "passwordInCorrect",
+                        "현재 패스워드와 일치하지 않습니다.");
+                return "password-reset_form";
+            }
+            if(!passwordResetForm.getPassword_reset().equals(passwordResetForm.getPassword_reset_check())){
+                bindingResult.rejectValue("password_reset", "passwordInCorrect",
+                        "2개의 패스워드가 일치하지 않습니다.");
+                return "password-reset_form";
+            }
+            userService.updatePassword(siteUser, passwordResetForm.getPassword_reset());
+            return "redirect:/user/logout";
+
+        }catch(Exception e) {
+            bindingResult.reject("userFindFailed", "비밀번호가 일치하지 않습니다.");
+            return "password-reset_form";
+        }
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, Principal principal){
+        SiteUser siteUser = userService.getUser(principal.getName());
+        List<Question> questionList = questionService.getList(siteUser);
+        List<Answer> answerList = answerService.getAnswerList(siteUser);
+        List<Comment> commentList = commentService.getCommentList(siteUser);
+
+        model.addAttribute("commentList", commentList);
+        model.addAttribute("answerList", answerList);
+        model.addAttribute("questionList", questionList);
+        model.addAttribute("siteUser", siteUser);
+
+        return "profile";
     }
 }
 
