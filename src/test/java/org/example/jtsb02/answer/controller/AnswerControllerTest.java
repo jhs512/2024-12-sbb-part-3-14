@@ -89,7 +89,7 @@ class AnswerControllerTest {
         List<AnswerDto> answers = new ArrayList<>();
         Page<AnswerDto> answerPage = new PageImpl<>(answers);
         when(questionService.getQuestionWithHitsCount(1L, 1, "")).thenReturn(QuestionDto.fromQuestion(question, answerPage));
-        when(memberService.getMember("onlyTest")).thenReturn(member);
+        when(memberService.getMemberByMemberId("onlyTest")).thenReturn(member);
         when(answerService.createAnswer(eq(1L), any(AnswerForm.class), eq(member))).thenReturn(1L);
 
         //when
@@ -114,7 +114,7 @@ class AnswerControllerTest {
         String url = "/answer/create/1";
         MemberDto member = createMember();
         Category category = createCategory();
-        when(memberService.getMember("onlyTest")).thenReturn(member);
+        when(memberService.getMemberByMemberId("onlyTest")).thenReturn(member);
         Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         List<AnswerDto> answers = new ArrayList<>();
         Page<AnswerDto> answerPage = new PageImpl<>(answers);
@@ -141,7 +141,7 @@ class AnswerControllerTest {
         String url = "/answer/create/1";
         MemberDto member = createMember();
         Category category = createCategory();
-        when(memberService.getMember("onlyTest")).thenReturn(member);
+        when(memberService.getMemberByMemberId("onlyTest")).thenReturn(member);
         Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         List<AnswerDto> answers = new ArrayList<>();
         Page<AnswerDto> answerPage = new PageImpl<>(answers);

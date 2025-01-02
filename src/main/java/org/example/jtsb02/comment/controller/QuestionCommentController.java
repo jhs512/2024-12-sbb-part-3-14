@@ -44,7 +44,7 @@ public class QuestionCommentController {
             return "question/detail";
         }
         String memberId = getUsernameFromPrincipal(principal);
-        MemberDto member = memberService.getMember(memberId);
+        MemberDto member = memberService.getMemberByMemberId(memberId);
         questionCommentService.createQuestionComment(id, commentForm, member);
         return String.format("redirect:/question/detail/%s", id);
     }
@@ -89,7 +89,7 @@ public class QuestionCommentController {
     @GetMapping("/vote/{id}")
     public String voteQuestionComment(@PathVariable("id") Long id, Principal principal) {
         CommentDto comment = questionCommentService.getQuestionComment(id);
-        MemberDto member = memberService.getMember(getUsernameFromPrincipal(principal));
+        MemberDto member = memberService.getMemberByMemberId(getUsernameFromPrincipal(principal));
 
         questionCommentService.voteQuestionComment(id, member);
         return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());

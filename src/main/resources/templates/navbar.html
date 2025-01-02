@@ -17,7 +17,7 @@
 					<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/member/signup}">회원가입</a>
 				</li>
 				<li>
-					<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/}">프로필</a>
+					<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/member/detail/{id}(id=${#authentication.principal.id})}">프로필</a>
 				</li>
 			</ul>
 		</div>

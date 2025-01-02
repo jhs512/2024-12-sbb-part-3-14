@@ -54,7 +54,7 @@ public class QuestionController {
             model.addAttribute("questionForm", questionForm);
             return "question/form/create";
         }
-        MemberDto member = memberService.getMember(principal.getName());
+        MemberDto member = memberService.getMemberByMemberId(principal.getName());
         Long questionId = questionService.createQuestion(questionForm, member);
         return String.format("redirect:/question/detail/%s", questionId);
     }
@@ -122,7 +122,7 @@ public class QuestionController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/vote/{id}")
     public String voteQuestion(@PathVariable("id") Long id, Principal principal) {
-        MemberDto member = memberService.getMember(principal.getName());
+        MemberDto member = memberService.getMemberByMemberId(principal.getName());
         questionService.voteQuestion(id, member);
         return String.format("redirect:/question/detail/%s", id);
     }

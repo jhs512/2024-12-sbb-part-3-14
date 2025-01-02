@@ -25,8 +25,13 @@ public class MemberService {
         ));
     }
 
-    public MemberDto getMember(String memberId) {
+    public MemberDto getMemberByMemberId(String memberId) {
         return MemberDto.fromMember(memberRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new DataNotFoundException("Member not found")));
+    }
+
+    public MemberDto getMemberById(Long id) {
+        return MemberDto.fromMember(memberRepository.findById(id)
             .orElseThrow(() -> new DataNotFoundException("Member not found")));
     }
 }

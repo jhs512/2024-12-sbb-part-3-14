@@ -36,7 +36,7 @@ public class AnswerController {
     public String createAnswer(@PathVariable("id") Long questionId, @Valid AnswerForm answerForm,
         BindingResult bindingResult, Model model, Principal principal) {
         QuestionDto question = questionService.getQuestionWithHitsCount(questionId, 1, "");
-        MemberDto member = memberService.getMember(principal.getName());
+        MemberDto member = memberService.getMemberByMemberId(principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("question", question);
             model.addAttribute("answerForm", answerForm);
@@ -84,7 +84,7 @@ public class AnswerController {
     @GetMapping("/vote/{id}")
     public String voteAnswer(@PathVariable("id") Long answerId, Principal principal) {
         AnswerDto answer = answerService.getAnswer(answerId);
-        MemberDto member = memberService.getMember(principal.getName());
+        MemberDto member = memberService.getMemberByMemberId(principal.getName());
         answerService.voteAnswer(answerId, member);
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }

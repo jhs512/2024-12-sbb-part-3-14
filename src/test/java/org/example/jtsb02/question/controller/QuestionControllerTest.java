@@ -84,7 +84,7 @@ class QuestionControllerTest {
             .nickname("onlyTest")
             .email("onlyTest@test.com")
             .build();
-        when(memberService.getMember("onlyTest")).thenReturn(member);
+        when(memberService.getMemberByMemberId("onlyTest")).thenReturn(member);
         when(questionService.createQuestion(any(QuestionForm.class), any(MemberDto.class))).thenReturn(1L);
 
         //when
