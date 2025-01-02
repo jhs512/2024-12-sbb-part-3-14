@@ -1,6 +1,19 @@
 <!doctype html>
 <html lang="ko" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3">
+    <div class="row my-3">
+        <div class="col-6">
+            <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+        </div>
+        <div class="col-6">
+            <div class="input-group">
+                <form class="input-group" th:action="@{/questions/all}" method="get" id="searchForm">
+                    <input type="text" name="kw" id="kw" class="form-control" th:value="${kw}">
+                    <button class="btn btn-outline-secondary" type="submit" id="btn_search">찾기</button>
+                </form>
+            </div>
+        </div>
+    </div>
     <table class="table">
             <thead class="table-dark">
             <tr class="text-center">
@@ -19,7 +32,7 @@
                 </td>
                 <td><span th:if="${question.siteUser != null}" th:text="${question.siteUser.username}"></span></td>
                 <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td th:text="${question.answerCount}"></td> <!-- 답변 수 표시 -->
+                <td th:text="${question.answerList.size}"></td> <!-- 답변 수 표시 -->
             </tr>
             </tbody>
     </table>
@@ -27,11 +40,10 @@
         <div th:if="${questionPage.totalPages > 0}">
             <ul class="pagination">
                 <li class="page-item" th:each="page : ${#numbers.sequence(1, questionPage.totalPages)}">
-                    <a class="page-link" th:href="@{|/questions/all?page=${page}|}" th:text="${page}"></a>
+                    <a class="page-link" th:href="@{|/questions/all?kw=${kw}&page=${page}|}" th:text="${page}"></a>
                 </li>
             </ul>
         </div>
     </div>
-    <a th:href="@{/questions/create}" class="btn btn-primary">질문 등록하기</a>
 </div>
 </html>

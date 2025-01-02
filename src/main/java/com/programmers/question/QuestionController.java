@@ -50,12 +50,22 @@ public class QuestionController {
         return "redirect:/questions/" + question.getId();
     }
 
+//    @GetMapping("/all")
+//    public String findAllQuestions(
+//            Model model,
+//            @Valid @ModelAttribute PageRequestDto pageRequestDto) {
+//        Page<Question> questionPage = questionService.findAllQuestions(pageRequestDto);
+//        model.addAttribute("questionPage", questionPage);
+//        return "list";
+//    }
+
     @GetMapping("/all")
-    public String findAllQuestions(
-            Model model,
-            @Valid @ModelAttribute PageRequestDto pageRequestDto) {
-        Page<Question> questionPage = questionService.findAllQuestions(pageRequestDto);
+    public String list(Model model,
+                       @Valid @ModelAttribute PageRequestDto pageRequestDto,
+                       @RequestParam(value = "kw", defaultValue = "", required = false) String kw) {
+        Page<Question> questionPage = this.questionService.getList(pageRequestDto, kw);
         model.addAttribute("questionPage", questionPage);
+        model.addAttribute("kw", kw);
         return "list";
     }
 
