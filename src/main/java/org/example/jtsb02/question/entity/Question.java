@@ -21,6 +21,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.jtsb02.answer.entity.Answer;
+import org.example.jtsb02.category.entity.Category;
 import org.example.jtsb02.comment.entity.Comment;
 import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.question.dto.QuestionDto;
@@ -57,10 +58,13 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member author;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+
     @ManyToMany
     private Set<Member> voter;
 
-    public static Question of(String subject, String content, Member author) {
+    public static Question of(String subject, String content, Member author, Category category) {
         return Question.builder()
             .subject(subject)
             .content(content)
@@ -70,6 +74,7 @@ public class Question {
             .comments(new ArrayList<>())
             .author(author)
             .voter(new HashSet<>())
+            .category(category)
             .build();
     }
 

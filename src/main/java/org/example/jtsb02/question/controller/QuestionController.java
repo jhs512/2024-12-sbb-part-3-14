@@ -4,8 +4,11 @@ import static org.example.jtsb02.common.util.UserUtil.checkUserPermission;
 
 import jakarta.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.answer.form.AnswerForm;
+import org.example.jtsb02.category.dto.CategoryDto;
+import org.example.jtsb02.category.service.CategoryService;
 import org.example.jtsb02.comment.form.CommentForm;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.service.MemberService;
@@ -30,10 +33,13 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final MemberService memberService;
+    private final CategoryService categoryService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     public String createQuestion(Model model, QuestionForm questionForm) {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
         model.addAttribute("questionForm", questionForm);
         return "question/form/create";
     }
@@ -41,8 +47,11 @@ public class QuestionController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     public String createQuestion(@Valid QuestionForm questionForm, BindingResult bindingResult,
-        Principal principal) {
+        Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
+            List<CategoryDto> categories = categoryService.getAllCategories();
+            model.addAttribute("categories", categories);
+            model.addAttribute("questionForm", questionForm);
             return "question/form/create";
         }
         MemberDto member = memberService.getMember(principal.getName());
@@ -75,18 +84,24 @@ public class QuestionController {
     @GetMapping("/modify/{id}")
     public String modifyQuestion(@PathVariable("id") Long id, Model model,
         QuestionForm questionForm) {
+        List<CategoryDto> categories = categoryService.getAllCategories();
         QuestionDto question = questionService.getQuestion(id);
+        questionForm.setCategoryId(question.getCategory().getId());
         questionForm.setSubject(question.getSubject());
         questionForm.setContent(question.getContent());
         model.addAttribute("questionForm", questionForm);
+        model.addAttribute("categories", categories);
         return "question/form/modify";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String modifyQuestion(@PathVariable("id") Long id, @Valid QuestionForm questionForm,
-        BindingResult bindingResult, Principal principal) {
+        BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
+            List<CategoryDto> categories = categoryService.getAllCategories();
+            model.addAttribute("categories", categories);
+            model.addAttribute("questionForm", questionForm);
             return "question/form/modify";
         }
         QuestionDto question = questionService.getQuestion(id);

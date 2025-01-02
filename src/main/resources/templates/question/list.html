@@ -3,6 +3,9 @@
 	<div class="row my-3">
 		<div class="col-6">
 			<a th:href="@{/question/create}" class="btn btn-primary my-2">질문 등록하기</a>
+			<a th:href="@{/category/create}"
+			   th:if="${#authentication.authorities.get(0).authority == 'ROLE_ADMIN'}"
+			   class="btn btn-primary">카테고리 등록하기</a>
 		</div>
 		<div class="col-6">
 			<div class="input-group">

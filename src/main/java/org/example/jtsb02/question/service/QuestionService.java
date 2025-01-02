@@ -6,6 +6,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.repository.AnswerRepository;
+import org.example.jtsb02.category.entity.Category;
+import org.example.jtsb02.category.repository.CategoryRepository;
 import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.entity.Member;
@@ -26,11 +28,14 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final CategoryRepository categoryRepository;
 
     public Long createQuestion(QuestionForm questionForm, MemberDto memberDto) {
+        Category category = categoryRepository.findById(questionForm.getCategoryId())
+            .orElseThrow(() -> new DataNotFoundException("Category not found"));
         return questionRepository.save(
             Question.of(questionForm.getSubject(), questionForm.getContent(),
-                Member.fromMemberDto(memberDto))).getId();
+                Member.fromMemberDto(memberDto), category)).getId();
     }
 
     public Page<QuestionDto> getQuestions(int page, String kw) {
@@ -72,7 +77,10 @@ public class QuestionService {
     public void modifyQuestion(Long id, QuestionForm questionForm) {
         Question question = questionRepository.findById(id)
             .orElseThrow(() -> new DataNotFoundException("Question not found"));
+        Category category = categoryRepository.findById(questionForm.getCategoryId())
+            .orElseThrow(() -> new DataNotFoundException("Category not found"));
         questionRepository.save(question.toBuilder()
+            .category(category)
             .subject(questionForm.getSubject())
             .content(questionForm.getContent())
             .modifiedAt(LocalDateTime.now())

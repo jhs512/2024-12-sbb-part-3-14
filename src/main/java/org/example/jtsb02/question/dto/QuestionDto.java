@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.jtsb02.answer.dto.AnswerDto;
+import org.example.jtsb02.category.dto.CategoryDto;
 import org.example.jtsb02.comment.dto.CommentDto;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.question.entity.Question;
@@ -26,6 +27,7 @@ public class QuestionDto {
     private List<CommentDto> comments;
     private int answerCount;
     private MemberDto author;
+    private CategoryDto category;
     private Set<MemberDto> voter;
 
     public static QuestionDto fromQuestion(Question question) {
@@ -37,6 +39,7 @@ public class QuestionDto {
             .hits(question.getHits())
             .answerCount(question.getAnswers().size())
             .author(MemberDto.fromMember(question.getAuthor()))
+            .category(CategoryDto.fromCategory(question.getCategory()))
             .voter(question.getVoter().stream().map(MemberDto::fromMember).collect(Collectors.toSet()))
             .build();
     }
@@ -52,6 +55,7 @@ public class QuestionDto {
             .answers(answerPage)
             .comments(question.getComments().stream().map(CommentDto::QuestionCommentDtoFromComment).toList())
             .author(MemberDto.fromMember(question.getAuthor()))
+            .category(CategoryDto.fromCategory(question.getCategory()))
             .voter(question.getVoter().stream().map(MemberDto::fromMember).collect(Collectors.toSet()))
             .build();
     }
