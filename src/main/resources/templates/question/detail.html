@@ -36,6 +36,39 @@
 				   sec:authorize="isAuthenticated()"
 				   th:if="${question.author != null and #authentication.principal.getUsername() == question.author.nickname}"
 				   th:text="삭제"></a>
+				<a class="btn btn-sm btn-outline-secondary" id="toggleButton">코멘트 보기</a>
+				<div class="d-none mt-3" id="commentBox">
+
+					<!-- 코멘트 반복 시작 -->
+					<div class="card my-3" th:each="comment : ${question.comments}">
+						<a th:id="|comment_${comment.id}|"></a>
+						<div class="card-body">
+							<div class="card-text" th:utext="${@commonUtil.markdown(comment.content)}"></div>
+							<div class="d-flex justify-content-end">
+								<div th:if="${comment.modifiedAt != null}" class="badge bg-light text-dark p-2 text-start mx-3">
+									<div class="mb-2">modified at</div>
+									<div th:text="${#temporals.format(comment.modifiedAt, 'yyyy-MM-dd HH:mm')}"></div>
+								</div>
+								<div class="badge bg-light text-dark p-2 text-start">
+									<div class="mb-2">
+										<span th:if="${comment.author != null}" th:text="${comment.author.nickname}"></span>
+									</div>
+									<div th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- 코멘트 반복 끝 -->
+
+					<form th:action="@{|/comment/question/create/${question.id}|}" th:object="${commentForm}" method="post" class="my-3">
+						<div th:replace="~{form_errors :: formErrorsFragment}"></div>
+						<label for="isAnonymousComment"></label>
+						<textarea sec:authorize="isAnonymous()" id="isAnonymousComment" disabled th:field="*{content}" class="form-control"></textarea>
+						<label for="questionComment"></label>
+						<textarea class="form-control" sec:authorize="isAuthenticated()" id="questionComment" th:field="*{content}" rows="3" placeholder="코멘트를 작성하세요..."></textarea>
+						<input class="btn btn-primary mt-2 my-2" type="submit" value="코멘트 등록"></input>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -140,5 +173,9 @@
 			}
 		});
 	});
+    document.getElementById('toggleButton').addEventListener('click', function () {
+        const commentBox = document.getElementById('commentBox');
+        commentBox.classList.toggle('d-none');
+    });
 </script>
 </html>

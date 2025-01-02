@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.jtsb02.answer.dto.AnswerDto;
+import org.example.jtsb02.comment.dto.CommentDto;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.question.entity.Question;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ public class QuestionDto {
     private LocalDateTime modifiedAt;
     private int hits;
     private Page<AnswerDto> answers;
+    private List<CommentDto> comments;
     private int answerCount;
     private MemberDto author;
     private Set<MemberDto> voter;
@@ -48,6 +50,7 @@ public class QuestionDto {
             .modifiedAt(question.getModifiedAt())
             .hits(question.getHits())
             .answers(answerPage)
+            .comments(question.getComments().stream().map(CommentDto::QuestionCommentDtoFromComment).toList())
             .author(MemberDto.fromMember(question.getAuthor()))
             .voter(question.getVoter().stream().map(MemberDto::fromMember).collect(Collectors.toSet()))
             .build();

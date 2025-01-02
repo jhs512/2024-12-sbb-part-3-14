@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.answer.form.AnswerForm;
+import org.example.jtsb02.comment.form.CommentForm;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.service.MemberService;
 import org.example.jtsb02.question.dto.QuestionDto;
@@ -62,10 +63,11 @@ public class QuestionController {
     public String getQuestion(@PathVariable("id") Long id,
         @RequestParam(value = "page", defaultValue = "1") int page,
         @RequestParam(value = "sort", defaultValue = "") String sort,
-        AnswerForm answerForm, Model model) {
+        AnswerForm answerForm, CommentForm commentForm, Model model) {
         QuestionDto question = questionService.getQuestionWithHitsCount(id, page, sort);
         model.addAttribute("question", question);
         model.addAttribute("answerForm", answerForm);
+        model.addAttribute("commentForm", commentForm);
         return "question/detail";
     }
 
