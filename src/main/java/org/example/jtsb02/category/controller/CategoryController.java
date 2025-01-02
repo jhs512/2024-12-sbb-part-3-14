@@ -23,14 +23,14 @@ public class CategoryController {
     @GetMapping("/create")
     public String createCategory(CategoryForm categoryForm, Model model) {
         model.addAttribute("categoryForm", categoryForm);
-        return "category/form";
+        return "category/form/create";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public String createCategory(@Valid CategoryForm categoryForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "category/form";
+            return "category/form/create";
         }
         categoryService.createCategory(categoryForm);
         return "redirect:/";
