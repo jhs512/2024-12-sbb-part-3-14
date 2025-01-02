@@ -4,10 +4,14 @@ import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.qustion.Question;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -23,7 +27,7 @@ public class UserService {
         user.setUsername(userName);
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
-        user.setAdmin(false);
+        user.setUserRole(UserRole.USER);
         this.userRepository.save(user);
         return user;
     }
@@ -44,4 +48,15 @@ public class UserService {
         return _siteUser.get();
     }
 
+    public SiteUser whenSocialLogin(String providerTypeCode, String username){
+        SiteUser user = getSiteUser(username);
+        if (user == null) {
+            user = new SiteUser();
+            user.setUsername(username);
+            user.setProviderTypeCode(providerTypeCode);
+            user.setUserRole(UserRole.USER);
+            this.userRepository.save(user);
+        }
+        return user;
+    }
 }

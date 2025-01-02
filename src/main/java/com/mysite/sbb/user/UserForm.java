@@ -2,11 +2,13 @@ package com.mysite.sbb.user;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserForm {
 
     @NotEmpty(message="아이디는 필수항목입니다.")

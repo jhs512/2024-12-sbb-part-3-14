@@ -1,6 +1,10 @@
 <html layout:decorate="~{layout}">
 <!--와 -->
+
+
 <div layout:fragment="content" class="container my-3">
+    <div th:unless="${userName}">
+        <a th:href="@{/oauth2/authorization/google}" class="btn btn-success active" role="button">Google Login</a>
     <h2>로그인</h2>
     <form th:action="@{/user/login}" method="post" class="my-3">
         <div class="alert alert-danger" role="alert" th:if="${param.error}">

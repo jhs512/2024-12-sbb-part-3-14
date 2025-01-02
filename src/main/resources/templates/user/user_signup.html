@@ -2,7 +2,7 @@
 <!--와 -->
 <div layout:fragment="content"  class="container my-3">
   <h2>회원가입</h2>
-  <form th:action="@{|/user/create|}" th:object="${userForm}" method="post" class="my-3">
+  <form th:action="@{|/user/signup_run|}" th:object="${userForm}" method="post" class="my-3">
     <div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
       <div th:each="err : ${#fields.allErrors()}" th:text="${err}" />
     </div>

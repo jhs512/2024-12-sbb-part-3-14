@@ -5,11 +5,13 @@ import com.mysite.sbb.qustion.QuestionForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
@@ -31,7 +33,10 @@ public class UserController {
     }
     @GetMapping("/user_profile")
     public String profile(Model model,UserPasswordForm userPasswordForm,Principal principal){
+        System.out.println("sadasdasdasdsadsaasdsadsadasasd");
         SiteUser siteUser = userService.getSiteUser(principal.getName());
+        System.out.println(principal.getName());
+        System.out.println("sadasdasdasdsadsaasdsadsadasasd");
         model.addAttribute("user", siteUser );
         return "/user/user_profile";
     }
@@ -57,7 +62,7 @@ public class UserController {
         userService.changePassword(userPasswordForm.getNewpassword(),siteUser);
         return "/user/user_profile";
     }
-    @PostMapping("/create")
+    @PostMapping("/signup_run")
     public String createUser(@Valid UserForm userForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/user/user_signup";
@@ -80,4 +85,7 @@ public class UserController {
         }
         return "redirect:/question/list/1";
     }
+
+
+
 }
