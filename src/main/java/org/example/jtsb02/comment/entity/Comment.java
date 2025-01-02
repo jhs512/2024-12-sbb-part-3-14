@@ -64,7 +64,6 @@ public class Comment {
         return Comment.builder()
             .content(content)
             .createdAt(LocalDateTime.now())
-            .question(answer.getQuestion())
             .answer(answer)
             .author(author)
             .voter(new HashSet<>())

@@ -65,13 +65,10 @@
 								<a th:href="@{|/comment/question/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
 								   th:if="${(comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.memberId)}"
 								   th:text="수정"></a>
-<!--								<a href="javascript:void(0);" th:data-uri="@{|/comment/question/delete/${comment.id}|}"-->
-<!--								   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"-->
-<!--								   th:if="${(comment.author != null and #authentication.getPrincipal() instanceof T(org.example.jtsb01.user.model.CustomUserDetails)-->
-<!--								        and #authentication.getPrincipal().getUsername() == comment.author.nickname)-->
-<!--								   or (comment.author != null and #authentication.getPrincipal() instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)-->
-<!--								        and #authentication.getPrincipal().attributes.name == comment.author.nickname)}"-->
-<!--								   th:text="삭제"></a>-->
+								<a href="javascript:void(0);" th:data-uri="@{|/comment/question/delete/${comment.id}|}"
+								   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+								   th:if="${(comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.memberId)}"
+								   th:text="삭제"></a>
 							</div>
 						</div>
 					</div>
@@ -168,13 +165,10 @@
 								<a th:href="@{|/comment/answer/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
 								   th:if="${(comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.memberId)}"
 								   th:text="수정"></a>
-<!--								<a href="javascript:void(0);" th:data-uri="@{|/comment/answer/delete/${comment.id}|}"-->
-<!--								   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"-->
-<!--								   th:if="${(comment.author != null and #authentication.getPrincipal() instanceof T(org.example.jtsb01.user.model.CustomUserDetails)-->
-<!--								        and #authentication.getPrincipal().getUsername() == comment.author.nickname)-->
-<!--								   or (comment.author != null and #authentication.getPrincipal() instanceof T(org.springframework.security.oauth2.core.user.DefaultOAuth2User)-->
-<!--								        and #authentication.getPrincipal().attributes.name == comment.author.nickname)}"-->
-<!--								   th:text="삭제"></a>-->
+								<a href="javascript:void(0);" th:data-uri="@{|/comment/answer/delete/${comment.id}|}"
+								   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+								   th:if="${(comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.memberId)}"
+								   th:text="삭제"></a>
 							</div>
 						</div>
 					</div>

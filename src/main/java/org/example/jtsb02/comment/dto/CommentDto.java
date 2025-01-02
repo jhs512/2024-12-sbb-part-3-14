@@ -41,8 +41,9 @@ public class CommentDto {
             .content(comment.getContent())
             .createdAt(comment.getCreatedAt())
             .modifiedAt(comment.getModifiedAt())
-            .question(QuestionDto.builder().id(comment.getQuestion().getId()).build())
-            .answer(AnswerDto.builder().id(comment.getAnswer().getId()).build())
+            .answer(AnswerDto.builder().id(comment.getAnswer().getId())
+                .question(QuestionDto.builder().id(comment.getAnswer().getQuestion().getId()).build())
+                .build())
             .author(MemberDto.fromMember(comment.getAuthor()))
             .voter(comment.getVoter().stream().map(MemberDto::fromMember).collect(Collectors.toSet()))
             .build();

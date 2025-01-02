@@ -34,7 +34,7 @@ public class AnswerCommentController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
-    public String createQuestionComment(@PathVariable("id") Long id, @Valid CommentForm commentForm,
+    public String createAnswerComment(@PathVariable("id") Long id, @Valid CommentForm commentForm,
         BindingResult bindingResult, Model model, Principal principal) {
         AnswerDto answer = answerService.getAnswer(id);
         QuestionDto question = answer.getQuestion();
@@ -70,6 +70,17 @@ public class AnswerCommentController {
         checkUserPermission(username, comment.getAuthor().getMemberId(), "수정");
 
         answerCommentService.modifyAnswerComment(id, commentForm);
-        return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());
+        return String.format("redirect:/question/detail/%s", comment.getAnswer().getQuestion().getId());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/delete/{id}")
+    public String deleteAnswerComment(@PathVariable("id") Long id, Principal principal) {
+        String username = getUsernameFromPrincipal(principal);
+        CommentDto comment = answerCommentService.getAnswerComment(id);
+        checkUserPermission(username, comment.getAuthor().getMemberId(), "삭제");
+
+        answerCommentService.deleteAnswerComment(id);
+        return String.format("redirect:/question/detail/%s", comment.getAnswer().getQuestion().getId());
     }
 }

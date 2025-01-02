@@ -35,4 +35,8 @@ public class AnswerCommentService {
     public void modifyAnswerComment(Long commentId, CommentForm CommentForm) {
         commentService.modifyComment(commentId, CommentForm);
     }
+
+    public void deleteAnswerComment(Long commentId) {
+        commentService.deleteComment(commentId);
+    }
 }
