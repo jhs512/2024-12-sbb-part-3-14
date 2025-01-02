@@ -1,7 +1,6 @@
 package org.example.jtsb02.category.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.category.dto.CategoryDto;
 import org.example.jtsb02.category.entity.Category;
