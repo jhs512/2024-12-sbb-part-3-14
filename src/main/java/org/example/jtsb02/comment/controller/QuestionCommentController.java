@@ -81,4 +81,14 @@ public class QuestionCommentController {
         questionCommentService.deleteQuestionComment(id);
         return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String voteQuestionComment(@PathVariable("id") Long id, Principal principal) {
+        CommentDto comment = questionCommentService.getQuestionComment(id);
+        MemberDto member = memberService.getMember(getUsernameFromPrincipal(principal));
+
+        questionCommentService.voteQuestionComment(id, member);
+        return String.format("redirect:/question/detail/%s", comment.getQuestion().getId());
+    }
 }

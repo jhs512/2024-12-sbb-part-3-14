@@ -58,7 +58,7 @@ public class Question {
     private Member author;
 
     @ManyToMany
-    Set<Member> voter;
+    private Set<Member> voter;
 
     public static Question of(String subject, String content, Member author) {
         return Question.builder()

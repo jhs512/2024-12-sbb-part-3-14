@@ -6,6 +6,9 @@ import org.example.jtsb02.comment.entity.Comment;
 import org.example.jtsb02.comment.form.CommentForm;
 import org.example.jtsb02.comment.repository.CommentRepository;
 import org.example.jtsb02.common.exception.DataNotFoundException;
+import org.example.jtsb02.member.dto.MemberDto;
+import org.example.jtsb02.member.entity.Member;
+import org.example.jtsb02.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
 
     public void modifyComment(Long commentId, CommentForm commentForm) {
         Comment comment = commentRepository.findById(commentId)
@@ -25,5 +29,19 @@ public class CommentService {
 
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
+    }
+
+    public void voteComment(Long commentId, MemberDto memberDto) {
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new DataNotFoundException("comment not found"));
+        Member member = memberRepository.findById(memberDto.getId())
+            .orElseThrow(() -> new DataNotFoundException("member not found"));
+
+        if (comment.getVoter().contains(member)) {
+            comment.getVoter().remove(member);
+        } else {
+            comment.getVoter().add(member);
+        }
+        commentRepository.save(comment);
     }
 }

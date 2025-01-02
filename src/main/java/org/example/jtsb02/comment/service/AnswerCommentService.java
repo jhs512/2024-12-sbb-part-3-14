@@ -39,4 +39,8 @@ public class AnswerCommentService {
     public void deleteAnswerComment(Long commentId) {
         commentService.deleteComment(commentId);
     }
+
+    public void voteAnswerComment(Long commentId, MemberDto memberDto) {
+        commentService.voteComment(commentId, memberDto);
+    }
 }
