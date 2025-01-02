@@ -53,6 +53,7 @@ public class QuestionDto {
             .modifiedAt(question.getModifiedAt())
             .hits(question.getHits())
             .answers(answerPage)
+            .answerCount(question.getAnswers().size())
             .comments(question.getComments().stream().map(CommentDto::QuestionCommentDtoFromComment).toList())
             .author(MemberDto.fromMember(question.getAuthor()))
             .category(CategoryDto.fromCategory(question.getCategory()))

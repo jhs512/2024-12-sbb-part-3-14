@@ -1,5 +1,6 @@
 package org.example.jtsb02.question.controller;
 
+import static org.example.util.TestHelper.createCategory;
 import static org.example.util.TestHelper.generateStringOfLength;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -13,6 +14,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.List;
+import java.util.stream.Stream;
+import org.example.jtsb02.category.dto.CategoryDto;
+import org.example.jtsb02.category.entity.Category;
+import org.example.jtsb02.category.service.CategoryService;
 import org.example.jtsb02.common.security.SecurityConfig;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.service.MemberService;
@@ -43,12 +49,18 @@ class QuestionControllerTest {
     @MockitoBean
     private MemberService memberService;
 
+    @MockitoBean
+    private CategoryService categoryService;
+
     @Test
     @DisplayName("GET /question/create - Question 생성 폼이동")
     @WithMockUser
     void createQuestionForm() throws Exception {
         //given
         String url = "/question/create";
+        Category category = createCategory();
+        List<CategoryDto> categories = Stream.of(category).map(CategoryDto::fromCategory).toList();
+        when(categoryService.getAllCategories()).thenReturn(categories);
 
         //when
         ResultActions result = mockMvc.perform(get(url));
@@ -56,7 +68,8 @@ class QuestionControllerTest {
         //then
         result.andExpect(status().isOk())
             .andExpect(view().name("question/form/create"))
-            .andExpect(model().attributeExists("questionForm"));
+            .andExpect(model().attributeExists("questionForm"))
+            .andExpect(model().attribute("categories", categories));
     }
 
     @Test
@@ -78,6 +91,7 @@ class QuestionControllerTest {
         ResultActions result = mockMvc.perform(post(url)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
+            .param("categoryId", "1")
             .param("subject", "제목")
             .param("content", "내용"));
 
@@ -131,6 +145,7 @@ class QuestionControllerTest {
         return mockMvc.perform(post("/question/create")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .with(csrf())
+            .param("categoryId", "1")
             .param("subject", subject)
             .param("content", content));
     }

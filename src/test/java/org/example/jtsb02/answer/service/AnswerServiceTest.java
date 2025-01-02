@@ -3,6 +3,7 @@ package org.example.jtsb02.answer.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.example.util.TestHelper.createAnswer;
 import static org.example.util.TestHelper.createAnswerForm;
+import static org.example.util.TestHelper.createCategory;
 import static org.example.util.TestHelper.createMember;
 import static org.example.util.TestHelper.createQuestion;
 import static org.example.util.TestHelper.createQuestionForm;
@@ -16,6 +17,7 @@ import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.answer.repository.AnswerRepository;
+import org.example.jtsb02.category.entity.Category;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.repository.QuestionRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +45,8 @@ class AnswerServiceTest {
     @DisplayName("답변 등록")
     void createAnswerTest() {
         //given
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Category category = createCategory();
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         AnswerForm answerForm = createAnswerForm("answer content");
         Answer answer = createAnswer(answerForm, question);
         when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
@@ -60,7 +63,8 @@ class AnswerServiceTest {
     @DisplayName("답변 조회")
     void getAnswerTest() {
         //given
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Category category = createCategory();
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         AnswerForm answerForm = createAnswerForm("answer content");
         Answer answer = createAnswer(answerForm, question);
 
@@ -80,7 +84,8 @@ class AnswerServiceTest {
     @DisplayName("답변 수정")
     void modifyAnswerTest() {
         //given
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Category category = createCategory();
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         AnswerForm answerForm = createAnswerForm("answer content");
         AnswerForm modifyForm = createAnswerForm("modify content");
         Answer answer = createAnswer(answerForm, question);
@@ -103,7 +108,8 @@ class AnswerServiceTest {
     @DisplayName("답변 삭제")
     void deleteAnswerTest() {
         //given
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Category category = createCategory();
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         AnswerForm answerForm = createAnswerForm("answer content");
         Answer answer = createAnswer(answerForm, question);
 

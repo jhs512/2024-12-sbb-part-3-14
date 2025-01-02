@@ -2,6 +2,7 @@ package org.example.jtsb02.answer.controller;
 
 import static org.example.util.TestHelper.createAnswer;
 import static org.example.util.TestHelper.createAnswerForm;
+import static org.example.util.TestHelper.createCategory;
 import static org.example.util.TestHelper.createMember;
 import static org.example.util.TestHelper.createQuestion;
 import static org.example.util.TestHelper.createQuestionForm;
@@ -26,6 +27,7 @@ import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.answer.service.AnswerService;
+import org.example.jtsb02.category.entity.Category;
 import org.example.jtsb02.common.security.SecurityConfig;
 import org.example.jtsb02.common.util.CommonUtil;
 import org.example.jtsb02.member.dto.MemberDto;
@@ -82,10 +84,11 @@ class AnswerControllerTest {
         //given
         String url = "/answer/create/1";
         MemberDto member = createMember();
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Category category = createCategory();
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         List<AnswerDto> answers = new ArrayList<>();
         Page<AnswerDto> answerPage = new PageImpl<>(answers);
-        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question, answerPage));
+        when(questionService.getQuestionWithHitsCount(1L, 1, "")).thenReturn(QuestionDto.fromQuestion(question, answerPage));
         when(memberService.getMember("onlyTest")).thenReturn(member);
         when(answerService.createAnswer(eq(1L), any(AnswerForm.class), eq(member))).thenReturn(1L);
 
@@ -110,11 +113,12 @@ class AnswerControllerTest {
         //given
         String url = "/answer/create/1";
         MemberDto member = createMember();
+        Category category = createCategory();
         when(memberService.getMember("onlyTest")).thenReturn(member);
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         List<AnswerDto> answers = new ArrayList<>();
         Page<AnswerDto> answerPage = new PageImpl<>(answers);
-        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question, answerPage));
+        when(questionService.getQuestionWithHitsCount(1L, 1, "")).thenReturn(QuestionDto.fromQuestion(question, answerPage));
 
         //when
         ResultActions result = mockMvc.perform(post(url)
@@ -136,11 +140,12 @@ class AnswerControllerTest {
         //given
         String url = "/answer/create/1";
         MemberDto member = createMember();
+        Category category = createCategory();
         when(memberService.getMember("onlyTest")).thenReturn(member);
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         List<AnswerDto> answers = new ArrayList<>();
         Page<AnswerDto> answerPage = new PageImpl<>(answers);
-        when(questionService.getQuestion(1L)).thenReturn(QuestionDto.fromQuestion(question, answerPage));
+        when(questionService.getQuestionWithHitsCount(1L, 1, "")).thenReturn(QuestionDto.fromQuestion(question, answerPage));
 
         //when
         ResultActions result = mockMvc.perform(post(url)
@@ -161,7 +166,8 @@ class AnswerControllerTest {
     void modifyAnswerFormTest() throws Exception {
         //given
         String url = "/answer/modify/1";
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Category category = createCategory();
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         Answer answer = createAnswer(createAnswerForm("test content"), question);
         when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
 
@@ -181,7 +187,8 @@ class AnswerControllerTest {
     void modifyAnswerTest() throws Exception {
         //given
         String url = "/answer/modify/1";
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Category category = createCategory();
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         Answer answer = createAnswer(createAnswerForm("test content"), question);
         when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
 
@@ -204,7 +211,8 @@ class AnswerControllerTest {
     void deleteAnswerTest() throws Exception {
         //given
         String url = "/answer/delete/1";
-        Question question = createQuestion(1L, createQuestionForm("test subject", "test content"));
+        Category category = createCategory();
+        Question question = createQuestion(1L, createQuestionForm(1L, "test subject", "test content"), category);
         Answer answer = createAnswer(createAnswerForm("test content"), question);
         when(answerService.getAnswer(1L)).thenReturn(AnswerDto.fromAnswer(answer));
 

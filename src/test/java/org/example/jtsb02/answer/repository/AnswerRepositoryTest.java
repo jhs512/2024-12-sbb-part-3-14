@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import org.example.jtsb02.answer.entity.Answer;
+import org.example.jtsb02.category.entity.Category;
+import org.example.jtsb02.category.repository.CategoryRepository;
 import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.member.repository.MemberRepository;
@@ -26,6 +28,9 @@ class AnswerRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @Test
     @DisplayName("답변 등록")
     void save() {
@@ -36,8 +41,9 @@ class AnswerRepositoryTest {
             "onlyTest",
             "onlyTest@gmail.com")
         );
+        Category category = categoryRepository.save(Category.of("질문답변"));
         Question question = questionRepository.save(
-            Question.of("question subject", "question content", member));
+            Question.of("question subject", "question content", member, category));
         Answer answer = Answer.of("test content", question, member);
 
 
@@ -61,8 +67,9 @@ class AnswerRepositoryTest {
             "onlyTest",
             "onlyTest@gmail.com")
         );
+        Category category = categoryRepository.save(Category.of("질문답변"));
         Question question = questionRepository.save(
-            Question.of("question subject", "question content", member));
+            Question.of("question subject", "question content", member, category));
         Answer answer = answerRepository.save(Answer.of("answer content", question, member));
 
         //when
@@ -88,8 +95,9 @@ class AnswerRepositoryTest {
             "onlyTest",
             "onlyTest@gmail.com")
         );
+        Category category = categoryRepository.save(Category.of("질문답변"));
         Question question = questionRepository.save(
-            Question.of("question subject", "question content", member));
+            Question.of("question subject", "question content", member, category));
         Answer answer = answerRepository.save(Answer.of("answer content", question, member));
 
         //when

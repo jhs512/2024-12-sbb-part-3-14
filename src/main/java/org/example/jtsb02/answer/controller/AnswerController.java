@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.answer.service.AnswerService;
+import org.example.jtsb02.comment.form.CommentForm;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.service.MemberService;
 import org.example.jtsb02.question.dto.QuestionDto;
@@ -34,10 +35,12 @@ public class AnswerController {
     @PostMapping("/create/{id}")
     public String createAnswer(@PathVariable("id") Long questionId, @Valid AnswerForm answerForm,
         BindingResult bindingResult, Model model, Principal principal) {
-        QuestionDto question = questionService.getQuestion(questionId);
+        QuestionDto question = questionService.getQuestionWithHitsCount(questionId, 1, "");
         MemberDto member = memberService.getMember(principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("question", question);
+            model.addAttribute("answerForm", answerForm);
+            model.addAttribute("commentForm", new CommentForm());
             return "question/detail";
         }
         Long answerId = answerService.createAnswer(questionId, answerForm, member);

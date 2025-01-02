@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.example.jtsb02.category.entity.Category;
+import org.example.jtsb02.category.repository.CategoryRepository;
 import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.member.repository.MemberRepository;
@@ -24,6 +26,9 @@ class QuestionRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @Test
     @DisplayName("질문 등록")
     void save() {
@@ -34,7 +39,8 @@ class QuestionRepositoryTest {
             "onlyTest",
             "onlyTest@gmail.com")
         );
-        Question question = Question.of("제목1", "내용1", member);
+        Category category = categoryRepository.save(Category.of("질문답변"));
+        Question question = Question.of("제목1", "내용1", member, category);
 
         //when
         Question save = questionRepository.save(question);
@@ -58,8 +64,9 @@ class QuestionRepositoryTest {
             "onlyTest",
             "onlyTest@gmail.com")
         );
-        Question question1 = Question.of("제목1", "내용1", member);
-        Question question2 = Question.of("제목2", "내용2", member);
+        Category category = categoryRepository.save(Category.of("질문답변"));
+        Question question1 = Question.of("제목1", "내용1", member, category);
+        Question question2 = Question.of("제목2", "내용2", member, category);
         questionRepository.save(question1);
         questionRepository.save(question2);
 
@@ -86,7 +93,8 @@ class QuestionRepositoryTest {
             "onlyTest",
             "onlyTest@gmail.com")
         );
-        Question question = Question.of("제목1", "내용1", member);
+        Category category = categoryRepository.save(Category.of("질문답변"));
+        Question question = Question.of("제목1", "내용1", member, category);
         questionRepository.save(question);
 
         //when
@@ -110,7 +118,8 @@ class QuestionRepositoryTest {
             "onlyTest",
             "onlyTest@gmail.com")
         );
-        Question question = Question.of("제목1", "내용1", member);
+        Category category = categoryRepository.save(Category.of("질문답변"));
+        Question question = Question.of("제목1", "내용1", member, category);
         questionRepository.save(question);
 
         //when
@@ -140,7 +149,8 @@ class QuestionRepositoryTest {
             "onlyTest",
             "onlyTest@gmail.com")
         );
-        Question question = Question.of("제목1", "내용1", member);
+        Category category = categoryRepository.save(Category.of("질문답변"));
+        Question question = Question.of("제목1", "내용1", member, category);
         questionRepository.save(question);
 
         //when

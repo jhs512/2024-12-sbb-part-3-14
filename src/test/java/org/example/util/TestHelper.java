@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import org.example.jtsb02.answer.entity.Answer;
 import org.example.jtsb02.answer.form.AnswerForm;
+import org.example.jtsb02.category.entity.Category;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.member.form.MemberForm;
@@ -13,16 +14,25 @@ import org.example.jtsb02.question.form.QuestionForm;
 
 public class TestHelper {
 
-    public static QuestionForm createQuestionForm(String subject, String content) {
+    public static Category createCategory() {
+        return Category.builder()
+            .id(1L)
+            .name("질문답변")
+            .build();
+    }
+
+    public static QuestionForm createQuestionForm(Long categoryId, String subject, String content) {
         QuestionForm questionForm = new QuestionForm();
+        questionForm.setCategoryId(categoryId);
         questionForm.setSubject(subject);
         questionForm.setContent(content);
         return questionForm;
     }
 
-    public static Question createQuestion(Long id, QuestionForm questionForm) {
+    public static Question createQuestion(Long id, QuestionForm questionForm, Category category) {
         return Question.builder()
             .id(id)
+            .category(category)
             .subject(questionForm.getSubject())
             .content(questionForm.getContent())
             .createdAt(LocalDateTime.now())
@@ -36,6 +46,7 @@ public class TestHelper {
                 .email("onlyTest@gmail.com")
                 .build())
             .voter(new HashSet<>())
+            .comments(new ArrayList<>())
             .build();
     }
 
@@ -74,6 +85,7 @@ public class TestHelper {
                 .email("onlyTest@gmail.com")
                 .build())
             .voter(new HashSet<>())
+            .comments(new ArrayList<>())
             .build();
     }
 

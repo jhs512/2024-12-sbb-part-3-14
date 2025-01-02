@@ -6,6 +6,7 @@ import static org.example.jtsb02.common.util.UserUtil.getUsernameFromPrincipal;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
+import org.example.jtsb02.answer.form.AnswerForm;
 import org.example.jtsb02.comment.dto.CommentDto;
 import org.example.jtsb02.comment.form.CommentForm;
 import org.example.jtsb02.comment.service.QuestionCommentService;
@@ -35,9 +36,11 @@ public class QuestionCommentController {
     @PostMapping("/create/{id}")
     public String createQuestionComment(@PathVariable("id") Long id, @Valid CommentForm commentForm,
         BindingResult bindingResult, Model model, Principal principal) {
-        QuestionDto question = questionService.getQuestion(id);
+        QuestionDto question = questionService.getQuestionWithHitsCount(id, 1, "");
         if(bindingResult.hasErrors()) {
             model.addAttribute("question", question);
+            model.addAttribute("answerForm", new AnswerForm());
+            model.addAttribute("commentForm", commentForm);
             return "question/detail";
         }
         String memberId = getUsernameFromPrincipal(principal);
