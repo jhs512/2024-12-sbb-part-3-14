@@ -19,9 +19,9 @@
 		</div>
 	</div>
 	<div class="row my-3">
-		<h4>질문 목록</h4>
+		<h4>답변 목록</h4>
 		<div class="col-6">
-			<a th:href="@{/answer/list}" class="btn btn-primary my-2">답변 목록</a>
+			<a th:href="@{/question/list}" class="btn btn-primary my-2">질문 목록</a>
 			<a th:href="@{/comment/list}" class="btn btn-primary my-2">댓글 목록</a>
 		</div>
 	</div>
@@ -29,25 +29,26 @@
 		<thead class="table-dark">
 		<tr>
 			<th>번호</th>
-			<th style="width:50%">제목</th>
+			<th style="width:50%">내용</th>
 			<th>작성자</th>
 			<th>작성일시</th>
-			<th>조회수</th>
+			<th>질문번호</th>
 		</tr>
 		</thead>
 		<tbody>
-		<tr th:each="question, loop : ${paging}">
+		<tr th:each="comment, loop : ${paging}">
 			<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
 			<td>
-				<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+				<a th:href="@{|/question/detail/${comment.question != null ? comment.question.getId() : comment.answer.question.id}|}"
+				   th:text="${comment.content}"></a>
 				<span class="text-danger small ms-2"
-				      th:if="${question.answerCount > 0}"
-				      th:text="${question.answerCount}">
-                </span>
+				      th:if="${comment.getVoter().size() > 0}"
+				      th:text="${comment.getVoter().size()}">
+				</span>
 			</td>
-			<td th:text="${question.author.nickname}"></td>
-			<td th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
-			<td th:text="${question.hits}"></td>
+			<td th:text="${comment.author.nickname}"></td>
+			<td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+			<td th:text="${comment.question != null ? comment.question.id : comment.answer.question.id}"></td>
 		</tr>
 		</tbody>
 	</table>
@@ -73,24 +74,30 @@
 		</ul>
 	</div>
 	<!-- 페이징처리 끝 -->
+
+	<!-- 페이지 이동 폼 -->
+	<form th:action="@{/comment/list}" method="get" id="pageForm">
+		<input type="hidden" id="page" name="page" th:value="${paging.number}">
+	</form>
+
+	<!-- 검색 폼 -->
 	<form th:action="@{/question/list}" method="get" id="searchForm">
 		<input type="hidden" id="kw" name="kw" th:value="${kw}">
-		<input type="hidden" id="page" name="page" th:value="${paging.number}">
 	</form>
 </div>
 <script layout:fragment="script" type='text/javascript'>
-	const page_elements = document.getElementsByClassName("page-link");
-	Array.from(page_elements).forEach(function(element) {
-		element.addEventListener('click', function() {
-			document.getElementById('page').value = this.dataset.page;
-			document.getElementById('searchForm').submit();
-		});
-	});
-	const btn_search = document.getElementById("btn_search");
-	btn_search.addEventListener('click', function() {
-		document.getElementById('kw').value = document.getElementById('search_kw').value;
-		document.getElementById('page').value = 1;
-		document.getElementById('searchForm').submit();
-	});
+  const page_elements = document.getElementsByClassName("page-link");
+  Array.from(page_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+      document.getElementById('page').value = this.dataset.page;
+      document.getElementById('pageForm').submit();
+    });
+  });
+  const btn_search = document.getElementById("btn_search");
+  btn_search.addEventListener('click', function() {
+    document.getElementById('kw').value = document.getElementById('search_kw').value;
+    document.getElementById('page').value = 1;
+    document.getElementById('searchForm').submit();
+  });
 </script>
 </html>
