@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <!-- SimpleMDE CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
     <title>This is layout</title>
 </head>
 <body>
@@ -18,10 +20,19 @@
 </th:block>
 <!-- 기본 템플릿 안에 삽입될 내용 End -->
 <!-- Bootstrap JS -->
-<!--<script th:src="@{/bootstrap.min.js}"></script>-->
 <script th:src="@{/bootstrap.bundle.min.js}"></script>
+
+<!-- SimpleMDE JS -->
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
 <!-- 자바스크립트 Start -->
-<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="script">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            new SimpleMDE({ element: document.getElementById("content") });
+        });
+    </script>
+</th:block>
 <!-- 자바스크립트 End -->
 </body>
 </html>
