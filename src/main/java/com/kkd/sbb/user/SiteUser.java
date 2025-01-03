@@ -1,12 +1,14 @@
 package com.kkd.sbb.user;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class SiteUser {
 
     @Id
@@ -18,6 +20,15 @@ public class SiteUser {
 
     private String password;
 
-    @Column(unique = true)
+//    @Column(unique = true)
     private String email;
+
+    private String registerId;
+
+    @Builder
+    public SiteUser(String username, String email){
+        this.username = username;
+        this.email = email;
+    }
+
 }
