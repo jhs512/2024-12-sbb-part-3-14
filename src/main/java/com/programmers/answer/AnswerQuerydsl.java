@@ -1,24 +1,23 @@
 package com.programmers.answer;
 
+import com.programmers.page.PageableUtils;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.QQuestion;
 import com.programmers.recommend.answerRecommend.QARecommend;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import static com.querydsl.core.types.dsl.Wildcard.count;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Repository
 @Transactional
@@ -27,40 +26,48 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private final QQuestion q = QQuestion.question;
     private final QARecommend rec = QARecommend.aRecommend;
 
+    private static final int DEFAULT_PAGE_SIZE = 5;
+    private static final String DEFAULT_SORT_FILED = "id";
+
     public AnswerQuerydsl() {
         super(Answer.class);
     }
 
     public Page<Answer> getAnswerPage(Long questionId, PageRequestDto pageRequestDto) {
-        return Page.empty();
+        Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
+
+        Long totalElements = Objects.requireNonNull(from(a)
+                .select(count)
+                .innerJoin(a.question, q)
+                .where(q.id.eq(questionId))
+                .fetchOne());
+
+        List<Answer> content = getAnswerList(questionId, pageRequestDto);
+        return new PageImpl<>(content, pageable, totalElements);
     }
 
     private List<Answer> getAnswerList(Long questionId, PageRequestDto pageRequestDto) {
-        List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageRequestDto);
+
+        Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
+        List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageable);
         return from(a)
-                .join(q)
+                .select(a)
+                .innerJoin(q)
                 .on(a.question.eq(q))
                 .where(q.id.eq(questionId))
-                .offset(1)
-                .limit(1)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(orderSpecifiers.toArray(new OrderSpecifier<?>[0]))
                 .fetch();
     }
 
-    private List<OrderSpecifier<?>> getOrderSpecifierList(PageRequestDto pageRequestDto) {
-        Map<String, Boolean> filters = pageRequestDto.filters();
-        if (filters.isEmpty()){
-            return List.of();
-        }
+    private List<OrderSpecifier<?>> getOrderSpecifierList(Pageable pageable) {
         List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
-        for (Map.Entry<String, Boolean> entry : filters.entrySet()) {
-            String key = entry.getKey();
-            Boolean desc = entry.getValue();
-            Order orderDirect = Order.ASC;
-            if (!desc) {
-                orderDirect = Order.DESC;
-            }
-            orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + key)));
-        }
+        pageable.getSort().forEach(order -> {
+            String property = order.getProperty();
+            Order orderDirect = order.isDescending() ? Order.DESC : Order.ASC;
+            orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + property)));
+        });
         return orderSpecifierList;
     }
 }
