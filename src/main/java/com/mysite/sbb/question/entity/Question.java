@@ -18,11 +18,13 @@ public class Question extends BaseEntityVoter {
     @Column(length = 200)
     private String subject;
 
+    @Column(nullable = true)
+    private Integer viewCounter;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 
     @ManyToOne
     private Category category;
 
-    private int viewCounter;
 }

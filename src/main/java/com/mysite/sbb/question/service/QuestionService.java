@@ -84,6 +84,7 @@ public class QuestionService {
         question.setCreateDate(LocalDateTime.now());
         question.setAuthor(author);
         question.setCategory(category);
+        question.setViewCounter(0);
         this.questionRepository.save(question);
         return question;
     }

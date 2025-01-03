@@ -19,4 +19,14 @@ public class SiteUser extends BaseEntityId {
 
     @Column(unique = true)
     private String email;
+
+    private String registrationId;
+
+    public SiteUser(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
+    public SiteUser() {
+    }
 }

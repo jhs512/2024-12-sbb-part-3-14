@@ -15,6 +15,7 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -93,5 +94,23 @@ public class UserService {
         }
 
         return password.toString();
+    }
+
+    @Transactional
+    public SiteUser socialLogin(String registrationId, String name, String email) {
+        Optional<SiteUser> siteUserOptional = this.userRepository.findByusername(name + "(OAuth)");
+
+        if(siteUserOptional.isPresent()){
+            return siteUserOptional.get();
+        }
+
+        SiteUser user = new SiteUser();
+        user.setRegistrationId(registrationId);
+        user.setUsername(name + "(OAuth)");
+        user.setEmail(email);
+        user.setPassword("");
+        this.userRepository.save(user);
+
+        return user;
     }
 }

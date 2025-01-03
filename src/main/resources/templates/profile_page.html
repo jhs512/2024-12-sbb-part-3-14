@@ -8,8 +8,13 @@
                     <strong>이메일:</strong> <span th:text="${siteUser.email}">사용자 이메일</span>
                 </p>
                 <p>
-                    <a th:href="@{/user/changeEmail/{username}(username=${siteUser.username})}" class="btn btn-link">이메일 변경</a>
-                    <a th:href="@{/user/changePassword/{username}(username=${siteUser.username})}" class="btn btn-link">비밀번호 변경</a>
+                    <!-- 소셜 로그인 사용자가 아닌 경우에만 링크를 표시 -->
+                    <a th:if="${not #strings.endsWith(siteUser.username, '(OAuth)')}"
+                       th:href="@{/user/changeEmail/{username}(username=${siteUser.username})}"
+                       class="btn btn-link">이메일 변경</a>
+                    <a th:if="${not #strings.endsWith(siteUser.username, '(OAuth)')}"
+                       th:href="@{/user/changePassword/{username}(username=${siteUser.username})}"
+                       class="btn btn-link">비밀번호 변경</a>
                 </p>
 
                 <!-- 작성한 게시물 -->
