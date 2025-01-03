@@ -3,10 +3,12 @@ package com.programmers.answer;
 import com.programmers.page.PageableUtils;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.QQuestion;
+import com.programmers.question.Question;
 import com.programmers.recommend.answerRecommend.QARecommend;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import java.util.Objects;
 
 @Repository
 @Transactional
+@Slf4j
 public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private final QAnswer a = QAnswer.answer;
     private final QQuestion q = QQuestion.question;
@@ -33,20 +36,20 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
         super(Answer.class);
     }
 
-    public Page<Answer> getAnswerPage(Long questionId, PageRequestDto pageRequestDto) {
+    public Page<Answer> getAnswerPage(Question question, PageRequestDto pageRequestDto) {
         Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
 
-        Long totalElements = Objects.requireNonNull(from(a)
-                .select(count)
-                .innerJoin(a.question, q)
-                .where(q.id.eq(questionId))
-                .fetchOne());
-
-        List<Answer> content = getAnswerList(questionId, pageRequestDto);
+        long totalElements =
+                from(a)
+                        .leftJoin(a.question, q)
+                        .on(a.question.id.eq(q.id))
+                        .where(q.id.eq(question.getId()))
+                        .fetchCount();
+        List<Answer> content = getAnswerList(question, pageRequestDto);
         return new PageImpl<>(content, pageable, totalElements);
     }
 
-    private List<Answer> getAnswerList(Long questionId, PageRequestDto pageRequestDto) {
+    private List<Answer> getAnswerList(Question question, PageRequestDto pageRequestDto) {
 
         Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
         List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageable);
@@ -54,7 +57,7 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                 .select(a)
                 .innerJoin(q)
                 .on(a.question.eq(q))
-                .where(q.id.eq(questionId))
+                .where(q.eq(question))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(orderSpecifiers.toArray(new OrderSpecifier<?>[0]))

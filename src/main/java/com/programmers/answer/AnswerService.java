@@ -21,8 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AnswerService {
     private final AnswerRepository answerRepository;
+    private final AnswerQuerydsl answerQuerydsl;
     private final QuestionRepository questionRepository;
     private final SiteUserRepository siteUserRepository;
+
 
     private static final int DEFAULT_PAGE_SIZE = 5;
     private static final String DEFAULT_SORT_FILED = "id";
@@ -54,6 +56,7 @@ public class AnswerService {
     }
 
     public Page<Answer> getAnswers(Question question, PageRequestDto pageRequestDto) {
-        return answerRepository.findByQuestion(question, PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED));
+        return answerQuerydsl.getAnswerPage(question, pageRequestDto);
+//        return answerRepository.findByQuestion(question, PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED));
     }
 }
