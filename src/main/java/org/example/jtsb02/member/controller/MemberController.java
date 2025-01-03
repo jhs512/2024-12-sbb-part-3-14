@@ -80,7 +80,7 @@ public class MemberController {
         @RequestParam(value = "answerPage", defaultValue = "1") int answerPage, Model model) {
 
         MemberDto member = memberService.getMemberById(id);
-        Page<QuestionDto> question = questionService.getQuestionByAuthorId(id, questionPage);
+        Page<QuestionDto> question = questionService.getQuestionsByAuthorId(id, questionPage);
         Page<AnswerDto> answer = answerService.getAnswersByAuthorId(id, answerPage);
 
         model.addAttribute("questionPaging", question);

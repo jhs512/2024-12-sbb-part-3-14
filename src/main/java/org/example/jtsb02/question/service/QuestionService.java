@@ -104,7 +104,7 @@ public class QuestionService {
         questionRepository.save(question);
     }
 
-    public Page<QuestionDto> getQuestionByAuthorId(Long authorId, int page) {
+    public Page<QuestionDto> getQuestionsByAuthorId(Long authorId, int page) {
         List<Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdAt"));
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
