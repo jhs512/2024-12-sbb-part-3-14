@@ -1,6 +1,8 @@
 package org.example.jtsb02.answer.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.entity.Answer;
@@ -12,6 +14,11 @@ import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.member.repository.MemberRepository;
 import org.example.jtsb02.question.entity.Question;
 import org.example.jtsb02.question.repository.QuestionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -58,5 +65,13 @@ public class AnswerService {
             answer.getVoter().add(member);
         }
         answerRepository.save(answer);
+    }
+
+    public Page<AnswerDto> getAnswersByAuthorId(Long id, int page) {
+        List<Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdAt"));
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
+
+        return answerRepository.findByAuthorId(id, pageable).map(AnswerDto::fromAnswer);
     }
 }
