@@ -22,4 +22,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
         + "   or a.content like %:kw% "
         + "   or m2.nickname like %:kw% ")
     Page<Question> findAllByKeyword(@Param("kw") String kw, Pageable pageable);
+    Page<Question> findByAuthorId(Long authorId, Pageable pageable);
 }

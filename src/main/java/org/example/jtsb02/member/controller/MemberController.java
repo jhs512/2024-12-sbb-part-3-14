@@ -8,7 +8,10 @@ import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.form.MemberForm;
 import org.example.jtsb02.member.form.PasswordUpdateForm;
 import org.example.jtsb02.member.service.MemberService;
+import org.example.jtsb02.question.dto.QuestionDto;
+import org.example.jtsb02.question.service.QuestionService;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MemberController {
 
     private final MemberService memberService;
+    private final QuestionService questionService;
 
     @GetMapping("/signup")
     public String signup(MemberForm memberForm, Model model) {
@@ -67,8 +72,12 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/detail/{id}")
-    public String memberDetail(@PathVariable("id") Long id, Model model) {
+    public String memberDetail(@PathVariable("id") Long id,
+        @RequestParam(value = "questionPage", defaultValue = "1") int questionPage, Model model) {
         MemberDto member = memberService.getMemberById(id);
+        Page<QuestionDto> question = questionService.getQuestionByAuthorId(id, questionPage);
+
+        model.addAttribute("questionPaging", question);
         model.addAttribute("member", member);
         return "member/detail";
     }

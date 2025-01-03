@@ -9,8 +9,8 @@
 			<input type="text" id="memberId" th:field="${member.memberId}" class="form-control" readonly>
 		</div>
 		<div class="text-gray-600">
-			<label for="username" class="form-label">유저명</label>
-			<input type="text" id="username" th:field="${member.nickname}" class="form-control">
+			<label for="nickname" class="form-label">유저명</label>
+			<input type="text" id="nickname" th:field="${member.nickname}" class="form-control">
 		</div>
 		<div class="text-gray-600 mt-3">
 			<label for="email" class="form-label">이메일</label>
@@ -25,6 +25,68 @@
 			</a>
 		</div>
 	</div>
+	<div class="d-flex justify-content-between align-items-center border-bottom my-3 py-2">
+		<h5>내가 작성한 질문</h5>
+	</div>
+	<table class="table">
+		<thead class="table-dark">
+		<tr class="text-center">
+			<th>번호</th>
+			<th style="width:50%">제목</th>
+			<th>글쓴이</th>
+			<th>작성일시</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr class="text-center" th:each="question, loop : ${questionPaging}">
+			<td th:text="${questionPaging.getTotalElements - (questionPaging.number * questionPaging.size) - loop.index}"></td>
+			<td class="text-start">
+				<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+				<span class="text-danger small ms-2"
+				      th:if="${question.answerCount > 0}"
+				      th:text="${question.answerCount}">
+				</span>
+			</td>
+			<td><span th:if="${question.author != null}" th:text="${question.author.nickname}"></span></td>
+			<td th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+		</tr>
+		</tbody>
+	</table>
+	<!-- 페이징처리 시작 -->
+	<div th:if="${!questionPaging.isEmpty()}">
+		<ul class="pagination justify-content-center">
+			<li class="page-item" th:classappend="${!questionPaging.hasPrevious} ? 'disabled'">
+				<a class="page-link question-page-link" href="javascript:void(0)" th:data-page="${questionPaging.number}">
+					<span>이전</span>
+				</a>
+			</li>
+			<li th:each="page: ${#numbers.sequence(1, questionPaging.totalPages)}"
+			    th:if="${page >= questionPaging.number + 1 - 5 and page <= questionPaging.number + 5}"
+			    th:classappend="${page == questionPaging.number + 1} ? 'active'"
+			    class="page-item">
+				<a th:text="${page}" class="page-link question-page-link" href="javascript:void(0)" th:data-page="${page}"></a>
+			</li>
+			<li class="page-item" th:classappend="${!questionPaging.hasNext} ? 'disabled'">
+				<a class="page-link question-page-link" href="javascript:void(0)" th:data-page="${questionPaging.number + 2}">
+					<span>다음</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<!-- 페이징처리 끝 -->
+	<form th:action="@{/member/detail/{id}(id=${#authentication.principal.id})}" method="get" id="questionPageForm">
+		<input type="hidden" id="questionPage" name="questionPage" th:value="${questionPaging.number}">
+	</form>
 </div>
+<script layout:fragment="script" type='text/javascript'>
+	const page_elements = document.getElementsByClassName("question-page-link");
+	Array.from(page_elements).forEach(function(element) {
+		element.addEventListener('click', function() {
+            localStorage.setItem("questionPage", this.dataset.page);
+            document.getElementById('questionPage').value = this.dataset.page;
+            document.getElementById('questionPageForm').submit();
+		});
+	});
+</script>
 </html>
 
