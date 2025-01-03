@@ -4,6 +4,11 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+<<<<<<< HEAD
+=======
+application.properties
+application-oauth.properties
+>>>>>>> bbb/main
 
 ### STS ###
 .apt_generated
@@ -18,8 +23,11 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+<<<<<<< HEAD
 application.properties
 application-oauth.properties
+=======
+>>>>>>> bbb/main
 .idea
 *.iws
 *.iml
@@ -37,7 +45,10 @@ out/
 
 ### VS Code ###
 .vscode/
+<<<<<<< HEAD
 
 ### Custom###
 db_dev.mv.db
 db_dev.trace.db
+=======
+>>>>>>> bbb/main

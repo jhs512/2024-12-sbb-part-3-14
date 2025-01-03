@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3">
     <h2 class="border-bottom py-2">내 정보</h2>
@@ -302,3 +303,55 @@
     </div>
 </div>
 </html>
+=======
+<!doctype html>
+<html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<div layout:fragment="content" class="container">
+    <div class="home-button">
+        <a href="/question/list" class="btn">Go to Home</a> <!-- root URL로 가는 링크 -->
+    </div>
+    <div class="profile-header">
+        <h1>User Profile</h1>
+        <p><strong>Username:</strong> <span  th:utext="${@commonUtil.markdown(username)}"></span></p>
+        <p><strong>Email:</strong> <span  th:utext="${@commonUtil.markdown(email)}"></span></p>
+    </div>
+    <div class="ms-auto p-2">
+        <a th:href="@{/user/modify}" class="btn btn-primary">비밀번호 변경</a>
+    </div>
+    <div class="profile-section">
+        <h2>My Questions</h2>
+        <ul>
+            <li th:each="question : ${questionList}">
+                <a th:href="@{|/question/detail/${question.id}|}" th:utext="${@commonUtil.markdown(question.subject)}"></a>
+                <span th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+            </li>
+        </ul>
+    </div>
+    <div class="profile-section">
+        <h2>My Answers</h2>
+        <ul>
+            <li th:each="answer : ${answerList}">
+                <a th:href="@{/question/detail/{id}(id=${answer.question.id})}" th:utext="${@commonUtil.markdown(answer.content)}"></a>
+                <span th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+            </li>
+        </ul>
+    </div>
+    <div class="profile-section">
+        <h2>My Comments</h2>
+        <ul>
+            <li th:each="comment : ${commentList}">
+                <a th:if="${comment.answer != null and comment.answer.id != null}"
+                   th:href="@{|/question/detail/${comment.answer.question.id}|}"
+                   th:text="${comment.content}"></a>
+
+                <a th:if="${comment.answer == null or comment.answer.id == null}"
+                   th:href="@{|/question/detail/${comment.question.id}|}"
+                   th:text="${comment.content}"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
+>>>>>>> bbb/main

@@ -1,5 +1,10 @@
 <!doctype html>
+<<<<<<< HEAD
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+=======
+<html lang="ko"xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+>>>>>>> bbb/main
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -8,6 +13,10 @@
     <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
     <!-- sbb CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+<<<<<<< HEAD
+=======
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+>>>>>>> bbb/main
     <title>Hello, sbb!</title>
 </head>
 <body>
@@ -16,10 +25,19 @@
 <!-- 기본 템플릿 안에 삽입될 내용 Start -->
 <th:block layout:fragment="content"></th:block>
 <!-- 기본 템플릿 안에 삽입될 내용 End -->
+<<<<<<< HEAD
 <!-- Bootstrap JS -->
 <script th:src="@{/bootstrap.min.js}"></script>
 <!-- 자바스크립트 Start -->
 <th:block layout:fragment="script"></th:block>
+=======
+<!-- BootStrap JS -->
+<script th:src="@{/bootstrap.min.js}"></script>
+<!-- 자바스크립트 Start -->
+<th:block layout:fragment="script"></th:block>
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<th:block layout:fragment="sub-script"></th:block>
+>>>>>>> bbb/main
 <!-- 자바스크립트 End -->
 </body>
 </html>
