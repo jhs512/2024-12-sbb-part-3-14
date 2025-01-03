@@ -20,7 +20,7 @@ public class PageableUtils {
 
         Sort sort;
 
-        if (filters == null) {
+        if (filters == null || filters.isEmpty()) {
             sort = Sort.by(Sort.Direction.DESC, defaultSort);
         } else {
             sort = Sort.by(filters.entrySet()

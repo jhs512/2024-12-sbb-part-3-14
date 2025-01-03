@@ -29,4 +29,7 @@ public class Answer extends BaseEntity {
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "answer")
     private Set<ARecommend> aRecommendSet;
+
+    @Transient
+    private long recommendationCount;
 }

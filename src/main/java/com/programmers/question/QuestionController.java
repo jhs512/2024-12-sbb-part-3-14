@@ -5,9 +5,7 @@ import com.programmers.answer.AnswerService;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.dto.QuestionModifyRequestDto;
 import com.programmers.question.dto.QuestionRegisterRequestDto;
-import com.programmers.user.SiteUser;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +26,7 @@ public class QuestionController {
     private final AnswerService answerService;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String exceptionHandle(Model model, MethodArgumentNotValidException e) {
+    public String exceptionHandle(MethodArgumentNotValidException e) {
         log.error(e.getMessage());
         return "redirect:/questions/all";
     }
@@ -75,9 +73,7 @@ public class QuestionController {
             @Valid @ModelAttribute PageRequestDto pageRequestDto,
             Model model) {
         Question question = questionService.findQuestionById(questionId);
-        log.info("Find question by id: {}", questionId);
         Page<Answer> answerPage = answerService.getAnswers(question, pageRequestDto);
-        log.info("Find answerPage by id: {}", questionId);
         model.addAttribute("question", question);
         model.addAttribute("answerPage", answerPage);
         return "question_detail";

@@ -37,5 +37,8 @@ public class Question extends BaseEntity {
     private Set<QRecommend> qRecommendSet;
 
     @Transient
+    private long recommendationCount;
+
+    @Transient
     private long answerCount;
 }
