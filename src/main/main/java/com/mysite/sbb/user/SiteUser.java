@@ -40,8 +40,4 @@ public class SiteUser {
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     List<Comment> commentList;
 
-    public void modify(String password){
-        this.password = password;
-    }
-
 }

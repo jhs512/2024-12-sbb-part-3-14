@@ -14,7 +14,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -132,9 +131,17 @@ public class UserController {
             model.addAttribute("emailNotExist", true);
             return "find_password";
         }
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(findPasswordForm.getEmail());
+        simpleMailMessage.setSubject("비밀번호 찾기 메일"); // 제목 설정
+        StringBuffer stringBuffer = new StringBuffer();
         String newPassword = PasswordGenerator.generateTemporaryPassword(); // 임시 비밀번호 생성
-        this.userService.modifyPassword(siteUser, newPassword); // 비밀번호 변경
-        userService.sendPasswordResetMail(findPasswordForm.getEmail(), newPassword); // 비동기로 메일 발송
+        stringBuffer.append(findPasswordForm.getEmail()).append("의 비밀번호를 새롭게 발급하였습니다.")
+                .append("새 비밀번호는 ").append(newPassword).append("입니다\n")
+                .append("새 비밀번호를 통해 로그인 해주세요.");
+        simpleMailMessage.setText(stringBuffer.toString()); // 내용 설정
+        this.userService.modifyPassword(siteUser, newPassword);
+        mailSender.send(simpleMailMessage);
         model.addAttribute("success", true);
         return "find_password";
     }
