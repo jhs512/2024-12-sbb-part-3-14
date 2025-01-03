@@ -12,7 +12,6 @@ import org.example.jtsb02.common.exception.DataNotFoundException;
 import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.entity.Member;
 import org.example.jtsb02.member.repository.MemberRepository;
-import org.example.jtsb02.question.dto.QuestionDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,6 @@
 package org.example.jtsb02.comment.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.comment.dto.CommentDto;
 import org.example.jtsb02.comment.service.CommentService;
 import org.springframework.data.domain.Page;
