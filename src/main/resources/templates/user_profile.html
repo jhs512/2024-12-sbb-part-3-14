@@ -19,7 +19,7 @@
         <h2 class="mb-3">작성한 질문</h2>
         <ul class="list-group" th:if="${profileData['questions'] != null and profileData['questions'].content.size() > 0}">
             <li class="list-group-item" th:each="question : ${profileData['questions'].content}">
-                <a class="text-decoration-none" th:href="@{/question/view/{id}(id=${question.id})}" th:text="${question.subject}"></a>
+                <a class="text-decoration-none" th:href="@{/question/detail/{id}(id=${question.id})}" th:text="${question.subject}"></a>
             </li>
         </ul>
         <p class="text-muted" th:if="${profileData['questions'] == null or profileData['questions'].content.size() == 0}">

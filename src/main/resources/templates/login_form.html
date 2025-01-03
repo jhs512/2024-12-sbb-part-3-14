@@ -41,6 +41,20 @@
     </button>
   </form>
 
+  <!-- 네이버 로그인 버튼 -->
+  <div class="container mt-5">
+    <h2 class="text-center">로그인</h2>
+    <hr>
+    <div class="text-center my-4">
+      <a th:href="@{/api/naver/login}" class="btn btn-success btn-lg">
+        <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인" style="height:20px; margin-right: 5px;">
+        네이버 계정으로 로그인
+      </a>
+    </div>
+  </div>
+  <!-- 네이버 로그인 버튼 끝 -->
+
+
   <!-- 모달 ui 구조 -->
   <div class="modal fade" id="findPasswordModal" tabindex="-1" aria-labelledby="findPasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog">

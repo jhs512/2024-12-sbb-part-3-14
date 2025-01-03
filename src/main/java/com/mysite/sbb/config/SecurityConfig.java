@@ -19,9 +19,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler;
 
-    public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+    public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler, CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler) {
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+        this.customOAuth2AuthenticationSuccessHandler = customOAuth2AuthenticationSuccessHandler;
     }
 
     //  h2 db 쓰는 경우에만 설정.
@@ -40,6 +42,10 @@ public class SecurityConfig {
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
                         .successHandler(customAuthenticationSuccessHandler)
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/api/naver/login")
+                        .successHandler(customOAuth2AuthenticationSuccessHandler) // 커스텀 핸들러 연결
                 )
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))

@@ -1,6 +1,7 @@
 package com.mysite.sbb.config;
 
 
+import com.mysite.sbb.entity.SiteUser;
 import com.mysite.sbb.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +26,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
 
 
     @Override
-    public void onAuthenticationSuccess (
+    public void onAuthenticationSuccess(
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
@@ -46,6 +48,5 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
         } else {
             super.onAuthenticationSuccess(request, response, authentication);
         }
-
     }
 }
