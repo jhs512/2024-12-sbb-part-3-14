@@ -1,0 +1,52 @@
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <!-- 사용자 정보 -->
+                <h1 class="border-bottom pb-2 mb-4" th:text="${siteUser.username}">사용자 이름</h1>
+                <p>
+                    <strong>이메일:</strong> <span th:text="${siteUser.email}">사용자 이메일</span>
+                </p>
+                <p>
+                    <!-- 소셜 로그인 사용자가 아닌 경우에만 링크를 표시 -->
+                    <a th:if="${not #strings.endsWith(siteUser.username, '(OAuth)')}"
+                       th:href="@{/user/changeEmail/{username}(username=${siteUser.username})}"
+                       class="btn btn-link">이메일 변경</a>
+                    <a th:if="${not #strings.endsWith(siteUser.username, '(OAuth)')}"
+                       th:href="@{/user/changePassword/{username}(username=${siteUser.username})}"
+                       class="btn btn-link">비밀번호 변경</a>
+                </p>
+
+                <!-- 작성한 게시물 -->
+                <h2 class="border-bottom pb-2 mb-4">작성한 게시물</h2>
+
+                <!-- 질문 리스트 -->
+                <h3>질문</h3>
+                <ul class="list-group mb-3" th:if="${userPostsDTO.questionList.size() > 0}">
+                    <li class="list-group-item" th:each="question : ${userPostsDTO.questionList}">
+                        <a th:href="@{/question/detail/{id}(id=${question.id})}" th:text="${question.subject}">질문 제목</a>
+                    </li>
+                </ul>
+                <p th:if="${userPostsDTO.questionList.size() == 0}" class="text-muted">작성한 질문이 없습니다.</p>
+
+                <!-- 답변 리스트 -->
+                <h3>답변</h3>
+                <ul class="list-group mb-3" th:if="${userPostsDTO.answerList.size() > 0}">
+                    <li class="list-group-item" th:each="answer : ${userPostsDTO.answerList}">
+                        <a th:href="@{/question/detail/{id}(id=${answer.question.id})}" th:text="${answer.content}">답변 내용</a>
+                    </li>
+                </ul>
+                <p th:if="${userPostsDTO.answerList.size() == 0}" class="text-muted">작성한 답변이 없습니다.</p>
+
+                <!-- 댓글 리스트 -->
+                <h3>댓글</h3>
+                <ul class="list-group mb-3" th:if="${userPostsDTO.commentList.size() > 0}">
+                    <li class="list-group-item" th:each="comment : ${userPostsDTO.commentList}">
+                        <a th:href="@{/question/detail/{id}(id=${comment.questionId})}" th:text="${comment.content}">댓글 내용</a>
+                    </li>
+                </ul>
+                <p th:if="${userPostsDTO.commentList.size() == 0}" class="text-muted">작성한 댓글이 없습니다.</p>
+            </div>
+        </div>
+    </div>
+</html>
