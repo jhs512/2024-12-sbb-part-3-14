@@ -36,6 +36,11 @@ dependencies {
     implementation ("ch.qos.logback:logback-classic")
 
     implementation ("org.commonmark:commonmark:0.21.0")
+
+    implementation ("com.querydsl:querydsl-jpa:5.0.0") // QueryDSL JPA 의존성
+    annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta") // Q클래스 생성용
+    annotationProcessor ("jakarta.annotation:jakarta.annotation-api") // java.lang.NoClassDefFoundError (javax.annotation.Generated) 에러 대응 코드
+    annotationProcessor ("jakarta.persistence:jakarta.persistence-api")
 }
 
 tasks.withType<Test> {
