@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.jtsb02.answer.dto.AnswerDto;
 import org.example.jtsb02.answer.service.AnswerService;
+import org.example.jtsb02.comment.dto.CommentDto;
+import org.example.jtsb02.comment.service.CommentService;
 import org.example.jtsb02.common.exception.PasswordNotMatchException;
 import org.example.jtsb02.mail.form.MailForm;
 import org.example.jtsb02.member.dto.MemberDto;
@@ -32,6 +34,7 @@ public class MemberController {
     private final MemberService memberService;
     private final QuestionService questionService;
     private final AnswerService answerService;
+    private final CommentService commentService;
 
     @GetMapping("/signup")
     public String signup(MemberForm memberForm, Model model) {
@@ -77,15 +80,18 @@ public class MemberController {
     @GetMapping("/detail/{id}")
     public String memberDetail(@PathVariable("id") Long id,
         @RequestParam(value = "questionPage", defaultValue = "1") int questionPage,
-        @RequestParam(value = "answerPage", defaultValue = "1") int answerPage, Model model) {
+        @RequestParam(value = "answerPage", defaultValue = "1") int answerPage,
+        @RequestParam(value = "commentPage", defaultValue = "1") int commentPage, Model model) {
 
         MemberDto member = memberService.getMemberById(id);
         Page<QuestionDto> question = questionService.getQuestionsByAuthorId(id, questionPage);
         Page<AnswerDto> answer = answerService.getAnswersByAuthorId(id, answerPage);
+        Page<CommentDto> comment = commentService.getCommentsByAuthorId(id, commentPage);
 
+        model.addAttribute("member", member);
         model.addAttribute("questionPaging", question);
         model.addAttribute("answerPaging", answer);
-        model.addAttribute("member", member);
+        model.addAttribute("commentPaging", comment);
         return "member/detail";
     }
 

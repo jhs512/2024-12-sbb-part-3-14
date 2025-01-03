@@ -135,6 +135,63 @@
 		<input type="hidden" id="answerPage" name="answerPage" th:value="${answerPaging.number}">
 	</form>
 	<!-- 페이징처리 끝 -->
+
+	<!-- 내가 작성한 댓글 목록 -->
+	<div class="d-flex justify-content-between align-items-center border-bottom my-3 py-2">
+		<h5>내가 작성한 댓글</h5>
+	</div>
+	<table class="table">
+		<thead class="table-dark">
+		<tr class="text-center">
+			<th>번호</th>
+			<th style="width:50%">내용</th>
+			<th>작성자</th>
+			<th>작성일시</th>
+			<th>질문번호</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr class="text-center" th:each="comment, loop : ${commentPaging}">
+			<td th:text="${commentPaging.getTotalElements - (commentPaging.number * commentPaging.size) - loop.index}"></td>
+			<td class="text-start">
+				<a th:href="@{|/question/detail/${comment.question != null ? comment.question.getId() : comment.answer.question.id}|}"
+				   th:text="${comment.content}"></a>
+				<span class="text-danger small ms-2"
+				      th:if="${comment.getVoter().size() > 0}"
+				      th:text="${comment.getVoter().size()}">
+				</span>
+			</td>
+			<td><span th:if="${comment.author != null}" th:text="${comment.author.nickname}"></span></td>
+			<td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+			<td th:text="${comment.question != null ? comment.question.id : comment.answer.question.id}"></td>
+		</tr>
+		</tbody>
+	</table>
+	<!-- 페이징처리 시작 -->
+	<div th:if="${!commentPaging.isEmpty()}">
+		<ul class="pagination justify-content-center">
+			<li class="page-item" th:classappend="${!commentPaging.hasPrevious} ? 'disabled'">
+				<a class="page-link comment-page-link" href="javascript:void(0)" th:data-page="${commentPaging.number}">
+					<span>이전</span>
+				</a>
+			</li>
+			<li th:each="page: ${#numbers.sequence(1, commentPaging.totalPages)}"
+			    th:if="${page >= commentPaging.number + 1 - 5 and page <= commentPaging.number + 5}"
+			    th:classappend="${page == commentPaging.number + 1} ? 'active'"
+			    class="page-item">
+				<a th:text="${page}" class="page-link comment-page-link" href="javascript:void(0)" th:data-page="${page}"></a>
+			</li>
+			<li class="page-item" th:classappend="${!commentPaging.hasNext} ? 'disabled'">
+				<a class="page-link comment-page-link" href="javascript:void(0)" th:data-page="${commentPaging.number + 2}">
+					<span>다음</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<form th:action="@{/member/detail/{id}(id=${#authentication.principal.id})}" method="get" id="commentPageForm">
+		<input type="hidden" id="commentPage" name="commentPage" th:value="${commentPaging.number}">
+	</form>
+	<!-- 페이징처리 끝 -->
 </div>
 <script layout:fragment="script" type='text/javascript'>
 	const page_elements = document.getElementsByClassName("question-page-link");
@@ -153,6 +210,14 @@
             document.getElementById('answerPageForm').submit();
 		});
 	});
+    const comment_page_elements = document.getElementsByClassName("comment-page-link");
+    Array.from(comment_page_elements).forEach(function(element) {
+		element.addEventListener('click', function() {
+			localStorage.setItem("commentPage", this.dataset.page);
+			document.getElementById('commentPage').value = this.dataset.page;
+			document.getElementById('commentPageForm').submit();
+		});
+    });
 </script>
 </html>
 
