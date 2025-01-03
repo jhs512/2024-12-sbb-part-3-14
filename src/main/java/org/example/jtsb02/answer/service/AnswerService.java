@@ -71,7 +71,13 @@ public class AnswerService {
         List<Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdAt"));
         Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
-
         return answerRepository.findByAuthorId(id, pageable).map(AnswerDto::fromAnswer);
+    }
+
+    public Page<AnswerDto> getAnswers(int page) {
+        List<Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdAt"));
+        Pageable pageable = PageRequest.of(page - 1, 10, Sort.by(sorts));
+        return answerRepository.findAll(pageable).map(AnswerDto::fromAnswer);
     }
 }

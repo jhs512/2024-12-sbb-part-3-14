@@ -13,6 +13,7 @@ import org.example.jtsb02.member.dto.MemberDto;
 import org.example.jtsb02.member.service.MemberService;
 import org.example.jtsb02.question.dto.QuestionDto;
 import org.example.jtsb02.question.service.QuestionService;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -87,5 +89,14 @@ public class AnswerController {
         MemberDto member = memberService.getMemberByMemberId(principal.getName());
         answerService.voteAnswer(answerId, member);
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+    }
+
+    @GetMapping("/list")
+    public String getAnswers(@RequestParam(value = "page", defaultValue = "1") int page,
+        @RequestParam(value = "kw", defaultValue = "") String kw, Model model) {
+        Page<AnswerDto> answers = answerService.getAnswers(page);
+        model.addAttribute("paging", answers);
+        model.addAttribute("kw", kw);
+        return "answer/list";
     }
 }
