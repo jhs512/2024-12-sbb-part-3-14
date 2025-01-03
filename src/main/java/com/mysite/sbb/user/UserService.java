@@ -51,4 +51,8 @@ public class UserService {
         }
     }
 
+    public void delete(String email) {
+        Optional<SiteUser> os = this.userRepository.findByEmail(email);
+        os.ifPresent(this.userRepository::delete);
+    }
 }

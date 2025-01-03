@@ -145,4 +145,5 @@ public class UserController {
         model.addAttribute("success", true);
         return "find_password";
     }
+
 }

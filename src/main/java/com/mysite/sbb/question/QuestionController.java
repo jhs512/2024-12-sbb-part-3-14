@@ -32,24 +32,28 @@ public class QuestionController {
     private final UserService userService;
     private final AnswerService answerService;
     private final CategoryService categoryService;
-    private final CommentService commentService;
+    public static final String FREE_BOARD = "자유 게시판";
+    public static final String QUESTION_BOARD = "질문 게시판";
+
+    private static final String QUESTION_NAME = "질문";
+    private static final String FREE_NAME = "자유";
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "kw", defaultValue = "") String kw) {
-        Page<Question> paging = this.questionService.getList(page, kw, "질문 게시판");
+        Page<Question> paging = this.questionService.getList(page, kw, QUESTION_BOARD);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
-        model.addAttribute("category", "질문");
+        model.addAttribute("category", QUESTION_NAME);
         return "question_list";
     }
 
     @GetMapping("/free/list")
     public String freelist(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "kw", defaultValue = "") String kw) {
-        Page<Question> paging = this.questionService.getList(page, kw, "자유 게시판");
+        Page<Question> paging = this.questionService.getList(page, kw, FREE_BOARD);
         model.addAttribute("paging", paging);
         model.addAttribute("kw", kw);
-        model.addAttribute("category", "자유");
+        model.addAttribute("category", FREE_NAME);
         return "question_list";
     }
 
