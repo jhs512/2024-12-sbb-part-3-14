@@ -8,8 +8,13 @@
         <h3>제목</h3>
         <input type="text" th:name="subject"  id="subject" class="form-control" th:value="${content.subject}">
         <h3>내용</h3>
-        <textarea th:name="content" id="content" rows="15" class="form-control" th:text="${content.content}"></textarea>
+        <textarea th:name="markdownEditorQuestion" id="markdownEditorQuestion" rows="15" class="form-control" th:utext="${content.content}"></textarea>
         <input type="submit" value="수정하기" class="btn btn-primary my-2">
     </form>
 </div>
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var simplemde = new SimpleMDE({element:document.getElementById("markdownEditorQuestion")});
+    });
+</script>

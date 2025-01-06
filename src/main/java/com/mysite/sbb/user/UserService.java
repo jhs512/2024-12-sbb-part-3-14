@@ -4,6 +4,7 @@ import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.qustion.Question;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,6 +37,12 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+    public void changePasswordByEmail(String password,String email){
+        SiteUser user = getSiteUserEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        this.userRepository.save(user);
+    }
+
     public boolean checkPassword(String password, SiteUser user) {
         return passwordEncoder.matches(password, user.getPassword());
     }
@@ -58,5 +65,12 @@ public class UserService {
             this.userRepository.save(user);
         }
         return user;
+    }
+    public SiteUser getSiteUserEmail(String email){
+        Optional<SiteUser> _siteUser = this.userRepository.findByUsername(email);
+        if (_siteUser.isEmpty()) {
+            throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
+        }
+        return _siteUser.get();
     }
 }

@@ -33,7 +33,7 @@ public class AnswerController {
             model.addAttribute("content", question);
             return "qustion_detail";
         }
-        answerService.create(siteUser, question, answerForm.getContent());
+        answerService.create(siteUser, question, answerForm.getMarkdownEditorAnswerNew());
         return String.format("redirect:/question/detail/%s", id);
     }
     @PostMapping("/modifyset/{id}")
@@ -44,7 +44,7 @@ public class AnswerController {
         if (bindingResult.hasErrors()) {
             return String.format("redirect:/question/detail/%s", question.getId());
         }
-        this.answerService.modify(id, answerForm.getContent());
+        this.answerService.modify(id, answerForm.getMarkdownEditorAnswerNew());
         return String.format("redirect:/question/detail/%s#answer_%s", question.getId(),id);
     }
     @GetMapping("/modify/{id}")
@@ -71,7 +71,7 @@ public class AnswerController {
         Answer answer = answerService.getAnswer(id);
         Question question = answerService.getQestion(id);
         SiteUser user = userService.getSiteUser(principal.getName());
-        answerService.create(user,question,answer, answerForm.getContent());
+        answerService.create(user,question,answer, answerForm.getMarkdownEditorAnswerNew());
         List<Answer> answers = this.answerService.getList();
         model.addAttribute("answerList", answers);
         return String.format("redirect:/question/detail/%s", question.getId());

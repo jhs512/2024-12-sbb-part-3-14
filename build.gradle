@@ -42,7 +42,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	//이메일
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-
+	//환경변수
+	implementation("me.paulschwarz:spring-dotenv:3.0.0")
 }
 
 tasks.named('test') {

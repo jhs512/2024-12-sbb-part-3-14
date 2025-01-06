@@ -6,8 +6,14 @@
             <div th:each="err : ${#fields.allErrors()}" th:text="${err}" />
         </div>
         <h3>내용</h3>
-        <textarea th:name="content" id="content" rows="15" class="form-control" th:text="${content.content}"></textarea>
+        <textarea th:name="markdownEditorAnswerNew" id="markdownEditorAnswerNew" rows="15" class="form-control" th:utext="${content.content}"></textarea>
         <input type="submit" value="수정하기" class="btn btn-primary my-2">
     </form>
 </div>
 </html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var simplemde = new SimpleMDE({element:document.getElementById("markdownEditorAnswerNew")});
+    });
+</script>

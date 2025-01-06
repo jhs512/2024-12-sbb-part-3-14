@@ -31,7 +31,6 @@ public class QuestionController {
     @GetMapping("/list/{id}")
     public String list(Model model, @PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page,
                        @RequestParam(value = "kw", defaultValue = "") String kw) {
-
             Category category = categoryService.getCategory(id);
             if(category != null) {
                 Page<Question> paging = this.questionService.getList(page, kw, category);
@@ -63,7 +62,7 @@ public class QuestionController {
         if (bindingResult.hasErrors()) {
             return "/question/question_insert";
         }
-        this.questionService.create(siteUser, questionForm.getSubject(), questionForm.getContent(), category);
+        this.questionService.create(siteUser, questionForm.getSubject(), questionForm.getMarkdownEditorQuestion(), category);
         return "redirect:/question/list/" + id;
     }
 
@@ -80,7 +79,7 @@ public class QuestionController {
         if (bindingResult.hasErrors()) {
             return String.format("redirect:/question/detail/%s", id);
         }
-        this.questionService.modify(id, questionForm.getSubject(), questionForm.getContent());
+        this.questionService.modify(id, questionForm.getSubject(), questionForm.getMarkdownEditorQuestion());
         return String.format("redirect:/question/detail/%s", id);
     }
 

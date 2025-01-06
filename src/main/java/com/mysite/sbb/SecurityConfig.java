@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .formLogin((formLogin) -> formLogin
                     .loginPage("/user/login")
                     .defaultSuccessUrl("/question/list/1"))
+
                 .oauth2Login(
                         oauth2Login -> oauth2Login
                                 .loginPage("/user/login")
@@ -49,7 +50,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests((
                         authorizeHttpRequests) ->
                         authorizeHttpRequests.requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
-
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .logoutSuccessUrl("/question/list/1")
