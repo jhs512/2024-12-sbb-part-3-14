@@ -26,8 +26,8 @@ public class SecurityConfig {
             .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
             .formLogin(formLogin -> formLogin.loginPage("/member/login").defaultSuccessUrl("/"))
             .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-                    .logoutSuccessUrl("/")
-                    .invalidateHttpSession(true));
+                    .logoutSuccessUrl("/").invalidateHttpSession(true))
+            .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("/").failureUrl("/login?error=true"));
         return http.build();
     }
 

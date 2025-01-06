@@ -9,9 +9,11 @@ import org.springframework.security.core.userdetails.User;
 public class CustomUserDetails extends User {
 
     private final Long id;
+    private final String nickname;
 
-    public CustomUserDetails(Long id, String memberId, String password, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(Long id, String nickname, String memberId, String password, Collection<? extends GrantedAuthority> authorities) {
         super(memberId, password, authorities);
         this.id = id;
+        this.nickname = nickname;
     }
 }

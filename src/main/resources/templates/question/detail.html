@@ -32,12 +32,12 @@
 				</a>
 				<a class="btn btn-sm btn-outline-secondary" th:href="@{|/question/modify/${question.id}|}"
 				   sec:authorize="isAuthenticated()"
-				   th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.nickname}"
+				   th:if="${question.author != null and #authentication.principal.nickname == question.author.nickname}"
 				   th:text="수정"></a>
 				<a class="delete btn btn-sm btn-outline-secondary" href="javascript:void(0);"
 				   th:data-uri="@{|/question/delete/${question.id}|}"
 				   sec:authorize="isAuthenticated()"
-				   th:if="${question.author != null and #authentication.principal.getUsername() == question.author.nickname}"
+				   th:if="${question.author != null and #authentication.principal.nickname == question.author.nickname}"
 				   th:text="삭제"></a>
 				<a class="btn btn-sm btn-outline-secondary" id="toggleButton">코멘트 보기</a>
 				<div class="d-none mt-3" id="commentBox">
@@ -66,11 +66,11 @@
 									<span class="badge rounded-pill bg-success" th:text="${#lists.size(comment.voter)}"></span>
 								</a>
 								<a th:href="@{|/comment/question/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
-								   th:if="${(comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.memberId)}"
+								   th:if="${(comment.author != null and #authentication.principal.nickname == comment.author.nickname)}"
 								   th:text="수정"></a>
 								<a href="javascript:void(0);" th:data-uri="@{|/comment/question/delete/${comment.id}|}"
 								   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
-								   th:if="${(comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.memberId)}"
+								   th:if="${(comment.author != null and #authentication.principal.nickname == comment.author.nickname)}"
 								   th:text="삭제"></a>
 							</div>
 						</div>
@@ -166,11 +166,11 @@
 									<span class="badge rounded-pill bg-success" th:text="${#lists.size(comment.voter)}"></span>
 								</a>
 								<a th:href="@{|/comment/answer/modify/${comment.id}|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
-								   th:if="${(comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.memberId)}"
+								   th:if="${(comment.author != null and #authentication.principal.nickname == comment.author.nickname)}"
 								   th:text="수정"></a>
 								<a href="javascript:void(0);" th:data-uri="@{|/comment/answer/delete/${comment.id}|}"
 								   class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
-								   th:if="${(comment.author != null and #authentication.getPrincipal().getUsername() == comment.author.memberId)}"
+								   th:if="${(comment.author != null and #authentication.principal.nickname == comment.author.nickname)}"
 								   th:text="삭제"></a>
 							</div>
 						</div>

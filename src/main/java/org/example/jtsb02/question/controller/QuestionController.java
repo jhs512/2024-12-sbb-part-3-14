@@ -1,6 +1,7 @@
 package org.example.jtsb02.question.controller;
 
 import static org.example.jtsb02.common.util.UserUtil.checkUserPermission;
+import static org.example.jtsb02.common.util.UserUtil.getUsernameFromPrincipal;
 
 import jakarta.validation.Valid;
 import java.security.Principal;
@@ -54,7 +55,8 @@ public class QuestionController {
             model.addAttribute("questionForm", questionForm);
             return "question/form/create";
         }
-        MemberDto member = memberService.getMemberByMemberId(principal.getName());
+        String memberId = getUsernameFromPrincipal(principal);
+        MemberDto member = memberService.getMemberByMemberId(memberId);
         Long questionId = questionService.createQuestion(questionForm, member);
         return String.format("redirect:/question/detail/%s", questionId);
     }
