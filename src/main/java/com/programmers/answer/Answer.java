@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 public class Answer {
     @Id
@@ -21,21 +22,20 @@ public class Answer {
     @Setter(AccessLevel.NONE)
     private Long id;
 
+    @Setter(AccessLevel.NONE)
     @OneToOne
     @JoinColumn(nullable = false, updatable = false)
     private Article article;
 
+    @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, updatable = false)
     private Question question;
 
-//    @Setter
-//    private String content;
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String content;
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "answer")
     private Set<ARecommend> aRecommendSet;
-
-    @Transient
-    private long recommendationCount;
 }

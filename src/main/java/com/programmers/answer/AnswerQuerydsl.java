@@ -47,12 +47,11 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                         .on(a.question.id.eq(q.id))
                         .where(q.id.eq(question.getId()))
                         .fetchCount();
-        List<Answer> content = getAnswerList(question, pageRequestDto);
+        List<Answer> content = getAnswerList(question, pageable);
         return new PageImpl<>(content, pageable, totalElements);
     }
 
-    private List<Answer> getAnswerList(Question question, PageRequestDto pageRequestDto) {
-        Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
+    private List<Answer> getAnswerList(Question question, Pageable pageable) {
         List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageable);
         return from(a)
                 .select(a)
@@ -63,15 +62,6 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                 .limit(pageable.getPageSize())
                 .orderBy(orderSpecifiers.toArray(new OrderSpecifier<?>[0]))
                 .fetch();
-    }
-
-    private Expression<Long> recommendationCountQuery(){
-        return JPAExpressions
-                .select(ar.count())
-                .from(a)
-                .leftJoin(ar)
-                .on(ar.answer.id.eq(a.id))
-                .where(ar.answer.eq(a));
     }
 
     private List<OrderSpecifier<?>> getOrderSpecifierList(Pageable pageable) {
@@ -89,5 +79,14 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
         });
 
         return orderSpecifierList;
+    }
+
+    private Expression<Long> recommendationCountQuery(){
+        return JPAExpressions
+                .select(ar.count())
+                .from(a)
+                .leftJoin(ar)
+                .on(ar.answer.id.eq(a.id))
+                .where(ar.answer.eq(a));
     }
 }

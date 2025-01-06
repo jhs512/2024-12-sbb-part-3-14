@@ -2,6 +2,8 @@ package com.programmers.answer;
 
 import com.programmers.answer.dto.AnswerModifyRequestDto;
 import com.programmers.answer.dto.AnswerRegisterRequestDto;
+import com.programmers.article.Article;
+import com.programmers.article.ArticleRepository;
 import com.programmers.exception.IdMismatchException;
 import com.programmers.exception.NotFoundDataException;
 import com.programmers.page.PageableUtils;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class AnswerService {
+    private final ArticleRepository articleRepository;
     private final AnswerRepository answerRepository;
     private final AnswerQuerydsl answerQuerydsl;
     private final QuestionRepository questionRepository;
@@ -33,19 +36,24 @@ public class AnswerService {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
         SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
 
-        return answerRepository.save(Answer.builder()
+        Article article = articleRepository.save(Article.builder()
                 .siteUser(siteUser)
+                .build());
+
+        return answerRepository.save(Answer.builder()
+                .article(article)
                 .question(question)
                 .content(requestDto.content())
                 .build());
     }
 
     public void modifyAnswer(Long questionId, Long answerId, String username, AnswerModifyRequestDto requestDto) {
+        //쿼리문 많아서 dsl로 바꾸는 게 좋을 예정
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new NotFoundDataException("Answer not found"));
         SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
 
-        if (!answer.getSiteUser().equals(siteUser)) {
+        if (!answer.getArticle().getSiteUser().equals(siteUser)) {
             throw new IdMismatchException("answer id mismatch");
         }
         if (!answer.getQuestion().equals(question)) {
