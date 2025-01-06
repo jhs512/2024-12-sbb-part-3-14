@@ -1,5 +1,6 @@
 package com.programmers.answer;
 
+import com.programmers.article.Article;
 import com.programmers.data.BaseEntity;
 import com.programmers.question.Question;
 import com.programmers.recommend.answerRecommend.ARecommend;
@@ -14,17 +15,22 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Builder
-public class Answer extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
+public class Answer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
+    private Long id;
+
+    @OneToOne
     @JoinColumn(nullable = false, updatable = false)
-    private SiteUser siteUser;
+    private Article article;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, updatable = false)
     private Question question;
 
-    @Setter
-    private String content;
+//    @Setter
+//    private String content;
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "answer")
