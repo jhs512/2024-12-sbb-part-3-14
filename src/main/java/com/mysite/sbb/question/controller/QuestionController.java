@@ -75,14 +75,11 @@ public class QuestionController {
                                  Principal principal,
                                  Model model) {
         if(bindingResult.hasErrors()) {
-            //  2025-01-05 : 카테고리 로직 추가(1) 반영 시작
             List<Category> categories = this.categoryRepository.findAll();
             model.addAttribute("categories", categories);
-            //  2025-01-05 : 카테고리 로직 추가(1) 반영 끝
 
             return "question_form";
 
-            //  2025-01-05 : 카테고리 로직 추가(2) 반영 시작
         } try {
             SiteUser siteUser = this.userService.getUser(principal.getName());
             this.questionService.create(questionForm.getSubject(),
@@ -93,14 +90,12 @@ public class QuestionController {
 
             return "redirect:/question/list";
         } catch (IllegalArgumentException e) {
-            // 에러 메시지를 모델에 담아 alert 표시
             model.addAttribute("errorMessage", "이미 존재하는 카테고리입니다. '" + e.getMessage() + "'");
             List<Category> categories = this.categoryRepository.findAll();
             model.addAttribute("categories", categories);
 
             return "question_form";
         }
-        //  2025-01-05 : 카테고리 로직 추가(2) 반영 끝
     }
 
     @PreAuthorize("isAuthenticated()")

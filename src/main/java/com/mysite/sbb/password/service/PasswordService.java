@@ -1,14 +1,11 @@
 package com.mysite.sbb.password.service;
 
 import com.mysite.sbb.entity.SiteUser;
-import com.mysite.sbb.password.form.ChangePasswordForm;
 import com.mysite.sbb.user.repository.UserRepository;
 import com.mysite.sbb.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
