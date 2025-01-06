@@ -148,7 +148,9 @@ public class UserService {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<Map> tokenResponse = restTemplate.getForEntity(tokenRequestUrl, Map.class);
 
-            if (tokenResponse.getStatusCode() == HttpStatus.OK) {
+            //  기존 소스 depth가 너무 깊어!
+
+            /*if (tokenResponse.getStatusCode() == HttpStatus.OK) {
                 Map<String, Object> tokenData = tokenResponse.getBody();
                 String accessToken = (String) tokenData.get("access_token");
 
@@ -188,7 +190,47 @@ public class UserService {
                 }
             } else {
                 throw new RuntimeException("토큰 요청 실패");
+            }*/
+
+            if (tokenResponse.getStatusCode() != HttpStatus.OK) {
+                throw new RuntimeException("토큰 요청 실패");
             }
+
+            // 3. 사용자 정보 요청
+            Map<String, Object> tokenData = tokenResponse.getBody();
+            String accessToken = (String) tokenData.get("access_token");
+
+            String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Bearer " + accessToken);
+
+            HttpEntity<?> entity = new HttpEntity<>(headers);
+            ResponseEntity<Map> userInfoResponse = restTemplate.exchange(userInfoUrl, HttpMethod.GET, entity, Map.class);
+
+            if (userInfoResponse.getStatusCode() != HttpStatus.OK) {
+                throw new RuntimeException("사용자 정보 요청 실패");
+            }
+
+            // 4. 사용자 정보 처리
+            Map<String, Object> userInfoData = userInfoResponse.getBody();
+            Map<String, Object> response = (Map<String, Object>) userInfoData.get("response");
+
+            String naverId = (String) response.get("id");
+            String email = (String) response.get("email");
+            String nickname = (String) response.get("nickname");
+
+            // 5. 사용자 DB에 저장 또는 기존 사용자 확인
+            SiteUser user = userRepository.findByNaverId(naverId).orElseGet(() -> {
+                SiteUser newUser = new SiteUser();
+                newUser.setNaverId(naverId);
+                newUser.setUsername(nickname != null ? nickname : "naver_user_" + naverId);
+                newUser.setEmail(email);
+                return userRepository.save(newUser);
+            });
+
+            // 6. 사용자 로그인 처리
+            authenticateUser(user);
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("네이버 로그인 처리 중 오류 발생: " + e.getMessage());
