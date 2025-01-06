@@ -1,7 +1,7 @@
 package com.programmers.page.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
-import java.util.Map;
 
 public record PageRequestDto(
         @Min(1)
@@ -10,6 +10,10 @@ public record PageRequestDto(
         @Min(1)
         Integer size,
 
-        Map<String, Boolean> filters
+        @Nullable
+        String sort,
+
+        @Nullable
+        Boolean desc
 ) {
 }

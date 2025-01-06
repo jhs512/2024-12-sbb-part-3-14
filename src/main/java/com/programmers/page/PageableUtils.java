@@ -16,24 +16,13 @@ public class PageableUtils {
     public static Pageable createPageable(PageRequestDto pageRequestDto, int defaultSize, String defaultSort) {
         int page = Objects.requireNonNullElse(pageRequestDto.page(), 1);
         int size = Objects.requireNonNullElse(pageRequestDto.size(), defaultSize);
-        Map<String, Boolean> filters = pageRequestDto.filters();
+        String sort = Objects.requireNonNullElse(pageRequestDto.sort(), defaultSort);
+        boolean desc = Objects.requireNonNullElse(pageRequestDto.desc(), true);
 
-        Sort sort;
+        Sort.Direction direction = desc ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort s = Sort.by(direction , sort);
 
-        if (filters == null || filters.isEmpty()) {
-            sort = Sort.by(Sort.Direction.DESC, defaultSort);
-        } else {
-            sort = Sort.by(filters.entrySet()
-                    .stream()
-                    .map(entry -> {
-                        boolean desc = entry.getValue() != null && entry.getValue();
-                        return desc
-                                ? Sort.Order.desc(entry.getKey())
-                                : Sort.Order.asc(entry.getKey());
-                    })
-                    .toList());
-        }
-        return PageRequest.of(page - 1, size, sort);
+        return PageRequest.of(page - 1, size, s);
     }
 
 

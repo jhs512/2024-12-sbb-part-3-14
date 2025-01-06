@@ -5,13 +5,16 @@ import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.QQuestion;
 import com.programmers.question.Question;
 import com.programmers.recommend.answerRecommend.QARecommend;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +42,7 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
     public Page<Answer> getAnswerPage(Question question, PageRequestDto pageRequestDto) {
         Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
 
-        long totalElements =
-                from(a)
+        long totalElements = from(a)
                         .leftJoin(a.question, q)
                         .on(a.question.id.eq(q.id))
                         .where(q.id.eq(question.getId()))
@@ -50,7 +52,6 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
     }
 
     private List<Answer> getAnswerList(Question question, PageRequestDto pageRequestDto) {
-
         Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
         List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageable);
         return from(a)
@@ -66,11 +67,25 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
 
     private List<OrderSpecifier<?>> getOrderSpecifierList(Pageable pageable) {
         List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
+
+        QARecommend ar = QARecommend.aRecommend;
+
+
+
         pageable.getSort().forEach(order -> {
             String property = order.getProperty();
             Order orderDirect = order.isDescending() ? Order.DESC : Order.ASC;
             orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + property)));
         });
+
+        Expression<Long> recommendationCount = JPAExpressions
+                .select(ar.count())
+                .from(a)
+                .leftJoin(ar)
+                .on(ar.answer.id.eq(a.id))
+                .where(ar.answer.eq(a));
+
+        orderSpecifierList.add(new OrderSpecifier<>(Order.DESC , recommendationCount));
         return orderSpecifierList;
     }
 }
