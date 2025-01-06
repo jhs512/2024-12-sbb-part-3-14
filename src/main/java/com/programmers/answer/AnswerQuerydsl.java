@@ -30,7 +30,7 @@ import java.util.Objects;
 public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private final QAnswer a = QAnswer.answer;
     private final QQuestion q = QQuestion.question;
-    private final QARecommend rec = QARecommend.aRecommend;
+    private final QARecommend ar = QARecommend.aRecommend;
 
     private static final int DEFAULT_PAGE_SIZE = 5;
     private static final String DEFAULT_SORT_FILED = "id";
@@ -65,27 +65,29 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                 .fetch();
     }
 
-    private List<OrderSpecifier<?>> getOrderSpecifierList(Pageable pageable) {
-        List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
-
-        QARecommend ar = QARecommend.aRecommend;
-
-
-
-        pageable.getSort().forEach(order -> {
-            String property = order.getProperty();
-            Order orderDirect = order.isDescending() ? Order.DESC : Order.ASC;
-            orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + property)));
-        });
-
-        Expression<Long> recommendationCount = JPAExpressions
+    private Expression<Long> recommendationCountQuery(){
+        return JPAExpressions
                 .select(ar.count())
                 .from(a)
                 .leftJoin(ar)
                 .on(ar.answer.id.eq(a.id))
                 .where(ar.answer.eq(a));
+    }
 
-        orderSpecifierList.add(new OrderSpecifier<>(Order.DESC , recommendationCount));
+    private List<OrderSpecifier<?>> getOrderSpecifierList(Pageable pageable) {
+        List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
+
+        pageable.getSort().forEach(order -> {
+            String property = order.getProperty();
+            Order orderDirect = order.isDescending() ? Order.DESC : Order.ASC;
+            if (property.equals("recommendation")) {
+                Expression<Long> recommendationCount = recommendationCountQuery();
+                orderSpecifierList.add(new OrderSpecifier<>(Order.DESC , recommendationCount));
+            }else {
+                orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + property)));
+            }
+        });
+
         return orderSpecifierList;
     }
 }
