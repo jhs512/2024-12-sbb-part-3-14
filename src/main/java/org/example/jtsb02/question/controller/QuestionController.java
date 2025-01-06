@@ -107,7 +107,8 @@ public class QuestionController {
             return "question/form/modify";
         }
         QuestionDto question = questionService.getQuestion(id);
-        checkUserPermission(principal.getName(), question.getAuthor().getMemberId(), "수정");
+        String memberId = getUsernameFromPrincipal(principal);
+        checkUserPermission(memberId, question.getAuthor().getMemberId(), "수정");
         questionService.modifyQuestion(id, questionForm);
         return String.format("redirect:/question/detail/%s", id);
     }
@@ -116,7 +117,8 @@ public class QuestionController {
     @GetMapping("/delete/{id}")
     public String deleteQuestion(@PathVariable("id") Long id, Principal principal) {
         QuestionDto question = questionService.getQuestion(id);
-        checkUserPermission(principal.getName(), question.getAuthor().getMemberId(), "삭제");
+        String memberId = getUsernameFromPrincipal(principal);
+        checkUserPermission(memberId, question.getAuthor().getMemberId(), "삭제");
         questionService.deleteQuestion(id);
         return "redirect:/question/list";
     }

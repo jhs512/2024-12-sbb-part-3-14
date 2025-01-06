@@ -129,11 +129,11 @@
 				</a>
 				<a class="btn btn-sm btn-outline-secondary" th:href="@{|/answer/modify/${answer.id}|}"
 				   sec:authorize="isAuthenticated()"
-				   th:if="${answer.author != null and #authentication.principal.username == answer.author.nickname}"
+				   th:if="${answer.author != null and #authentication.principal.nickname == answer.author.nickname}"
 				   th:text="수정"></a>
 				<a class="delete btn btn-sm btn-outline-secondary" href="javascript:void(0);"
 				   sec:authorize="isAuthenticated()"
-				   th:if="${question.author != null and #authentication.principal.username == answer.author.nickname}"
+				   th:if="${question.author != null and #authentication.principal.nickname == answer.author.nickname}"
 				   th:data-uri="@{|/answer/delete/${answer.id}|}"
 				   th:text="삭제"></a>
 				<a class="btn btn-sm btn-outline-secondary"

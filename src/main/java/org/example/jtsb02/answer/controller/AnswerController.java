@@ -1,6 +1,7 @@
 package org.example.jtsb02.answer.controller;
 
 import static org.example.jtsb02.common.util.UserUtil.checkUserPermission;
+import static org.example.jtsb02.common.util.UserUtil.getUsernameFromPrincipal;
 
 import jakarta.validation.Valid;
 import java.security.Principal;
@@ -38,7 +39,8 @@ public class AnswerController {
     public String createAnswer(@PathVariable("id") Long questionId, @Valid AnswerForm answerForm,
         BindingResult bindingResult, Model model, Principal principal) {
         QuestionDto question = questionService.getQuestionWithHitsCount(questionId, 1, "");
-        MemberDto member = memberService.getMemberByMemberId(principal.getName());
+        String memberId = getUsernameFromPrincipal(principal);
+        MemberDto member = memberService.getMemberByMemberId(memberId);
         if (bindingResult.hasErrors()) {
             model.addAttribute("question", question);
             model.addAttribute("answerForm", answerForm);
@@ -68,7 +70,8 @@ public class AnswerController {
             return "answer/form/modify";
         }
         AnswerDto answer = answerService.getAnswer(answerId);
-        checkUserPermission(principal.getName(), answer.getAuthor().getMemberId(), "수정");
+        String memberId = getUsernameFromPrincipal(principal);
+        checkUserPermission(memberId, answer.getAuthor().getMemberId(), "수정");
         answerService.modifyAnswer(answerId, answerForm);
         return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), answerId);
     }
@@ -77,7 +80,8 @@ public class AnswerController {
     @GetMapping("/delete/{id}")
     public String deleteAnswer(@PathVariable("id") Long answerId, Principal principal) {
         AnswerDto answer = answerService.getAnswer(answerId);
-        checkUserPermission(principal.getName(), answer.getAuthor().getMemberId(), "삭제");
+        String memberId = getUsernameFromPrincipal(principal);
+        checkUserPermission(memberId, answer.getAuthor().getMemberId(), "삭제");
         answerService.deleteAnswer(answer);
         return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
     }
