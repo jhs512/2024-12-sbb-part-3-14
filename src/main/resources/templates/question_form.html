@@ -8,6 +8,13 @@
 <body>
 <div layout:fragment="content" class="container">
     <h5 class="my-3 border-bottom pb-2">질문등록</h5>
+
+    <!-- 2025-01-05 카테고리 로직 추가 : 입력 카테고리가 존재하는 경우 alert를 통해 안내 시작 -->
+    <div th:if="${errorMessage != null}" class="alert alert-danger" role="alert">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <!-- 2025-01-05 카테고리 로직 추가 : 입력 카테고리가 존재하는 경우 alert를 통해 안내 끝 -->
+
     <form th:object="${questionForm}" method="post">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>

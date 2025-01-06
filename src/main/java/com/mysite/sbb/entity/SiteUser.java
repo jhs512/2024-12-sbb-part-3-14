@@ -31,7 +31,8 @@ public class SiteUser implements UserDetails {
     @Column(unique = true)
     private String naverId;
 
-    private String name;
+    //  2025-01-05 nickname 중복 허용 처리 반영을 위해 필드 추가.
+    private String nickname;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -56,8 +57,5 @@ public class SiteUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void setName(String name) {
     }
 }

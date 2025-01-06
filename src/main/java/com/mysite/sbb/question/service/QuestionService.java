@@ -48,6 +48,21 @@ public class QuestionService {
 
     public void create(String subject, String content, String categoryName, SiteUser user) {
 
+        //  2025-01-04 : 카테고리 로직 추가 반영 시작
+        // 유효성 검사
+        if (categoryName == null || categoryName.trim().isEmpty()) {
+            throw new IllegalArgumentException("카테고리 이름을 입력하세요.");
+        }
+
+        // 이름 유사성 체크
+
+        List<Category> similarCategories = categoryRepository.findSimilarCategories(categoryName);
+        if (!similarCategories.isEmpty()) {
+            throw new IllegalArgumentException("이미 존재하는 카테고리입니다: '" + similarCategories.get(0).getName() + "'");
+        }
+
+        //  2025-01-04 : 카테고리 로직 추가 반영 끝
+        
         //  카테고리 항목 추가
         Category category = categoryRepository.findByName(categoryName)
                                               .orElseGet( () -> {

@@ -1,5 +1,6 @@
 package com.mysite.sbb.config;
 
+import com.mysite.sbb.user.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,10 +21,12 @@ public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler;
+    private final UserRepository userRepository;
 
-    public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler, CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler) {
+    public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler, CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler, UserRepository userRepository) {
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
         this.customOAuth2AuthenticationSuccessHandler = customOAuth2AuthenticationSuccessHandler;
+        this.userRepository = userRepository;
     }
 
     //  h2 db 쓰는 경우에만 설정.

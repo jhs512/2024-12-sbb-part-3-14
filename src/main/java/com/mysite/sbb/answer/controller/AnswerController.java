@@ -71,7 +71,11 @@ public class AnswerController {
 
         Answer answer = this.answerService.getAnswer(id);
         if(!answer.getAuthor().getUsername().equals(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"수정권한 없음");
+            //  2025-01-03 : 403 코드 >> 400 코드 수정 전
+            // throw new ResponseStatusException(HttpStatus.FORBIDDEN,"수정권한 없음");
+
+            //  2025-01-03 : 403 코드 >> 400 코드 수정 후
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한 없음");
         }
         this.answerService.modify(answer,answerForm.getContent());
 

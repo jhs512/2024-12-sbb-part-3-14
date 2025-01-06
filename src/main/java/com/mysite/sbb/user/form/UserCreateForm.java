@@ -16,6 +16,10 @@ public class UserCreateForm {
     @NotEmpty(message = "PW는 필수 항목 입니다.")
     private String password;
 
+    // 2025-01-05 : username 과 nickname 필드 분리
+    @NotEmpty(message = "nickname 확인은 필수 항목 입니다.")
+    private String nickname;
+
     @NotEmpty(message = "PW 확인은 필수 항목 입니다.")
     private String confirmPassword;
 
