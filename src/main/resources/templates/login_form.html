@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+</head>
+<body>
+<div layout:fragment="content" class="container my-3">
+  <form th:action="@{/user/login}" method="post">
+    <!-- 로그인 폼 -->
+    <div th:if="${param.error}">
+      <div class="alert alert-danger">
+        사용자 ID 및 PW를 확인 해 주세요.
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- 성공 메시지 -->
+      <div th:if="${message}" class="alert alert-success" role="alert">
+        <p th:text="${message}"></p>
+      </div>
+
+      <!-- 오류 메시지 -->
+      <div th:if="${error}" class="alert alert-danger" role="alert">
+        <p th:text="${error}"></p>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="username" class="form-label">사용자ID</label>
+      <input type="text" name="username" id="username" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">PW</label>
+      <input type="password" name="password" id="password" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">로그인</button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#findPasswordModal">
+      PW 찾기
+    </button>
+  </form>
+
+  <!-- 네이버 로그인 버튼 -->
+  <div class="container mt-5">
+    <h2 class="text-center">로그인</h2>
+    <hr>
+    <div class="text-center my-4">
+      <a th:href="@{/api/naver/login}" class="btn btn-success btn-lg">
+        <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인" style="height:20px; margin-right: 5px;">
+        네이버 계정으로 로그인
+      </a>
+    </div>
+  </div>
+  <!-- 네이버 로그인 버튼 끝 -->
+
+
+  <!-- 모달 ui 구조 -->
+  <div class="modal fade" id="findPasswordModal" tabindex="-1" aria-labelledby="findPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="findPasswordModalLabel">비밀번호 찾기</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div th:replace="find_password :: findPasswordContent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 모달 ui 구조 -->
+
+<!-- 로그인 폼 -->
+</div>
+</body>
+</html>
