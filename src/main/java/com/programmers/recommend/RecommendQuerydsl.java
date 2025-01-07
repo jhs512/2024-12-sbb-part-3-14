@@ -5,10 +5,12 @@ import com.programmers.article.QArticle;
 import com.programmers.comment.QComment;
 import com.programmers.question.QQuestion;
 import com.programmers.user.QSiteUser;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
@@ -70,19 +72,67 @@ public class RecommendQuerydsl extends QuerydslRepositorySupport {
         saveRecommend(username, commentId, c, c.parentArticle, c.id);
     }
 
-    private boolean existRecommend(String username, Long id, EntityPathBase<?> target, QArticle qArticle, NumberPath<Long> idPath) {
-        long count = from(r)
-                .innerJoin(article)
-                .on(r.article.eq(article))
-                .innerJoin(target)
+    private Expression<Long> recommendationCountExpression(Long id, EntityPathBase<?> target, QArticle qArticle, NumberPath<Long> idPath){
+        return JPAExpressions
+                .select(r.count())
+                .from(r)
+                .leftJoin(article)
+                .on(article.eq(r.article))
+                .leftJoin(target)
                 .on(qArticle.eq(article))
+                .where(idPath.eq(id));
+    }
+
+    private JPQLQuery<Long> recommendationCountQuery(Long id, EntityPathBase<?> target, QArticle qArticle, NumberPath<Long> idPath){
+        log.info("query called");
+        JPQLQuery<Long> result = from(r)
+                .select(r.count())
+                        .innerJoin(article)
+                                .on(r.article.eq(article))
+                                        .innerJoin(target)
+                                                .on(qArticle.eq(article))
+                                                        .where(idPath.eq(id));
+        log.info("query done");
+        return result;
+    }
+
+    public long recommendationCountByQuestion(Long questionId) {
+        return recommendationCountQuery(questionId, q, q.article, q.id)
+                .fetchCount();
+    }
+
+    public long recommendationCountByAnswer(Long answerId) {
+        return recommendationCountQuery(answerId, a, a.article, a.id)
+                .fetchCount();
+    }
+
+    public long recommendationCountByComment(Long commentId) {
+        return recommendationCountQuery(commentId, c, c.parentArticle, c.id)
+                .fetchCount();
+    }
+
+    private boolean existRecommend(String username, Long id, EntityPathBase<?> target, QArticle qArticle, NumberPath<Long> idPath) {
+        log.info("exists called");
+        log.info("Generated Query: {}", recommendationCountQuery(id, target, qArticle, idPath).toString());
+        long count = recommendationCountQuery(id, target, qArticle, idPath)
                 .innerJoin(user)
                 .on(article.siteUser.eq(user))
-                .where(idPath.eq(id)
-                        .and(user.username.eq(username)))
+                .where(user.username.eq(username))
                 .fetchCount();
-
+        log.info("exists done");
         return count > 0;
+//        long count = from(r)
+//                .innerJoin(article)
+//                .on(r.article.eq(article))
+//                .innerJoin(target)
+//                .on(qArticle.eq(article))
+//                .innerJoin(user)
+//                .on(article.siteUser.eq(user))
+//                .where(idPath.eq(id)
+//                        .and(user.username.eq(username)))
+//                .fetchCount();
+
+//        return count > 0;
     }
 
     public boolean existsRecommendByQuestionId(String username, Long questionId) {

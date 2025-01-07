@@ -1,11 +1,11 @@
 package com.programmers.answer;
 
+import com.programmers.article.QArticle;
 import com.programmers.page.PageableUtils;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.QQuestion;
 import com.programmers.question.Question;
 import com.programmers.recommend.QRecommend;
-import com.programmers.recommend.answerRecommend.QARecommend;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -15,15 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import static com.querydsl.core.types.dsl.Wildcard.count;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
 @Transactional
@@ -31,6 +28,7 @@ import java.util.Objects;
 public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private final QAnswer a = QAnswer.answer;
     private final QQuestion q = QQuestion.question;
+    private final QArticle article = QArticle.article;
     private final QRecommend r = QRecommend.recommend;
 
     private static final int DEFAULT_PAGE_SIZE = 5;
@@ -72,7 +70,8 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
             String property = order.getProperty();
             Order orderDirect = order.isDescending() ? Order.DESC : Order.ASC;
             if (property.equals("recommendation")) {
-                Expression<Long> recommendationCount = recommendationCountQuery();
+                Expression<Long> recommendationCount =recommendationCountQuery();
+
                 orderSpecifierList.add(new OrderSpecifier<>(Order.DESC , recommendationCount));
             }else {
                 orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + property)));
@@ -85,9 +84,10 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private Expression<Long> recommendationCountQuery(){
         return JPAExpressions
                 .select(r.count())
-                .from(a)
-                .leftJoin(r)
-                .on(r.answer.id.eq(a.id))
-                .where(r.answer.eq(a));
+                .from(r)
+                .leftJoin(article)
+                .on(r.article.eq(article))
+                .innerJoin(a)
+                .on(a.article.eq(article));
     }
 }

@@ -4,8 +4,7 @@ import com.programmers.answer.AnswerService;
 import com.programmers.answer.dto.AnswerRegisterRequestDto;
 import com.programmers.question.QuestionService;
 import com.programmers.question.dto.QuestionRegisterRequestDto;
-import com.programmers.recommend.answerRecommend.ARecommendService;
-import com.programmers.recommend.questionRecommend.QRecommendService;
+import com.programmers.recommend.RecommendService;
 import com.programmers.user.SiteUserService;
 import com.programmers.user.dto.SignupDto;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,7 @@ public class DataInitializer implements ApplicationRunner {
     private final QuestionService questionService;
     private final SiteUserService siteUserService;
     private final AnswerService answerService;
-    private final ARecommendService arecommendService;
-    private final QRecommendService qRecommendService;
+    private final RecommendService recommendService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -58,7 +56,7 @@ public class DataInitializer implements ApplicationRunner {
         }
 
         for (int i = 40; i <= 50; i++) {
-            arecommendService.recommend(60L, (long) i, principal.getName());
+            recommendService.recommendAnswer(principal.getName(),(long) i);
         }
     }
 }

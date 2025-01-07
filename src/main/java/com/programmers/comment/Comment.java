@@ -11,6 +11,9 @@ import lombok.*;
 @Getter
 @Builder
 public class Comment extends BaseEntity {
+    @OneToOne
+    private Article parentArticle;
+
     @ManyToOne
     private Article targetArticle;
 
