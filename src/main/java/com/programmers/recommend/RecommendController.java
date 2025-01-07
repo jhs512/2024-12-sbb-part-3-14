@@ -22,10 +22,19 @@ public class RecommendController {
     }
 
     @PostMapping("/questions/{questionId}/recommend")
-    public String recommend(
+    public String recommendQuestion(
             @PathVariable("questionId") Long questionId,
             Principal principal){
         recommendService.recommendQuestion(principal.getName(), questionId);
         return "redirect:/questions/" + questionId;
+    }
+
+    @PostMapping("/questions/{questionId}/answers/{answerId}/recommend")
+    public String recommendAnswer(
+            @PathVariable("questionId") Long questionId,
+            @PathVariable("answerId") Long answerId,
+            Principal principal){
+        recommendService.recommendAnswer(principal.getName(), answerId);
+        return String.format("redirect:/questions/%d#answer_%s", questionId, answerId);
     }
 }
