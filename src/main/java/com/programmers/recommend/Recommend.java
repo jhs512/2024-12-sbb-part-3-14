@@ -21,7 +21,7 @@ public class Recommend {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     private Article article;
 
     @ManyToOne

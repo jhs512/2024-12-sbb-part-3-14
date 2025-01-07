@@ -4,6 +4,7 @@ import com.programmers.page.PageableUtils;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.QQuestion;
 import com.programmers.question.Question;
+import com.programmers.recommend.QRecommend;
 import com.programmers.recommend.answerRecommend.QARecommend;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
@@ -30,7 +31,7 @@ import java.util.Objects;
 public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private final QAnswer a = QAnswer.answer;
     private final QQuestion q = QQuestion.question;
-    private final QARecommend ar = QARecommend.aRecommend;
+    private final QRecommend r = QRecommend.recommend;
 
     private static final int DEFAULT_PAGE_SIZE = 5;
     private static final String DEFAULT_SORT_FILED = "id";
@@ -83,10 +84,10 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
 
     private Expression<Long> recommendationCountQuery(){
         return JPAExpressions
-                .select(ar.count())
+                .select(r.count())
                 .from(a)
-                .leftJoin(ar)
-                .on(ar.answer.id.eq(a.id))
-                .where(ar.answer.eq(a));
+                .leftJoin(r)
+                .on(r.answer.id.eq(a.id))
+                .where(r.answer.eq(a));
     }
 }

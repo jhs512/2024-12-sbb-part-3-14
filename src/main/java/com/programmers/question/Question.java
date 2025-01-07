@@ -2,14 +2,8 @@ package com.programmers.question;
 
 import com.programmers.answer.Answer;
 import com.programmers.article.Article;
-import com.programmers.data.BaseEntity;
-import com.programmers.recommend.questionRecommend.QRecommend;
-import com.programmers.user.SiteUser;
 import jakarta.persistence.*;
-
 import java.util.List;
-import java.util.Set;
-
 import lombok.*;
 
 @Entity
@@ -37,13 +31,6 @@ public class Question{
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "question")
     private List<Answer> answerList;
-
-    @Setter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "question")
-    private Set<QRecommend> qRecommendSet;
-
-    @Transient
-    private long recommendationCount;
 
     @Transient
     private long answerCount;
