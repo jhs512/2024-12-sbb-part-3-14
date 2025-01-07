@@ -12,22 +12,29 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class RecommendService {
-    private final RecommendRepository recommendRepository;
     private final RecommendQuerydsl recommendQuerydsl;
 
     public void recommendQuestion(String username, Long questionId){
         if (recommendQuerydsl.existsRecommendByQuestionId(username, questionId)) {
-            log.error("already exists recommend question");
             throw new AlreadyRecommendedException();
         }else {
-            Article article = recommendQuerydsl.findArticleByQuestionId(questionId)
-                    .orElseThrow(() -> new NotFoundDataException("Article"));
             recommendQuerydsl.saveQuestionRecommend(username, questionId);
         }
-        //questionId question 찾아오고 거기서 getArticle..
     }
 
-    public void recommendAnswer(Long answerId, String username){
+    public void recommendAnswer(String username, Long answerId){
+        if (recommendQuerydsl.existsRecommendByAnswerId(username, answerId)) {
+            throw new AlreadyRecommendedException();
+        }else {
+            recommendQuerydsl.saveAnswerRecommend(username, answerId);
+        }
+    }
 
+    public void recommendComment(String username, Long commentId){
+        if (recommendQuerydsl.existsRecommendByCommentId(username, commentId)) {
+            throw new AlreadyRecommendedException();
+        }else {
+            recommendQuerydsl.saveCommentRecommend(username, commentId);
+        }
     }
 }
