@@ -70,31 +70,40 @@ public class QuestionController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String questionCreate(@Valid QuestionForm questionForm,
-                                 BindingResult bindingResult,
-                                 Principal principal,
-                                 Model model) {
-        if(bindingResult.hasErrors()) {
+    public String questionCreate(
+            @Valid QuestionForm questionForm,
+            BindingResult bindingResult,
+            @RequestParam(value = "category", required = false) String categoryName,
+            @RequestParam(value = "isExistingCategory", defaultValue = "false") boolean isExistingCategory,
+            Principal principal,
+            Model model
+    ) {
+        System.out.println("카테고리 전송 값: " + categoryName);
+        System.out.println("기존 카테고리 여부: " + isExistingCategory);
+
+        if (bindingResult.hasErrors()) {
             List<Category> categories = this.categoryRepository.findAll();
             model.addAttribute("categories", categories);
+            return "question_form";  // 질문 등록 폼으로 리턴
+        }
 
-            return "question_form";
-
-        } try {
+        try {
             SiteUser siteUser = this.userService.getUser(principal.getName());
-            this.questionService.create(questionForm.getSubject(),
+
+            this.questionService.create(
+                    questionForm.getSubject(),
                     questionForm.getContent(),
-                    questionForm.getCategory(),
+                    categoryName,
+                    isExistingCategory,
                     siteUser
             );
 
-            return "redirect:/question/list";
+            return "redirect:/question/list";  // 정상 등록 후 리스트 페이지로 리다이렉트
         } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", "이미 존재하는 카테고리입니다. '" + e.getMessage() + "'");
+            model.addAttribute("errorMessage", e.getMessage());
             List<Category> categories = this.categoryRepository.findAll();
             model.addAttribute("categories", categories);
-
-            return "question_form";
+            return "question_form";  // 에러 시 다시 폼 리턴
         }
     }
 

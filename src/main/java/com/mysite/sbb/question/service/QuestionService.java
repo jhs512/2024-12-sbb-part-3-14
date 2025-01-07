@@ -46,31 +46,36 @@ public class QuestionService {
         }
     }
 
-    public void create(String subject, String content, String categoryName, SiteUser user) {
+    public void create(String subject, String content, String categoryName, boolean isExistingCategory, SiteUser user) {
+        Category category;
 
-        if (categoryName == null || categoryName.trim().isEmpty()) {
-            throw new IllegalArgumentException("카테고리 이름을 입력하세요.");
+        if (isExistingCategory) {
+            // 기존 카테고리 재사용
+            category = categoryRepository.findByName(categoryName)
+                    .orElseThrow(() -> new IllegalArgumentException("선택된 카테고리가 존재하지 않습니다."));
+        } else {
+            // 새 카테고리 생성 로직
+            if (categoryName == null || categoryName.trim().isEmpty()) {
+                throw new IllegalArgumentException("카테고리 이름을 입력해주세요.");
+            }
+
+            List<Category> similarCategories = categoryRepository.findSimilarCategories(categoryName);
+            if (!similarCategories.isEmpty()) {
+                throw new IllegalArgumentException("이미 존재하는 카테고리입니다: " + similarCategories.get(0).getName());
+            }
+
+            category = new Category();
+            category.setName(categoryName);
+            categoryRepository.save(category);
         }
 
-        List<Category> similarCategories = categoryRepository.findSimilarCategories(categoryName);
-        if (!similarCategories.isEmpty()) {
-            throw new IllegalArgumentException("이미 존재하는 카테고리입니다: '" + similarCategories.get(0).getName() + "'");
-        }
-
-        Category category = categoryRepository.findByName(categoryName)
-                                              .orElseGet( () -> {
-                                                  Category newCategory = new Category();
-                                                  newCategory.setName(categoryName);
-                                                  return categoryRepository.save(newCategory);
-                                              });
-
-        Question q = new Question();
-        q.setSubject(subject);
-        q.setContent(content);
-        q.setCategory(category); //  카테고리 항목 추가
-        q.setCreateDate(LocalDateTime.now());
-        q.setAuthor(user);
-        this.questionRepository.save(q);
+        Question question = new Question();
+        question.setSubject(subject);
+        question.setContent(content);
+        question.setCategory(category);  // 카테고리 설정
+        question.setCreateDate(LocalDateTime.now());
+        question.setAuthor(user);
+        this.questionRepository.save(question);
     }
 
     public Page<Question> getList(int page, String kw) {

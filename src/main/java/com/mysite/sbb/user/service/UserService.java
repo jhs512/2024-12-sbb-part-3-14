@@ -117,16 +117,16 @@ public class UserService {
     public void processNaverLogin(String code, String state) {
         try {
             // 1.  토큰 발급
-            String accessToken = getAccessToken(code, state);
+            String naverAccessToken = getAccessNaverToken(code, state);
 
             // 2. 사용자 정보 가져오기
-            Map<String, Object> userInfo = getUserInfo(accessToken);
+            Map<String, Object> naverUserInfo = getNaverUserInfo(naverAccessToken);
 
             // 3. 사용자 정보 처리 및 저장/업데이트
-            SiteUser user = saveOrUpdateUser(userInfo);
+            SiteUser naverUser = saveOrUpdateNaverUser(naverUserInfo);
 
             // 4. 사용자 인증 처리
-            authenticateUser(user);
+            authenticateUser(naverUser);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,7 +134,7 @@ public class UserService {
         }
     }
 
-    private String getAccessToken(String code, String state) {
+    private String getAccessNaverToken(String code, String state) {
         String tokenRequestUrl = "https://nid.naver.com/oauth2.0/token?"
                 + "grant_type=authorization_code"
                 + "&client_id=" + naverClientId
@@ -153,7 +153,7 @@ public class UserService {
         return (String) tokenData.get("access_token");
     }
 
-    private Map<String, Object> getUserInfo(String accessToken) {
+    private Map<String, Object> getNaverUserInfo(String accessToken) {
         String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -170,7 +170,7 @@ public class UserService {
         return (Map<String, Object>) userInfoData.get("response");
     }
 
-    private SiteUser saveOrUpdateUser(Map<String, Object> userInfo) {
+    private SiteUser saveOrUpdateNaverUser(Map<String, Object> userInfo) {
         String naverId = (String) userInfo.get("id");
         String email = (String) userInfo.get("email");
         String nickname = (String) userInfo.get("nickname");
