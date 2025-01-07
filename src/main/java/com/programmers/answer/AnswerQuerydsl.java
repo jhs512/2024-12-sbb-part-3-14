@@ -42,8 +42,8 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
         Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
 
         long totalElements = from(a)
-                        .leftJoin(a.question, q)
-                        .on(a.question.id.eq(q.id))
+                        .innerJoin(q)
+                        .on(a.question.eq(q))
                         .where(q.id.eq(question.getId()))
                         .fetchCount();
         List<Answer> content = getAnswerList(question, pageable);
@@ -53,7 +53,6 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private List<Answer> getAnswerList(Question question, Pageable pageable) {
         List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageable);
         return from(a)
-                .select(a)
                 .innerJoin(q)
                 .on(a.question.eq(q))
                 .where(q.eq(question))
@@ -77,7 +76,7 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                 orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + property)));
             }
         });
-
+        orderSpecifierList.add(new OrderSpecifier<>(Order.DESC, Expressions.stringTemplate("answer" + "." + DEFAULT_SORT_FILED)));
         return orderSpecifierList;
     }
 
@@ -87,7 +86,6 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                 .from(r)
                 .leftJoin(article)
                 .on(r.article.eq(article))
-                .innerJoin(a)
-                .on(a.article.eq(article));
+                .where(article.eq(a.article));
     }
 }
