@@ -45,4 +45,7 @@ public class Question {
     @ManyToOne
     private Category category;
 
+    private LocalDateTime recentAnswerDate;
+    private LocalDateTime recentCommentDate;
+
 }

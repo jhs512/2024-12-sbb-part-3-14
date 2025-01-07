@@ -38,5 +38,4 @@ public class Answer {
     @ManyToMany
     private Set<SiteUser> voter;
 
-
 }

@@ -4,6 +4,7 @@ import com.ll.pratice1.DataNotFoundException;
 import com.ll.pratice1.domain.answer.Answer;
 import com.ll.pratice1.domain.answer.repository.AnswerRepository;
 import com.ll.pratice1.domain.question.Question;
+import com.ll.pratice1.domain.question.repository.QuestionRepository;
 import com.ll.pratice1.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class AnswerService {
 
     private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
 
     public Answer create(Question question, String content, SiteUser author){
         Answer answer = new Answer();
@@ -30,6 +32,10 @@ public class AnswerService {
         answer.setQuestion(question);
         answer.setAuthor(author);
         this.answerRepository.save(answer);
+
+        question.setRecentAnswerDate(LocalDateTime.now());
+        this.questionRepository.save(question);
+
         return answer;
     }
 
@@ -46,6 +52,7 @@ public class AnswerService {
         List<Answer> answerList = this.answerRepository.findByAuthor(siteUser);
         return answerList;
     }
+
 
     public Page<Answer> getAnswerList(Question question, int page, String sort) {
         List<Sort.Order> sorts = new ArrayList<>();

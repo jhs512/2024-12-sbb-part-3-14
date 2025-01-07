@@ -5,6 +5,7 @@ import com.ll.pratice1.domain.answer.Answer;
 import com.ll.pratice1.domain.comment.Comment;
 import com.ll.pratice1.domain.comment.repository.CommentRepository;
 import com.ll.pratice1.domain.question.Question;
+import com.ll.pratice1.domain.question.repository.QuestionRepository;
 import com.ll.pratice1.domain.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final QuestionRepository questionRepository;
 
     public void create(Object object, String content, SiteUser siteUser) {
         Comment comment = new Comment();
@@ -25,12 +27,13 @@ public class CommentService {
         comment.setComment(content);
         comment.setSiteUser(siteUser);
         if (object instanceof Question) {
-            comment.setQuestion((Question) object);
+            comment.setQuestion((Question)object);
+            ((Question) object).setRecentCommentDate(LocalDateTime.now());
+            this.questionRepository.save((Question) object);
         } else if (object instanceof Answer) {
             comment.setAnswer((Answer) object);
         }
         this.commentRepository.save(comment);
-
     }
 
     public Comment getComment(Question question) {

@@ -3,9 +3,9 @@
     <div id="page-wrapper">
         <!-- 사이드바 -->
         <div id="sidebar-wrapper">
-            <ul class="sidebar-nav" >
-                <li th:each="cat : ${categoryList}">
-                    <a th:href="@{|/question/list?category=${cat.category}|}" th:text="${cat.category}"></a>
+            <ul class="sidebar-nav">
+                <li th:each="cate : ${categoryList}">
+                    <a th:href="@{|/question/list?category=${cate.category}|}" th:text="${cate.category}"></a>
                 </li>
             </ul>
             <div class="d-grid gap-2 col-6 mx-auto">
@@ -13,17 +13,29 @@
             </div>
         </div>
     </div>
+
     <div class="row my-3">
-        <div class="col-6">
+        <div class="col-3">
             <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
         </div>
-        <div class="col-6">
-            <div class="input-group">
+        <div class="col-6 ms-auto">
+            <div class="input-group justify-content-center">
                 <input type="text" id="search_kw" class="form-control" th:value="${kw}">
                 <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
             </div>
         </div>
+        <div class="col-2 ms-auto">
+            <div class="input-group justify-content-end">
+                <label class="input-group-text" for="sortSelect" >정렬기준</label>
+                <select class="form-select" name="sort" id="sortSelect" >
+                    <option value="lastQuestion" th:selected="${sort == 'lastQuestion'}">최신 글</option>
+                    <option value="lastAnswer" th:selected="${sort == 'lastAnswer'}">최신 답변</option>
+                    <option value="lastComment" th:selected="${sort == 'lastComment'}">최신 댓글</option>
+                </select>
+            </div>
+        </div>
     </div>
+
     <table class="table">
         <thead class="table-dark">
         <tr class="text-center">
@@ -73,22 +85,27 @@
     <!-- 페이징처리 끝 -->
     <form th:action="@{/question/list}" method="get" id="searchForm">
         <input type="hidden" id="kw" name="kw" th:value="${kw}">
+        <input type="hidden" id="sort" name="sort" th:value="${sort}">
         <input type="hidden" id="page" name="page" th:value="${paging.number}">
     </form>
 </div>
 <script layout:fragment="script" type='text/javascript'>
     const page_elements = document.getElementsByClassName("page-link");
-    Array.from(page_elements).forEach(function(element) {
-        element.addEventListener('click', function() {
+    Array.from(page_elements).forEach(function (element) {
+        element.addEventListener('click', function () {
             document.getElementById('page').value = this.dataset.page;
             document.getElementById('searchForm').submit();
         });
     });
     const btn_search = document.getElementById("btn_search");
-    btn_search.addEventListener('click', function() {
+    btn_search.addEventListener('click', function () {
         document.getElementById('kw').value = document.getElementById('search_kw').value;
         document.getElementById('page').value = 0;  // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
         document.getElementById('searchForm').submit();
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', function() {
+        window.location.href = `/question/list?sort=${this.value}`;
     });
 </script>
 </html>

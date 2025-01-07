@@ -7,6 +7,7 @@ import com.ll.pratice1.domain.answer.service.AnswerService;
 import com.ll.pratice1.domain.category.Category;
 import com.ll.pratice1.domain.category.service.CategoryService;
 import com.ll.pratice1.domain.comment.CommentForm;
+import com.ll.pratice1.domain.comment.service.CommentService;
 import com.ll.pratice1.domain.question.Question;
 import com.ll.pratice1.domain.question.QuestionForm;
 import com.ll.pratice1.domain.question.service.QuestionService;
@@ -35,16 +36,19 @@ public class QuestionController {
     private final UserService userService;
     private final CategoryService categoryService;
     private final AnswerService answerService;
+    private final CommentService commentService;
 
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0")int page,
                        @RequestParam(value = "kw", defaultValue = "")String kw,
-                       @RequestParam(value = "category", defaultValue = "")String category){
-        Page<Question> paging = this.questionService.getList(page, kw, category);
+                       @RequestParam(value = "category", defaultValue = "")String category,
+                       @RequestParam(name = "sort", required = false, defaultValue = "") String sort){
+        Page<Question> paging = this.questionService.getList(page, kw, category, sort);
         List<Category> categoryList = this.categoryService.getCategoryAll();
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("paging", paging);
+        model.addAttribute("sort", sort);
         model.addAttribute("kw", kw);
 
         return "question_list";
