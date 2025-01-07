@@ -1,4 +1,4 @@
-package com.programmers.recommend.questionRecommend;
+package com.programmers.recommend;
 
 import com.programmers.exception.AlreadyRecommendedException;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +12,8 @@ import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
-public class QRecommendController {
-    private final com.programmers.recommend.questionRecommend.QRecommendService QRecommendService;
+public class RecommendController {
+    private final RecommendService recommendService;
 
     @ExceptionHandler(AlreadyRecommendedException.class)
     public String alreadyRecommended(Model model) {
@@ -21,11 +21,11 @@ public class QRecommendController {
         return "alert";
     }
 
-//    @PostMapping("/questions/{questionId}/recommend")
-//    public String recommend(
-//            @PathVariable("questionId") Long questionId,
-//            Principal principal){
-//        QRecommendService.recommend(questionId, principal.getName());
-//        return "redirect:/questions/" + questionId;
-//    }
+    @PostMapping("/questions/{questionId}/recommend")
+    public String recommend(
+            @PathVariable("questionId") Long questionId,
+            Principal principal){
+        recommendService.recommendQuestion(principal.getName(), questionId);
+        return "redirect:/questions/" + questionId;
+    }
 }

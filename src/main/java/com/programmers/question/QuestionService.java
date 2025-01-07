@@ -2,6 +2,8 @@ package com.programmers.question;
 
 
 import com.programmers.answer.AnswerRepository;
+import com.programmers.article.Article;
+import com.programmers.article.ArticleRepository;
 import com.programmers.exception.NotFoundDataException;
 import com.programmers.page.PageableUtils;
 import com.programmers.page.dto.PageRequestDto;
@@ -34,6 +36,7 @@ import org.springframework.data.jpa.domain.Specification;
 @RequiredArgsConstructor
 @Transactional
 public class QuestionService {
+    private final ArticleRepository articleRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final SiteUserRepository siteUserRepository;
@@ -41,27 +44,27 @@ public class QuestionService {
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final String DEFAULT_SORT_FILED = "id";
 
-    private Specification<Question> search(String kw) {
-        return new Specification<>() {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                query.distinct(true);  // 중복을 제거
-                Join<Question, SiteUser> u1 = q.join("siteUser", JoinType.LEFT);
-                Join<Question, Answer> a = q.join("answerList", JoinType.LEFT);
-                Join<Answer, SiteUser> u2 = a.join("siteUser", JoinType.LEFT);
-                return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목
-                        cb.like(q.get("content"), "%" + kw + "%"),      // 내용
-                        cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자
-                        cb.like(a.get("content"), "%" + kw + "%"),      // 답변 내용
-                        cb.like(u2.get("username"), "%" + kw + "%"));   // 답변 작성자
-            }
-        };
-    }
+//    private Specification<Question> search(String kw) {
+//        return new Specification<>() {
+//            private static final long serialVersionUID = 1L;
+//            @Override
+//            public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                query.distinct(true);  // 중복을 제거
+//                Join<Question, SiteUser> u1 = q.join("siteUser", JoinType.LEFT);
+//                Join<Question, Answer> a = q.join("answerList", JoinType.LEFT);
+//                Join<Answer, SiteUser> u2 = a.join("siteUser", JoinType.LEFT);
+//                return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목
+//                        cb.like(q.get("content"), "%" + kw + "%"),      // 내용
+//                        cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자
+//                        cb.like(a.get("content"), "%" + kw + "%"),      // 답변 내용
+//                        cb.like(u2.get("username"), "%" + kw + "%"));   // 답변 작성자
+//            }
+//        };
+//    }
 
     public void siteUserCheck(Long questionId, String username) {
         Question question = findQuestionById(questionId); // 이미 존재하는 메서드
-        SiteUser siteUser = question.getSiteUser();
+        SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow();
 
         if (!username.equals(siteUser.getUsername())) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(403));
@@ -70,9 +73,12 @@ public class QuestionService {
 
     public Question createQuestion(QuestionRegisterRequestDto requestDto, String username) {
         SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
+        Article article = articleRepository.save(Article.builder()
+                .siteUser(siteUser)
+                .build());
         return questionRepository.save(
                 Question.builder()
-                        .siteUser(siteUser)
+                        .article(article)
                         .subject(requestDto.subject())
                         .content(requestDto.content())
                         .build()
@@ -90,11 +96,11 @@ public class QuestionService {
         return questionPage;
     }
 
-    public Page<Question> getList(PageRequestDto requestDto, String kw) {
-        Pageable pageable = PageableUtils.createPageable(requestDto, 10, "createDate");
-        Specification<Question> spec = search(kw);
-        return this.questionRepository.findAll(spec, pageable);
-    }
+//    public Page<Question> getList(PageRequestDto requestDto, String kw) {
+//        Pageable pageable = PageableUtils.createPageable(requestDto, 10, "createDate");
+//        Specification<Question> spec = search(kw);
+//        return this.questionRepository.findAll(spec, pageable);
+//    }
 
     public Question findQuestionById(Long questionId) {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));

@@ -13,8 +13,8 @@ import lombok.*;
 @Builder
 public class Comment extends BaseEntity {
     @OneToOne
-    private Article article;
+    private Article parentArticle;
 
     @ManyToOne
-    private SiteUser siteUser;
+    private Article targetArticle;
 }

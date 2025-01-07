@@ -18,7 +18,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class Question {
+public class Question{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)

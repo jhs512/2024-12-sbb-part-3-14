@@ -30,8 +30,8 @@
                 <td>
                     <a th:href="@{|/questions/${question.id}|}" th:text="${question.subject}"></a>
                 </td>
-                <td><span th:if="${question.siteUser != null}" th:text="${question.siteUser.username}"></span></td>
-                <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+<!--                <td><span th:if="${question.siteUser != null}" th:text="${question.siteUser.username}"></span></td>-->
+<!--                <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>-->
                 <td th:text="${question.answerList.size}"></td> <!-- 답변 수 표시 -->
             </tr>
             </tbody>
