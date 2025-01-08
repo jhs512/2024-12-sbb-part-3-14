@@ -1,14 +1,18 @@
 package com.programmers.answer;
 
+import com.programmers.answer.dto.AnswerViewDto;
 import com.programmers.article.QArticle;
+import com.programmers.comment.QComment;
 import com.programmers.page.PageableUtils;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.QQuestion;
 import com.programmers.question.Question;
 import com.programmers.recommend.QRecommend;
+import com.programmers.user.QSiteUser;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,8 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private final QQuestion q = QQuestion.question;
     private final QArticle article = QArticle.article;
     private final QRecommend r = QRecommend.recommend;
+    private final QSiteUser u = QSiteUser.siteUser;
+    private final QComment c = QComment.comment;
 
     private static final int DEFAULT_PAGE_SIZE = 5;
     private static final String DEFAULT_SORT_FILED = "id";
@@ -38,7 +44,7 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
         super(Answer.class);
     }
 
-    public Page<Answer> getAnswerPage(Long questionId, PageRequestDto pageRequestDto) {
+    public Page<AnswerViewDto> getAnswerPage(Long questionId, PageRequestDto pageRequestDto) {
         Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
 
         long totalElements = from(a)
@@ -46,19 +52,38 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                         .on(a.question.eq(q))
                         .where(q.id.eq(questionId))
                         .fetchCount();
-        List<Answer> content = getAnswerList(questionId, pageable);
+        List<AnswerViewDto> content = getAnswerList(questionId, pageable);
         return new PageImpl<>(content, pageable, totalElements);
     }
 
-    private List<Answer> getAnswerList(Long questionId, Pageable pageable) {
+
+    private List<AnswerViewDto> getAnswerList(Long questionId, Pageable pageable) {
         List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageable);
         return from(a)
                 .innerJoin(q)
                 .on(a.question.eq(q))
+                .innerJoin(article)
+                .on(a.article.eq(article))
+                .innerJoin(u)
+                .on(article.siteUser.eq(u))
+                .leftJoin(r)
+                .on(r.article.eq(article))
+                .leftJoin(c)
+                .on(c.targetArticle.eq(article))
                 .where(q.id.eq(questionId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .groupBy(a.id)
                 .orderBy(orderSpecifiers.toArray(new OrderSpecifier<?>[0]))
+                .select(Projections.constructor(AnswerViewDto.class,
+                        a.id,
+                        a.content,
+                        u.username,
+                        c.id.count(),
+                        r.id.count(),
+                        article.createDate,
+                        article.lastModifiedDate
+                        ))
                 .fetch();
     }
 

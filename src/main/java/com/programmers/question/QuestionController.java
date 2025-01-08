@@ -2,6 +2,7 @@ package com.programmers.question;
 
 import com.programmers.answer.Answer;
 import com.programmers.answer.AnswerService;
+import com.programmers.answer.dto.AnswerViewDto;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.dto.QuestionModifyRequestDto;
 import com.programmers.question.dto.QuestionRegisterRequestDto;
@@ -73,7 +74,7 @@ public class QuestionController {
             @Valid @ModelAttribute PageRequestDto pageRequestDto,
             Model model) {
         Question question = questionService.findQuestionById(questionId);
-        Page<Answer> answerPage = answerService.getAnswers(questionId, pageRequestDto);
+        Page<AnswerViewDto> answerPage = answerService.getAnswers(questionId, pageRequestDto);
         model.addAttribute("question", question);
         model.addAttribute("answerPage", answerPage);
         return "question_detail";

@@ -2,6 +2,7 @@ package com.programmers.answer;
 
 import com.programmers.answer.dto.AnswerModifyRequestDto;
 import com.programmers.answer.dto.AnswerRegisterRequestDto;
+import com.programmers.answer.dto.AnswerViewDto;
 import com.programmers.article.Article;
 import com.programmers.article.ArticleRepository;
 import com.programmers.exception.IdMismatchException;
@@ -63,7 +64,7 @@ public class AnswerService {
         answer.setContent(requestDto.content());
     }
 
-    public Page<Answer> getAnswers(Long questionId, PageRequestDto pageRequestDto) {
+    public Page<AnswerViewDto> getAnswers(Long questionId, PageRequestDto pageRequestDto) {
         return answerQuerydsl.getAnswerPage(questionId, pageRequestDto);
 //        return answerRepository.findByQuestion(question, PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED));
     }
