@@ -9,6 +9,9 @@
     <!-- sbb CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
     <title>Hello, sbb!</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
 </head>
 <body>
 <!-- 네비게이션바 -->
@@ -21,5 +24,23 @@
 <!-- 자바스크립트 Start -->
 <th:block layout:fragment="script"></th:block>
 <!-- 자바스크립트 End -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // IDs of the textareas where the Markdown editor will be applied
+        var editorIds = ['markdownEditorQuestion', 'markdownEditorAnswer', 'markdownEditorAnswerEnabled'];
+
+        // Initialize SimpleMDE on each textarea with sanitize set to false
+        editorIds.forEach(function(id) {
+            var element = document.getElementById(id);
+            if (element) {
+                new SimpleMDE({
+                    element: element,
+                    spellChecker: false,
+                    sanitize: false // XSS attacks should be considered
+                });
+            }
+        });
+    });
+</script>
 </body>
 </html>
