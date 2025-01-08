@@ -15,6 +15,7 @@ import com.programmers.user.SiteUser;
 import com.programmers.user.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +66,7 @@ public class AnswerService {
     }
 
     public Page<AnswerViewDto> getAnswers(Long questionId, PageRequestDto pageRequestDto) {
-        return answerQuerydsl.getAnswerPage(questionId, pageRequestDto);
-//        return answerRepository.findByQuestion(question, PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED));
+        Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
+        return answerQuerydsl.getAnswerPage(questionId, pageable);
     }
 }

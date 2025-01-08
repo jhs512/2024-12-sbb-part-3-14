@@ -44,9 +44,7 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
         super(Answer.class);
     }
 
-    public Page<AnswerViewDto> getAnswerPage(Long questionId, PageRequestDto pageRequestDto) {
-        Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
-
+    public Page<AnswerViewDto> getAnswerPage(Long questionId, Pageable pageable) {
         long totalElements = from(a)
                         .innerJoin(q)
                         .on(a.question.eq(q))
