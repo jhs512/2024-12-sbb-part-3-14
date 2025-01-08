@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record AnswerViewDto (
+        long answerId,
         String content,
         String authorName,
         long commentCount,

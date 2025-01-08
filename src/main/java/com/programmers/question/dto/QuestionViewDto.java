@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record QuestionViewDto (
+        long questionId,
         String subject,
         String content,
         String authorName,
