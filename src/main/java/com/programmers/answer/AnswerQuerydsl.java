@@ -38,24 +38,24 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
         super(Answer.class);
     }
 
-    public Page<Answer> getAnswerPage(Question question, PageRequestDto pageRequestDto) {
+    public Page<Answer> getAnswerPage(Long questionId, PageRequestDto pageRequestDto) {
         Pageable pageable = PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED);
 
         long totalElements = from(a)
                         .innerJoin(q)
                         .on(a.question.eq(q))
-                        .where(q.id.eq(question.getId()))
+                        .where(q.id.eq(questionId))
                         .fetchCount();
-        List<Answer> content = getAnswerList(question, pageable);
+        List<Answer> content = getAnswerList(questionId, pageable);
         return new PageImpl<>(content, pageable, totalElements);
     }
 
-    private List<Answer> getAnswerList(Question question, Pageable pageable) {
+    private List<Answer> getAnswerList(Long questionId, Pageable pageable) {
         List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageable);
         return from(a)
                 .innerJoin(q)
                 .on(a.question.eq(q))
-                .where(q.eq(question))
+                .where(q.id.eq(questionId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(orderSpecifiers.toArray(new OrderSpecifier<?>[0]))

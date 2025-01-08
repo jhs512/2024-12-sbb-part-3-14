@@ -63,8 +63,8 @@ public class AnswerService {
         answer.setContent(requestDto.content());
     }
 
-    public Page<Answer> getAnswers(Question question, PageRequestDto pageRequestDto) {
-        return answerQuerydsl.getAnswerPage(question, pageRequestDto);
+    public Page<Answer> getAnswers(Long questionId, PageRequestDto pageRequestDto) {
+        return answerQuerydsl.getAnswerPage(questionId, pageRequestDto);
 //        return answerRepository.findByQuestion(question, PageableUtils.createPageable(pageRequestDto, DEFAULT_PAGE_SIZE, DEFAULT_SORT_FILED));
     }
 }
