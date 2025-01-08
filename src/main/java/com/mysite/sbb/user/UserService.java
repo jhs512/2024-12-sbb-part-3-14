@@ -24,6 +24,10 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     public SiteUser create(String userName, String password, String email) {
+        Optional<SiteUser> _siteUser = this.userRepository.findByUsername(userName);
+        if (_siteUser.isPresent()) {
+            return null;
+        }
         SiteUser user = new SiteUser();
         user.setUsername(userName);
         user.setPassword(passwordEncoder.encode(password));

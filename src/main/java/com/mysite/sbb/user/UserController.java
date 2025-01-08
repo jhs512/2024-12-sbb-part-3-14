@@ -4,6 +4,7 @@ import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.qustion.QuestionForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,17 +33,18 @@ public class UserController {
         return "/user/user_signup";
     }
     @GetMapping("/user_profile")
-    public String profile(Model model,UserPasswordForm userPasswordForm,Principal principal){
-        System.out.println("sadasdasdasdsadsaasdsadsadasasd");
-        SiteUser siteUser = userService.getSiteUser(principal.getName());
+    public String profile(Model model,Principal principal){
         System.out.println(principal.getName());
-        System.out.println("sadasdasdasdsadsaasdsadsadasasd");
+        SiteUser siteUser = userService.getSiteUser(principal.getName());
+        System.out.println("zzzzzzzzzzzzzzzzzzzz");
         model.addAttribute("user", siteUser );
+        System.out.println("zzzzzzzzzzzzzzzzzzzddddddddddddddddddddz");
         return "/user/user_profile";
     }
     @PostMapping("/change_password")
     public String changePassword(Model model, @Valid UserPasswordForm userPasswordForm, BindingResult bindingResult,Principal principal){
         SiteUser siteUser = userService.getSiteUser(principal.getName());
+
         model.addAttribute("user", siteUser );
         if (bindingResult.hasErrors()) {
             return "/user/user_profile";
@@ -67,22 +69,19 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return "/user/user_signup";
         }
+        System.out.println("실행");
         if (!userForm.getPassword().equals(userForm.getPwCheck())) {
             bindingResult.rejectValue("pwCheck", "passwordInCorrect",
                     "2개의 패스워드가 일치하지 않습니다.");
+            System.out.println("페스워드 미일치");
             return "/user/user_signup";
         }
-        try {
-            this.userService.create(userForm.getUserName(),userForm.getPassword(),userForm.getEmail());
-        }catch(DataIntegrityViolationException e) {
-            e.printStackTrace();
+        if(this.userService.create(userForm.getUserName(),userForm.getPassword(),userForm.getEmail()) == null){
+            System.out.println("등록된 사용자");
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
             return "/user/user_signup";
-        }catch(Exception e) {
-            e.printStackTrace();
-            bindingResult.reject("signupFailed", e.getMessage());
-            return "/user/user_signup";
         }
+
         return "redirect:/question/list/1";
     }
 
