@@ -1,0 +1,65 @@
+textarea {
+    width:100%;
+}
+
+input[type=submit] {
+    margin-top:10px;
+}
+
+/* 페이지와 사이드바 래퍼 */
+#page-wrapper {
+    margin-left: 115px; /* 사이드바 너비 */
+    padding: 80px 20px; /* 네비게이션 바 높이 + 여백 */
+}
+
+#sidebar-wrapper {
+    position: fixed;
+    top: 60px; /* 네비게이션 바 높이 */
+    left: 0;
+    width: 115px; /* 사이드바 너비 */
+    height: calc(100% - 60px); /* 화면 전체 높이에서 네비게이션 바 높이 제외 */
+    background: whitesmoke;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+/* 사이드바 스타일 */
+.sidebar-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Flexbox 활성화 */
+    flex-direction: column; /* 세로 방향 정렬 */
+    justify-content: center; /* 수직 가운데 정렬 */
+    align-items: center; /* 수평 가운데 정렬 */
+    height: 60%; /* 사이드바 높이 전체 사용 */
+}
+
+.sidebar-nav li {
+    width: 100%; /* 각 항목의 너비를 사이드바 너비로 설정 */
+    text-align: center; /* 텍스트를 가운데 정렬 */
+    line-height: 2.0em; /* 각 항목의 높이 조정 */
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #555;
+    padding: 0.5em;
+    transition: all 0.3s ease;
+}
+
+.sidebar-nav li a:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: black;
+}
+
+
+.white-box {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0.5px 0.5px 2px 1px #eee;
+}
