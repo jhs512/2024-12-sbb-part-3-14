@@ -18,6 +18,8 @@ public class SiteUser {
 
     String password;
 
-    @Column(unique = true)
+    //@Column(unique = true) 소셜 로그인 상황에서
     String email;
+
+    private String providerTypeCode;
 }
