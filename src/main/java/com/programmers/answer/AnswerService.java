@@ -51,17 +51,8 @@ public class AnswerService {
 
     public void modifyAnswer(Long questionId, Long answerId, String username, AnswerModifyRequestDto requestDto) {
         //쿼리문 많아서 dsl로 바꾸는 게 좋을 예정
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
-        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new NotFoundDataException("Answer not found"));
-        SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
-
-        if (!answer.getArticle().getSiteUser().equals(siteUser)) {
-            throw new IdMismatchException("answer id mismatch");
-        }
-        if (!answer.getQuestion().equals(question)) {
-            throw new IdMismatchException("answer question mismatch");
-        }
-
+        Answer answer = answerQuerydsl.getAnswer(questionId, answerId, username)
+                .orElseThrow(() -> new NotFoundDataException("Answer not found"));
         answer.setContent(requestDto.content());
     }
 

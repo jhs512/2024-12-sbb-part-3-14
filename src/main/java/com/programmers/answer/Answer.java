@@ -4,9 +4,13 @@ import com.programmers.article.Article;
 import com.programmers.question.Question;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,6 +21,11 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime lastModifiedAt;
 
     @Setter(AccessLevel.NONE)
     @OneToOne

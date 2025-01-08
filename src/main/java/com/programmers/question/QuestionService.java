@@ -91,7 +91,7 @@ public class QuestionService {
         // 각 질문에 대한 답변 수를 계산하여 추가
         questionPage.getContent().forEach(question -> {
             long answerCount = answerRepository.countByQuestion(question); // 답변의 갯수 계산
-            question.setAnswerCount(answerCount); // 답변의 갯수를 Question 객체에 설정 (setter를 통해)
+//            question.setAnswerCount(answerCount); // 답변의 갯수를 Question 객체에 설정 (setter를 통해)
         });
         return questionPage;
     }
@@ -105,7 +105,7 @@ public class QuestionService {
     public Question findQuestionById(Long questionId) {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
         long answerCount = answerRepository.countByQuestion(question);
-        question.setAnswerCount(answerCount);
+//        question.setAnswerCount(answerCount);
         return question;
     }
 

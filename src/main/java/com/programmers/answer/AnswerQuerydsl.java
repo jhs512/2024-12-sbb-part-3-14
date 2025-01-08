@@ -3,10 +3,7 @@ package com.programmers.answer;
 import com.programmers.answer.dto.AnswerViewDto;
 import com.programmers.article.QArticle;
 import com.programmers.comment.QComment;
-import com.programmers.page.PageableUtils;
-import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.QQuestion;
-import com.programmers.question.Question;
 import com.programmers.recommend.QRecommend;
 import com.programmers.user.QSiteUser;
 import com.querydsl.core.types.Expression;
@@ -25,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -37,7 +35,6 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
     private final QSiteUser u = QSiteUser.siteUser;
     private final QComment c = QComment.comment;
 
-    private static final int DEFAULT_PAGE_SIZE = 5;
     private static final String DEFAULT_SORT_FILED = "id";
 
     public AnswerQuerydsl() {
@@ -79,8 +76,8 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                         u.username,
                         c.id.count(),
                         r.id.count(),
-                        article.createDate,
-                        article.lastModifiedDate
+                        article.createdAt,
+                        a.lastModifiedAt
                         ))
                 .fetch();
     }
@@ -93,7 +90,6 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
             Order orderDirect = order.isDescending() ? Order.DESC : Order.ASC;
             if (property.equals("recommendation")) {
                 Expression<Long> recommendationCount =recommendationCountQuery();
-
                 orderSpecifierList.add(new OrderSpecifier<>(Order.DESC , recommendationCount));
             }else {
                 orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + property)));
@@ -110,5 +106,22 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                 .leftJoin(article)
                 .on(r.article.eq(article))
                 .where(article.eq(a.article));
+    }
+
+    public Optional<Answer> getAnswer(Long questionId, Long answerId, String username) {
+        return Optional.ofNullable(
+                from(a)
+                        .select(a)
+                        .innerJoin(q)
+                        .on(a.question.eq(q))
+                        .innerJoin(article)
+                        .on(a.article.eq(article))
+                        .innerJoin(u)
+                        .on(article.siteUser.eq(u))
+                        .where(q.id.eq(questionId)
+                                .and(a.id.eq(answerId))
+                                .and(u.username.eq(username)))
+                        .fetchOne()
+        );
     }
 }
