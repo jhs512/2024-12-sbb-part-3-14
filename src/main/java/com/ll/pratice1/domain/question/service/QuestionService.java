@@ -54,6 +54,17 @@ public class QuestionService {
         }
     }
 
+    public Question getQuestionAndViewCount(int id) {
+        Optional<Question> question = this.questionRepository.findById(id);
+        if (question.isPresent()) {
+            question.get().setViewCount(question.get().getViewCount()+1);
+            this.questionRepository.save(question.get());
+            return question.get();
+        } else {
+            throw new DataNotFoundException("question not found");
+        }
+    }
+
     public List<Question> getList(SiteUser siteUser) {
         List<Question> questionList = this.questionRepository.findByAuthor(siteUser);
         return questionList;

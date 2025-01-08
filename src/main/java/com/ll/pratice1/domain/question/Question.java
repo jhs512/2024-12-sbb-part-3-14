@@ -48,4 +48,7 @@ public class Question {
     private LocalDateTime recentAnswerDate;
     private LocalDateTime recentCommentDate;
 
+    @Column(columnDefinition = "INT DEFAULT 0", nullable = false)
+    private int viewCount;
+
 }

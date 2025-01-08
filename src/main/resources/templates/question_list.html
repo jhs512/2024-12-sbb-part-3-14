@@ -54,6 +54,10 @@
                       th:if="${#lists.size(question.answerList) > 0}"
                       th:text="${#lists.size(question.answerList)}">
                 </span>
+                <span class="text small ms-2"
+                      style="float: right;"
+                      th:text="'조회수: ' + ${question.viewCount}">
+                </span>
             </td>
             <td><span th:if="${question.author != null}" th:text="${question.author.username}"></span></td>
             <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>

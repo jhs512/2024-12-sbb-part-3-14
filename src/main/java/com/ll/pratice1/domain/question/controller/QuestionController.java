@@ -50,7 +50,6 @@ public class QuestionController {
         model.addAttribute("paging", paging);
         model.addAttribute("sort", sort);
         model.addAttribute("kw", kw);
-
         return "question_list";
     }
 
@@ -58,7 +57,7 @@ public class QuestionController {
     public String detail(Model model, @RequestParam(value = "page", defaultValue = "0")int page,
                          @PathVariable("id") Integer id, @RequestParam(defaultValue = "latest") String sort,
                          CommentForm commentForm, AnswerForm answerForm){
-        Question question = this.questionService.getQuestion(id);
+        Question question = this.questionService.getQuestionAndViewCount(id);
         Page<Answer> paging = this.answerService.getAnswerList(question, page, sort);
         model.addAttribute("sort", sort);
         model.addAttribute("paging", paging);
