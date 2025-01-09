@@ -1,0 +1,108 @@
+[33mcommit 57994d442c84ab7a468eb55f9b5392b3a0979ffa[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Thu Jan 2 12:05:34 2025 +0900
+
+    소셜로그인기능 추가
+
+[33mcommit fd3b3a79cee8eb8ec2e693b78c2bd79824cfea86[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Thu Jan 2 12:01:18 2025 +0900
+
+    소셜로그인기능 추가
+
+[33mcommit c6d2f3181c7ab56a2dc345071b4480abeebd1fd6[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Mon Dec 23 10:46:35 2024 +0900
+
+    조회수 기능 추가
+
+[33mcommit b80d663228f9cd74f501e16d0d325eb98328ae9d[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Mon Dec 23 10:21:32 2024 +0900
+
+    비밀번호 변경기능 추가
+
+[33mcommit 4366a10753d63aa2a9a81c088d450040c0e608c3[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Fri Dec 20 12:51:02 2024 +0900
+
+    최근 댓글, 최근 게시글 추가
+
+[33mcommit cd971c7a562175efdea70c1b0a6e10c4fa66d9a1[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Fri Dec 20 11:45:43 2024 +0900
+
+    카테고리 기능 추가
+
+[33mcommit ac4bb37891df99af556e77f3d9f96d5181c615ad[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Thu Dec 19 15:48:35 2024 +0900
+
+    덧글 추가
+
+[33mcommit c85de09fbc6825bb2c39198b8a98530eac6075ab[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Thu Dec 19 10:22:42 2024 +0900
+
+    댓글 페이징, 베스트기능 추가
+
+[33mcommit 7dafed5872d3926b9af3af7309844ae2ab2db849[m
+Merge: 4c0a825 6de692c
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Wed Dec 18 12:46:10 2024 +0900
+
+    3-13 검색 기능 추가
+
+[33mcommit 4c0a825035df9b64212c1bfb0ccd870a75f96b1b[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Wed Dec 18 12:45:42 2024 +0900
+
+    3-13 검색 기능 추가
+
+[33mcommit 6de692c30cf6f674a0e7874406538c9073f132a2[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Wed Dec 18 12:41:54 2024 +0900
+
+    3-14 댓글기능 추가
+
+[33mcommit 62d8c64fb76b94f2c36ccd1913209101e534d4d7[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Tue Dec 17 14:53:40 2024 +0900
+
+    3-12 마크다운 추가
+
+[33mcommit ffcb72d4cc6e5ac8ff2ef95416379193d4ace74d[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Tue Dec 17 14:24:37 2024 +0900
+
+    3-11 앵커기능 추가
+
+[33mcommit 7c8ec6b8593f9a01292d73bf70ab938b29e59572[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Fri Dec 13 16:13:14 2024 +0900
+
+    3-08 - 3-09 사이
+
+[33mcommit 84e88a0b57a3b1d2dad048b40e4715cec24b1a28[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Wed Dec 11 17:33:44 2024 +0900
+
+    3-04 답변 갯수 표시하기
+
+[33mcommit 5bfb8bc58391cb4180521b47fb2aeaf7d91a5387[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Wed Dec 11 15:20:48 2024 +0900
+
+    3-01 내비게이션 바 추가하기
+
+[33mcommit 234f1f40af0b4a252c0f7716a847f1b9b2ee65cf[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Tue Dec 10 16:30:48 2024 +0900
+
+    까먹고있다 엔서 서비스-컨트롤러-레모지터리 한번에 올리기
+
+[33mcommit 66cdb855ccddad95b3370fea577030edd88d7162[m
+Author: UCLABgown <lovecein4858@gmail.com>
+Date:   Tue Dec 10 10:07:44 2024 +0900
+
+    스프링 처음 시작

@@ -1,0 +1,43 @@
+<html layout:decorate="~{layout}">
+<!--와 -->
+<div layout:fragment="content" class="container my-3">
+    <h2>프로필</h2>
+    <div th:text="'아이디: '+${user.username}"></div>
+    <form th:action="@{/user/change_password}" th:object="${userPasswordForm}"  method="post" class="my-3">
+        <div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+            <div th:each="err : ${#fields.allErrors()}" th:text="${err}" />
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">지금 비밀번호</label>
+            <input type="password" name="password" id="password" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="newpassword" class="form-label">새 비밀번호</label>
+            <input type="password" name="newpassword" id="newpassword" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="newpasswordcheck" class="form-label">새 비밀번호 확인</label>
+            <input type="password" name="newpasswordcheck" id="newpasswordcheck" class="form-control">
+        </div>
+        <input type="submit" value="저장하기" class="btn btn-primary my-2">
+    </form>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div th:text="${user.id}"></div>
+                <ul th:each="question :${user.questionList}">
+                    <li>
+                        <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.content}"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-6">
+                <ul th:each="answer :${user.answerList}">
+                    <li>
+                        <a th:href="@{|/question/detail/${answer.question.id}#answer.id|}" th:text="${answer.content}"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
