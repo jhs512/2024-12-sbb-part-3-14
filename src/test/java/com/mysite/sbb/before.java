@@ -1,11 +1,9 @@
 package com.mysite.sbb;
 
+import com.mysite.sbb.qustion.QuestionForm;
 import com.mysite.sbb.user.UserRepository;
 import org.junit.Before;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -44,9 +42,7 @@ public class before {
                 .apply(springSecurity())
                 .build();
     }
-    @Test
-    @Order(-1)
-    @Commit
+
     public MockHttpSession loginSession() throws Exception {
         mockMvc.perform(post("/user/signup_run")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -65,9 +61,7 @@ public class before {
                 .andExpect(redirectedUrl("/question/list/1")).andReturn().getRequest();
         return (MockHttpSession) request.getSession();
     }
-    @Test
-    @Order(0)
-    @Commit
+
     public String insertCategory(MockHttpSession session) throws Exception {
         mockMvc.perform(post("/category/create").session(session)
                 .param("content", "게시판"));
@@ -76,5 +70,12 @@ public class before {
     }
 
 
+    public void insertQuestion(MockHttpSession session) throws Exception{
+        insertCategory(loginSession());
+        QuestionForm questionForm = new QuestionForm("제목","내용");
+        mockMvc.perform(post("/question/create/1").session(session)
+                        .flashAttr("questionForm", questionForm))
+                .andExpect(redirectedUrl("/question/list/1"));
+    }
 
 }

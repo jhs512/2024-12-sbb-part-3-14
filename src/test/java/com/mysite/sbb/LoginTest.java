@@ -60,8 +60,8 @@ class LoginTest extends before{
 	void 회원가입_성공() throws Exception{
 		mockMvc.perform(post("/user/signup_run")
 						.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-						.param("userName", "testuser")
-						.param("email", "ㅇ롷ㅇㅎㄹㄹzzzzㅇzsㅎㄶㄹㄴㅇㅎㄴㅇ")
+						.param("userName", "testusser")
+						.param("email", "ㅇ롷ㅇㅎㄹㄹzzzzㅇzsㅎㄶㄹㄴㅇsㅎㄴㅇ")
 						.param("password", "password")
 						.param("pwCheck", "password"))
 				.andExpect(redirectedUrl("/question/list/1"));
@@ -146,7 +146,7 @@ class LoginTest extends before{
 							.param("password", "password")
 							.param("pwCheck", "password"));
 		}
-		assertThat(userRepository.count()).isEqualTo(101);
+		assertThat(userRepository.count()).isEqualTo(102);
 	}
 
 }

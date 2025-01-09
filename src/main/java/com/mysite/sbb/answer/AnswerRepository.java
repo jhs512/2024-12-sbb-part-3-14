@@ -9,5 +9,4 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer>{
     Question findById(Long placeId);
     Page<Answer> findAllByQuestionOrderByOrderNum(Question question, Pageable pageable);
     Answer findTopByOrderByCreateDateDesc();
-    //findAllByQuestionOrderByOrderIdAsc
 }
