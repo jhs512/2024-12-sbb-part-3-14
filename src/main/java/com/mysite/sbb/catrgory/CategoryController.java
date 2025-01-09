@@ -21,8 +21,6 @@ import java.security.Principal;
 public class CategoryController {
     @Autowired
     CategoryService categoryService;
-    @Autowired
-    QuestionService questionService;
 
     @GetMapping("/insert")
     public String insert(CategoryForm categoryForm,  Principal principal){

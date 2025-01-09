@@ -68,8 +68,9 @@ public class QuestionController {
 
     @GetMapping("/delete/{id}")
     public String deleteQuestion(Model model, @PathVariable("id") Integer id) {
+        Category category =  categoryService.getCategory(id);
         this.questionService.delete(id);
-        return "redirect:/question/list";
+        return "redirect:/question/list/"+category.getId();
     }
 
     @PostMapping("/modifyset/{id}")

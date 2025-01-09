@@ -40,40 +40,8 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class LoginTest {
-	@Autowired
-	MockMvc mockMvc;
-	@Autowired
-	WebApplicationContext context;
-	@Autowired
-	UserRepository userRepository;
+class LoginTest extends before{
 
-	//mockMvc 객체 생성, Spring Security 환경 setup
-	@Before
-	public void setup() throws Exception {
-		mockMvc = MockMvcBuilders
-				.webAppContextSetup(this.context)
-				.apply(springSecurity())
-				.build();
-	}
-	public MockHttpSession loginSession() throws Exception {
-		mockMvc.perform(post("/user/signup_run")
-						.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-						.param("userName", "testuser")
-						.param("email", "ㅇ롷ㅇㅎㄹㄹzzzzㅇzsㅎㄶㄹㄴㅇㅎㄴㅇ")
-						.param("password", "password")
-						.param("pwCheck", "password"));
-		String username = "testuser";
-		String password = "password";
-
-		//mockMvc.perform(formLogin("/user/login").user(username).password(password))
-		//		.andExpect(redirectedUrl("/question/list/1"));
-		MockHttpServletRequest request = mockMvc.perform(post("/user/login")
-						.param("username", username)
-						.param("password", password)) // 세션 추가
-				.andExpect(redirectedUrl("/question/list/1")).andReturn().getRequest();
-		return (MockHttpSession) request.getSession();
-	}
 
 	@Test
 	@Order(1)
@@ -82,6 +50,7 @@ class LoginTest {
 
 		mockMvc.perform(get("/user/signup"))
 				.andExpect(status().isOk());
+
 	}
 
 	@Test
@@ -178,7 +147,6 @@ class LoginTest {
 							.param("pwCheck", "password"));
 		}
 		assertThat(userRepository.count()).isEqualTo(101);
-
 	}
 
 }
