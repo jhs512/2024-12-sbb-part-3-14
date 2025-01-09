@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<div layout:fragment="content" class="container my-3">
+    <div class="row my-3">
+        <div class="col-6">
+            <a th:href="@{/questions/create}" class="btn btn-primary">질문 등록하기</a>
+        </div>
+        <div class="col-6">
+            <div class="input-group">
+                <form class="input-group" th:action="@{/questions/all}" method="get" id="searchForm">
+                    <input type="text" name="kw" id="kw" class="form-control" th:value="${s}">
+                    <button class="btn btn-outline-secondary" type="submit" id="btn_search">찾기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+            <thead class="table-dark">
+            <tr class="text-center">
+                <th>번호</th>
+                <th style="width:50%">제목</th>
+                <th>글쓴이</th>
+                <th>작성일시</th>
+                <th>답변 수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="question : ${questionPage.getContent()}">
+                <td th:text="${question.questionId}"></td>
+                <td>
+                    <a th:href="@{|/questions/${question.questionId}|}" th:text="${question.subject}"></a>
+                </td>
+                <td><span th:if="${question.authorName != null}" th:text="${question.authorName}"></span></td>
+                <td th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${question.answerCount}"></td> <!-- 답변 수 표시 -->
+            </tr>
+            </tbody>
+    </table>
+    <div class="d-flex justify-content-center">
+        <div th:if="${questionPage.totalPages > 0}">
+            <ul class="pagination">
+                <li class="page-item" th:each="page : ${#numbers.sequence(1, questionPage.totalPages)}">
+                    <a class="page-link"
+                       th:href="@{|/questions/all${s != null ? '?s=' + s + '&page=' + page : '?page=' + page}|}"
+                       th:text="${page}"></a>
+<!--                    <a class="page-link" th:href="@{|/questions/all?s=${s}&page=${page}|}" th:text="${page}"></a>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</html>

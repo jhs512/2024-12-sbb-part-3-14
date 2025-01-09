@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Alert</title>
+    <script>
+        // JavaScript를 사용하여 메시지를 표시하고 이전 페이지로 이동
+        function showAlertAndRedirect(message, redirectUrl) {
+            alert(message);
+            window.location.href = redirectUrl;
+        }
+    </script>
+</head>
+<body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const message = [[${message}]];
+    const redirectUrl = document.referrer || '/'; // 이전 URL 또는 기본값 설정
+    showAlertAndRedirect(message, redirectUrl);
+    /*]]>*/
+</script>
+</body>
+</html>
