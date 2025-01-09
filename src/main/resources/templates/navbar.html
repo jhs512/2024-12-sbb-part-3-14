@@ -1,0 +1,63 @@
+<nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/question/list/1">SBB</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- 기존 가로 메뉴 -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/signup">회원가입</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/send-mail/sendEmail">비밀번호 찾기</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/user_profile">프로필</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/category/insert">게시판 추가</a>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link">게시판:</div>
+                </li>
+
+                <div th:each="category :${categorys}">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{|/question/list/${category.id}|}"
+                           th:text="${category.name}"></a>
+                    </li>
+                </div>
+                <span th:if="${currentQuestion != null}">
+                    <li class="nav-item">
+                        <div class="nav-link">최근 게시글:</div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{|/question/detail/${currentQuestion.id}|}"
+                           th:text="${currentQuestion.content}"></a>
+                    </li>
+                </span>
+                <span th:if="${currentAnswer != null}">
+                    <li class="nav-item">
+                        <div class="nav-link">최근 댓글:</div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           th:href="@{|/question/detail/${currentAnswer.question.id}|}"
+                           th:text="${currentAnswer.content}"></a>
+                    </li>
+                </div>
+            </ul>
+
+
+        </div>
+
+    </div>
+</nav>
