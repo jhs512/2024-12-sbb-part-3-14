@@ -7,6 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     long countByQuestion(Question question);
-
     Page<Answer> findByQuestion(Question question, Pageable pageable);
 }

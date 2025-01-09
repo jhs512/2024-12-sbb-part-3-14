@@ -39,7 +39,7 @@ public class DataInitializer implements ApplicationRunner {
         };
         for (int i = 1; i <= 60; i++) {
             String subject = String.format("테스트 데이터입니다:[%03d]", i);
-            String content = """
+            String content = i + """
             마크다운 적용
             
             ## 마크다운 문법으로 작성.

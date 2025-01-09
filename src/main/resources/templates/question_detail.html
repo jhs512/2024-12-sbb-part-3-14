@@ -14,23 +14,23 @@
             </div>
         </div>
     </div>
-    <form th:action="@{/questions/{id}/recommend(id=${question.id})}" method="post" class="d-inline">
+    <form th:action="@{/questions/{id}/recommend(id=${question.questionId()})}" method="post" class="d-inline">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
         <button type="submit" class="QRecommend btn btn-sm btn-outline-secondary">
             추천
-            <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.article.recommendSet)}"></span>
+            <span class="badge rounded-pill bg-success" th:text="${question.recommendCount()}"></span>
         </button>
     </form>
-<!--    <a th:href="@{|/questions/${question.id}/modify|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"-->
-<!--       th:if="${question.siteUser != null and #authentication.getPrincipal().getUsername() == question.siteUser.username}"-->
-<!--       th:text="수정">-->
-<!--        -->
-<!--    </a>-->
-<!--    <a href="javascript:void(0);" th:data-uri="@{|/questions/${question.id}/delete|}"-->
-<!--       class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"-->
-<!--       th:if="${question.siteUser != null and #authentication.getPrincipal().getUsername() == question.siteUser.username}"-->
-<!--       th:text="삭제">-->
-<!--    </a>-->
+    <a th:href="@{|/questions/${question.questionId()}/modify|}" class="btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+       th:if="${question.authorName() != null and #authentication.getPrincipal().getUsername() == question.authorName()}"
+       th:text="수정">
+
+    </a>
+    <a href="javascript:void(0);" th:data-uri="@{|/questions/${question.questionId()}/delete|}"
+       class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()"
+       th:if="${question.authorName() != null and #authentication.getPrincipal().getUsername() == question.authorName()}"
+       th:text="삭제">
+    </a>
     <!-- 답변의 갯수 표시 -->
     <h5 class="border-bottom my-3 py-2"
         th:text="|${question.answerCount}개의 답변이 있습니다.|"></h5>
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="my-3">
-            <form th:action="@{/questions/{id}/answers/{answerId}/recommend(id=${question.id}, answerId=${answer.answerId()})}"
+            <form th:action="@{/questions/{id}/answers/{answerId}/recommend(id=${question.questionId()}, answerId=${answer.answerId()})}"
                   method="post"
                   class="d-inline">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
@@ -60,9 +60,9 @@
     </div>
     <!-- 답변 반복 끝  -->
     <!-- 답변 작성 -->
-    <form th:action="@{|/questions/${question.id}/answers|}" method="post" class="my-3">
+    <form th:action="@{|/questions/${question.questionId()}/answers|}" method="post" class="my-3">
         <textarea name="content" id="content" rows="10" class="form-control"></textarea>
-        <input type="hidden" id="questionId" th:value="${question.id}">
+        <input type="hidden" id="questionId" th:value="${question.questionId()}">
         <input type="submit" value="답변등록" class="btn btn-primary my-2">
     </form>
 </div>

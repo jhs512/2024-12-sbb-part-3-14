@@ -20,6 +20,7 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
+    @Column(nullable = false, updatable = false)
     private Long id;
 
     @LastModifiedDate

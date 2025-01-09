@@ -6,6 +6,7 @@ import com.programmers.comment.QComment;
 import com.programmers.question.QQuestion;
 import com.programmers.recommend.QRecommend;
 import com.programmers.user.QSiteUser;
+import com.programmers.util.QuerydslUtils;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +55,7 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
 
 
     private List<AnswerViewDto> getAnswerList(Long questionId, Pageable pageable) {
-        List<OrderSpecifier<?>> orderSpecifiers = getOrderSpecifierList(pageable);
+        List<OrderSpecifier<?>> orderSpecifiers = QuerydslUtils.getOrderSpecifierList(pageable.getSort(), "answer",  a.article, DEFAULT_SORT_FILED);
         return from(a)
                 .innerJoin(q)
                 .on(a.question.eq(q))
@@ -82,31 +84,31 @@ public class AnswerQuerydsl extends QuerydslRepositorySupport {
                 .fetch();
     }
 
-    private List<OrderSpecifier<?>> getOrderSpecifierList(Pageable pageable) {
-        List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
-
-        pageable.getSort().forEach(order -> {
-            String property = order.getProperty();
-            Order orderDirect = order.isDescending() ? Order.DESC : Order.ASC;
-            if (property.equals("recommendation")) {
-                Expression<Long> recommendationCount =recommendationCountQuery();
-                orderSpecifierList.add(new OrderSpecifier<>(Order.DESC , recommendationCount));
-            }else {
-                orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate("answer" + "." + property)));
-            }
-        });
-        orderSpecifierList.add(new OrderSpecifier<>(Order.DESC, Expressions.stringTemplate("answer" + "." + DEFAULT_SORT_FILED)));
-        return orderSpecifierList;
-    }
-
-    private Expression<Long> recommendationCountQuery(){
-        return JPAExpressions
-                .select(r.count())
-                .from(r)
-                .leftJoin(article)
-                .on(r.article.eq(article))
-                .where(article.eq(a.article));
-    }
+//    private List<OrderSpecifier<?>> getOrderSpecifierList(Sort sort, String entityName, String defaultSortFiled) {
+//        List<OrderSpecifier<?>> orderSpecifierList = new ArrayList<>();
+//
+//        sort.forEach(order -> {
+//            String property = order.getProperty();
+//            Order orderDirect = order.isDescending() ? Order.DESC : Order.ASC;
+//            if (property.equals("recommendation")) {
+//                Expression<Long> recommendationCount =recommendationCountQuery();
+//                orderSpecifierList.add(new OrderSpecifier<>(Order.DESC , recommendationCount));
+//            }else {
+//                orderSpecifierList.add(new OrderSpecifier<>(orderDirect, Expressions.stringTemplate(entityName + "." + property)));
+//            }
+//        });
+//        orderSpecifierList.add(new OrderSpecifier<>(Order.DESC, Expressions.stringTemplate(entityName + "." + defaultSortFiled)));
+//        return orderSpecifierList;
+//    }
+//
+//    private Expression<Long> recommendationCountQuery(){
+//        return JPAExpressions
+//                .select(r.count())
+//                .from(r)
+//                .leftJoin(article)
+//                .on(r.article.eq(article))
+//                .where(article.eq(a.article));
+//    }
 
     public Optional<Answer> getAnswer(Long questionId, Long answerId, String username) {
         return Optional.ofNullable(

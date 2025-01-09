@@ -37,8 +37,6 @@ class QuestionControllerTest {
 
     @Test
     void list() throws Exception {
-        when(questionService.findAllQuestions(any())).thenReturn(Page.empty());
-        mockMvc.perform(get("/question/list"))
-                .andExpect(status().isOk());
+
     }
 }

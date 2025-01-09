@@ -1,11 +1,11 @@
 package com.programmers.question;
 
-import com.programmers.answer.Answer;
 import com.programmers.answer.AnswerService;
 import com.programmers.answer.dto.AnswerViewDto;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.dto.QuestionModifyRequestDto;
 import com.programmers.question.dto.QuestionRegisterRequestDto;
+import com.programmers.question.dto.QuestionViewDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,30 +50,21 @@ public class QuestionController {
     }
 
     @GetMapping("/all")
-    public String findAllQuestions(
-            Model model,
-            @Valid @ModelAttribute PageRequestDto pageRequestDto) {
-        Page<Question> questionPage = questionService.findAllQuestions(pageRequestDto);
+    public String list(Model model,
+                       @Valid @ModelAttribute PageRequestDto pageRequestDto,
+                       @RequestParam(value = "s", required = false) String s) {
+        Page<QuestionViewDto> questionPage = questionService.getQuestionPageBySearch(pageRequestDto, s);
         model.addAttribute("questionPage", questionPage);
+        model.addAttribute("s", s);
         return "list";
     }
-
-//    @GetMapping("/all")
-//    public String list(Model model,
-//                       @Valid @ModelAttribute PageRequestDto pageRequestDto,
-//                       @RequestParam(value = "kw", defaultValue = "", required = false) String kw) {
-//        Page<Question> questionPage = this.questionService.getList(pageRequestDto, kw);
-//        model.addAttribute("questionPage", questionPage);
-//        model.addAttribute("kw", kw);
-//        return "list";
-//    }
 
     @GetMapping("/{questionId}")
     public String findQuestionById(
             @PathVariable Long questionId,
             @Valid @ModelAttribute PageRequestDto pageRequestDto,
             Model model) {
-        Question question = questionService.findQuestionById(questionId);
+        QuestionViewDto question = questionService.findQuestionById(questionId);
         Page<AnswerViewDto> answerPage = answerService.getAnswers(questionId, pageRequestDto);
         model.addAttribute("question", question);
         model.addAttribute("answerPage", answerPage);
@@ -87,8 +78,7 @@ public class QuestionController {
             Principal principal,
             Model model
     ){
-        questionService.siteUserCheck(questionId, principal.getName());
-        Question question = questionService.findQuestionById(questionId);
+        Question question = questionService.findQuestionByIdAndUsername(questionId, principal.getName());
 
         QuestionRegisterRequestDto requestDto = QuestionRegisterRequestDto.builder()
                 .subject(question.getSubject())

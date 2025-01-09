@@ -4,12 +4,13 @@ import com.programmers.answer.dto.AnswerModifyRequestDto;
 import com.programmers.answer.dto.AnswerRegisterRequestDto;
 import com.programmers.answer.dto.AnswerViewDto;
 import com.programmers.article.Article;
+import com.programmers.article.ArticleQuerydsl;
 import com.programmers.article.ArticleRepository;
-import com.programmers.exception.IdMismatchException;
 import com.programmers.exception.NotFoundDataException;
 import com.programmers.page.PageableUtils;
 import com.programmers.page.dto.PageRequestDto;
 import com.programmers.question.Question;
+import com.programmers.question.QuestionQuerydsl;
 import com.programmers.question.QuestionRepository;
 import com.programmers.user.SiteUser;
 import com.programmers.user.SiteUserRepository;
@@ -34,7 +35,7 @@ public class AnswerService {
     private static final int DEFAULT_PAGE_SIZE = 5;
     private static final String DEFAULT_SORT_FILED = "id";
 
-    public Answer createAnswer(Long questionId, AnswerRegisterRequestDto requestDto, String username) {
+    public void createAnswer(Long questionId, AnswerRegisterRequestDto requestDto, String username) {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new NotFoundDataException("Question not found"));
         SiteUser siteUser = siteUserRepository.findByUsername(username).orElseThrow(() -> new NotFoundDataException("User not found"));
 
@@ -42,7 +43,7 @@ public class AnswerService {
                 .siteUser(siteUser)
                 .build());
 
-        return answerRepository.save(Answer.builder()
+        answerRepository.save(Answer.builder()
                 .article(article)
                 .question(question)
                 .content(requestDto.content())
@@ -50,7 +51,6 @@ public class AnswerService {
     }
 
     public void modifyAnswer(Long questionId, Long answerId, String username, AnswerModifyRequestDto requestDto) {
-        //쿼리문 많아서 dsl로 바꾸는 게 좋을 예정
         Answer answer = answerQuerydsl.getAnswer(questionId, answerId, username)
                 .orElseThrow(() -> new NotFoundDataException("Answer not found"));
         answer.setContent(requestDto.content());
