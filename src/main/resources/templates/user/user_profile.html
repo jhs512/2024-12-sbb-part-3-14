@@ -1,0 +1,58 @@
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{/layout/layout}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<div layout:fragment="content" class="container my-3">
+    <section class="vh-100" style="background-color: #f4f5f7;">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-lg-6 mb-4 mb-lg-0">
+                    <div class="card mb-3" style="border-radius: .5rem;">
+                        <div class="row g-0">
+                            <div class="col-md-4 gradient-custom text-center text-white"
+                                 style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem; background-color:#f7ce69">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16" style="margin:1rem;">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                </svg>
+                                <h5 th:text="${siteUser.username}"></h5>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body p-4">
+                                    <h6>Information</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>Email</h6>
+                                            <p class="text-muted" th:text="${siteUser.email}"></p>
+                                        </div>
+                                    </div>
+                                    <h6>질문</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3" th:each="question : ${siteUser.questions}">
+                                            <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+                                        </div>
+                                    </div>
+                                    <h6>답변</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3" th:each="answer : ${siteUser.answers}">
+                                            <a th:href="@{|/question/detail/${answer.question.id}|}" th:text="${answer.content}"></a>
+                                        </div>
+                                    </div>
+                                    <h6>댓글</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3" th:each="comment : ${siteUser.comments}">
+                                            <a th:href="@{|/question/detail/${comment.question.id}|}" th:text="${comment.content}"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</html>
